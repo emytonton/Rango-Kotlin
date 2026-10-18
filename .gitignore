@@ -1,0 +1,32 @@
+# Instruções locais do assistente (nunca vão para o repositório)
+CLAUDE.md
+CLAUDE.local.md
+.claude/
+
+# Gradle e Kotlin
+.gradle/
+.kotlin/
+build/
+local.properties
+*.iml
+.idea/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Xcode e CocoaPods
+iosApp/Pods/
+xcuserdata/
+DerivedData/
+*.xcuserstate
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# SonarQube
+.scannerwork/
+.sonar/
+
+# Saídas temporárias das métricas
+tools/metrics/out/

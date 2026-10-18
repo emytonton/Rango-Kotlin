@@ -1,0 +1,223 @@
+name: "Registro de Feature (KMP/React Native + uso de IA)"
+description: "Registro de uma tela ou item transversal, com tempo, LOC por origem e uso de IA."
+title: "[Feature] "
+labels: ["registro-metrica"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **Fluxo do registro**
+        1. Abra esta issue antes de começar a tela e preencha a seção "Ao iniciar".
+        2. Todo commit da tela cita a issue com `Refs #N` e termina com os trailers `AI-Tool` e `AI-Extent`.
+        3. Durante o trabalho, registre os segmentos de tempo em comentários (`14:32-16:10 codigo`).
+        4. Ao terminar, preencha a seção "Ao finalizar" e feche a issue. Fechar significa que o registro está completo.
+
+  - type: markdown
+    attributes:
+      value: "## Ao iniciar"
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      options:
+        - Kotlin Multiplatform (KMP)
+        - React Native
+    validations:
+      required: true
+
+  - type: input
+    id: nome-feature
+    attributes:
+      label: Nome da feature
+      placeholder: "Ex.: Cadastro com validação de campos"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tela
+    attributes:
+      label: Tela
+      options:
+        - Boas-vindas
+        - Login
+        - Cadastro
+        - Home
+        - Busca
+        - Produto
+        - Carrinho
+        - Checkout
+        - Endereço
+        - Pagamento
+        - Confirmado
+        - Rastreio
+        - Pedidos
+        - Detalhe do pedido
+        - Favoritos
+        - Notificações
+        - Perfil
+        - Editar perfil
+        - Config.
+        - Notificações config.
+        - Tema
+        - Transversal (sem tela)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: funcionalidade
+    attributes:
+      label: Funcionalidade
+      options:
+        - Autenticação
+        - Catálogo
+        - Busca e filtros
+        - Carrinho e pedido
+        - Persistência local
+        - Tema escuro
+        - Histórico de pedidos
+        - Favoritos
+        - Notificações
+        - Foto de perfil
+        - Cache offline
+        - Infraestrutura (transversal)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ferramenta-ia
+    attributes:
+      label: Ferramenta de IA utilizada
+      options:
+        - Nenhuma (implementação manual)
+        - Claude
+        - GitHub Copilot
+        - ChatGPT
+        - Gemini
+        - Outra (especifique nos comentários)
+    validations:
+      required: true
+
+  - type: input
+    id: inicio
+    attributes:
+      label: Data/hora de início
+      placeholder: "28/09 14:32"
+    validations:
+      required: true
+
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Critérios de aceite
+      description: "Opcional na abertura."
+    validations:
+      required: false
+
+  - type: markdown
+    attributes:
+      value: "## Ao finalizar"
+
+  - type: input
+    id: termino
+    attributes:
+      label: Data/hora de término
+      placeholder: "28/09 18:05"
+    validations:
+      required: false
+
+  - type: input
+    id: tempo-total
+    attributes:
+      label: Tempo total gasto
+      description: "Pode usar o total do WakaTime."
+      placeholder: "3h20"
+    validations:
+      required: false
+
+  - type: textarea
+    id: segmentos
+    attributes:
+      label: Segmentos de tempo
+      description: "Uma linha por segmento no formato início-fim categoria. Categorias: codigo, depuracao, configuracao-build, espera-ferramenta."
+      placeholder: |
+        14:32-15:40 codigo
+        15:40-16:05 depuracao
+    validations:
+      required: false
+
+  - type: input
+    id: prompts
+    attributes:
+      label: Número de prompts/interações com a IA
+    validations:
+      required: false
+
+  - type: input
+    id: loc-gerado
+    attributes:
+      label: LOC gerado
+      description: "Soma das linhas adicionadas nos commits com AI-Extent: gerado (tools/metrics/loc-por-origem.sh --issue N)."
+    validations:
+      required: false
+
+  - type: input
+    id: loc-assistido
+    attributes:
+      label: LOC assistido
+      description: "Soma das linhas adicionadas nos commits com AI-Extent: assistido."
+    validations:
+      required: false
+
+  - type: input
+    id: loc-manual
+    attributes:
+      label: LOC manual
+      description: "Soma das linhas adicionadas nos commits com AI-Extent: manual."
+    validations:
+      required: false
+
+  - type: dropdown
+    id: dificuldade
+    attributes:
+      label: Dificuldade percebida
+      description: "1 muito fácil, 5 muito difícil."
+      options:
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: confianca
+    attributes:
+      label: Confiança no código gerado pela IA
+      description: "1 nenhuma confiança, 5 confiança total."
+      options:
+        - "1"
+        - "2"
+        - "3"
+        - "4"
+        - "5"
+        - "N/A (não usou IA)"
+    validations:
+      required: false
+
+  - type: textarea
+    id: retrabalho
+    attributes:
+      label: Precisou de retrabalho relevante?
+      description: "Sim ou não, e o que foi refeito."
+    validations:
+      required: false
+
+  - type: textarea
+    id: observacoes
+    attributes:
+      label: Observações adicionais
+      description: "Notas livres com tags: #uso, #docs, #depuracao, #curva, #nativo, #ia."
+    validations:
+      required: false

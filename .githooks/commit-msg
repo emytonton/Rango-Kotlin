@@ -1,0 +1,48 @@
+#!/bin/sh
+msg_file="$1"
+
+first_line=$(head -n 1 "$msg_file")
+case "$first_line" in
+  Merge\ *|Revert\ *|fixup!\ *|squash!\ *) exit 0 ;;
+esac
+
+fail() {
+  echo "commit-msg: $1" >&2
+  echo "" >&2
+  echo "O commit precisa terminar com os trailers, no último parágrafo:" >&2
+  echo "  AI-Tool: Claude | GitHub Copilot | ChatGPT | Gemini | Outra | Nenhuma" >&2
+  echo "  AI-Extent: gerado | assistido | manual" >&2
+  exit 1
+}
+
+if grep -qi '^co-authored-by:' "$msg_file"; then
+  fail "Co-Authored-By não é permitido."
+fi
+
+trailers=$(git interpret-trailers --parse < "$msg_file")
+tool=$(printf '%s\n' "$trailers" | sed -n 's/^AI-Tool: *//p' | tr -d '\r')
+extent=$(printf '%s\n' "$trailers" | sed -n 's/^AI-Extent: *//p' | tr -d '\r')
+
+[ -n "$tool" ] || fail "trailer AI-Tool ausente."
+[ -n "$extent" ] || fail "trailer AI-Extent ausente."
+[ "$(printf '%s\n' "$tool" | wc -l)" -eq 1 ] || fail "AI-Tool aparece mais de uma vez."
+[ "$(printf '%s\n' "$extent" | wc -l)" -eq 1 ] || fail "AI-Extent aparece mais de uma vez."
+
+case "$tool" in
+  Claude|"GitHub Copilot"|ChatGPT|Gemini|Outra|Nenhuma) ;;
+  *) fail "AI-Tool inválido: '$tool'." ;;
+esac
+
+case "$extent" in
+  gerado|assistido|manual) ;;
+  *) fail "AI-Extent inválido: '$extent'." ;;
+esac
+
+if [ "$extent" = "manual" ] && [ "$tool" != "Nenhuma" ]; then
+  fail "AI-Extent: manual exige AI-Tool: Nenhuma."
+fi
+if [ "$tool" = "Nenhuma" ] && [ "$extent" != "manual" ]; then
+  fail "AI-Tool: Nenhuma exige AI-Extent: manual."
+fi
+
+exit 0
