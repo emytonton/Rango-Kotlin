@@ -10,7 +10,8 @@ import com.rango.delivery.feature.welcome.WelcomeRoute
 import com.rango.delivery.feature.welcome.WelcomeViewModel
 import com.rango.delivery.resources.Res
 import com.rango.delivery.resources.route_home
-import com.rango.delivery.resources.route_login
+import com.rango.delivery.feature.login.LoginRoute
+import com.rango.delivery.feature.login.LoginViewModel
 import com.rango.delivery.feature.signup.SignupRoute
 import com.rango.delivery.feature.signup.SignupViewModel
 import org.jetbrains.compose.resources.stringResource
@@ -33,7 +34,20 @@ fun RangoNavHost(container: AppContainer) {
             )
         }
         composable<LoginRoute> {
-            PendingScreen(stringResource(Res.string.route_login), onBack = navController::popBackStack)
+            LoginRoute(
+                viewModel = viewModel { LoginViewModel(container.authRepository) },
+                onBack = navController::popBackStack,
+                onSignup = {
+                    navController.navigate(SignupRoute) {
+                        popUpTo(WelcomeRoute)
+                    }
+                },
+                onLoggedIn = {
+                    navController.navigate(HomeRoute) {
+                        popUpTo(WelcomeRoute) { inclusive = true }
+                    }
+                },
+            )
         }
         composable<SignupRoute> {
             SignupRoute(
