@@ -3,7 +3,9 @@ package com.rango.delivery.core.designsystem.component
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,11 +29,12 @@ fun RangoPrimaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     loading: Boolean = false,
+    loadingText: String? = null,
 ) {
     val colors = Rango.colors
     Button(
-        onClick = onClick,
-        enabled = enabled && !loading,
+        onClick = { if (!loading) onClick() },
+        enabled = enabled,
         shape = ButtonShape,
         colors = ButtonDefaults.buttonColors(
             containerColor = colors.primary,
@@ -52,9 +55,13 @@ fun RangoPrimaryButton(
         if (loading) {
             CircularProgressIndicator(
                 color = colors.onPrimary,
-                strokeWidth = 2.dp,
-                modifier = Modifier.size(20.dp),
+                strokeWidth = 2.5.dp,
+                modifier = Modifier.size(19.dp),
             )
+            if (loadingText != null) {
+                Spacer(Modifier.width(9.dp))
+                Text(text = loadingText, style = Rango.typography.button)
+            }
         } else {
             Text(text = text, style = Rango.typography.button)
         }
