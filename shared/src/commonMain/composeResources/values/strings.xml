@@ -8,7 +8,6 @@
     <string name="welcome_terms">Ao continuar você aceita os Termos de uso e a Política de privacidade.</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
-    <string name="route_welcome">Boas-vindas</string>
     <string name="route_login">Login</string>
     <string name="route_signup">Cadastro</string>
     <string name="route_home">Home</string>

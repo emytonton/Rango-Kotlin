@@ -10,8 +10,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
 
+        val container = (application as RangoApplication).container
         setContent {
-            App()
+            App(container)
         }
     }
 }
