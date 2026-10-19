@@ -85,7 +85,7 @@ class LoginViewModel(
         viewModelScope.launch {
             try {
                 authRepository.login(state.email, state.password, state.keepSignedIn)
-                _uiState.update { it.copy(loading = false, success = true, password = "") }
+                _uiState.update { it.copy(loading = false, success = true) }
                 delay(successDelayMillis)
                 _events.send(LoginEvent.LoggedIn)
             } catch (e: ApiException) {
