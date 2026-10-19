@@ -3,11 +3,13 @@ package com.rango.delivery.feature.login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -110,88 +112,95 @@ fun LoginScreen(
             .windowInsetsPadding(WindowInsets.safeDrawing),
     ) {
         RangoBackButton(onClick = onBack, modifier = Modifier.padding(start = 22.dp, top = 8.dp))
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .verticalScroll(rememberScrollState())
-                .padding(start = 22.dp, end = 22.dp, top = 20.dp, bottom = 24.dp),
-        ) {
-            Text(
-                text = stringResource(Res.string.login_title),
-                style = typography.title.copy(fontSize = 27.sp, letterSpacing = (-0.9).sp),
-                color = colors.text,
-            )
-            Text(
-                text = stringResource(Res.string.login_subtitle),
-                style = typography.body,
-                color = colors.text2,
-                modifier = Modifier.padding(top = 7.dp),
-            )
+        BoxWithConstraints(modifier = Modifier.weight(1f)) {
+            val viewportHeight = maxHeight
             Column(
-                verticalArrangement = Arrangement.spacedBy(15.dp),
-                modifier = Modifier.padding(top = 24.dp),
+                verticalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .verticalScroll(rememberScrollState())
+                    .heightIn(min = viewportHeight)
+                    .padding(start = 22.dp, end = 22.dp, top = 20.dp, bottom = 24.dp),
             ) {
-                RangoTextField(
-                    label = stringResource(Res.string.login_email_label),
-                    value = state.email,
-                    onValueChange = onEmailChange,
-                    leadingIcon = RangoIcons.Mail,
-                    placeholder = stringResource(Res.string.login_email_placeholder),
-                    error = state.emailError,
-                    keyboardType = KeyboardType.Email,
-                )
-                RangoTextField(
-                    label = stringResource(Res.string.login_password_label),
-                    value = state.password,
-                    onValueChange = onPasswordChange,
-                    leadingIcon = RangoIcons.Lock,
-                    placeholder = stringResource(Res.string.login_password_placeholder),
-                    error = state.passwordError,
-                    password = !state.passwordVisible,
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done,
-                    keyboardActions = KeyboardActions(onDone = {
-                        focusManager.clearFocus()
-                        onSubmit()
-                    }),
-                    trailing = { RangoPasswordToggle(visible = state.passwordVisible, onToggle = onTogglePasswordVisibility) },
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    RangoCheckboxLabel(
-                        checked = state.keepSignedIn,
-                        label = stringResource(Res.string.login_keep_signed_in),
-                        onToggle = onToggleKeepSignedIn,
+                Column {
+                    Text(
+                        text = stringResource(Res.string.login_title),
+                        style = typography.title.copy(fontSize = 27.sp, letterSpacing = (-0.9).sp),
+                        color = colors.text,
                     )
                     Text(
-                        text = stringResource(Res.string.login_forgot_password),
-                        style = typography.label.copy(fontSize = 12.5.sp, fontWeight = FontWeight.Bold),
-                        color = colors.primary,
-                        modifier = Modifier.clickable(onClick = onForgotPassword),
+                        text = stringResource(Res.string.login_subtitle),
+                        style = typography.body,
+                        color = colors.text2,
+                        modifier = Modifier.padding(top = 7.dp),
                     )
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(15.dp),
+                        modifier = Modifier.padding(top = 24.dp),
+                    ) {
+                        RangoTextField(
+                            label = stringResource(Res.string.login_email_label),
+                            value = state.email,
+                            onValueChange = onEmailChange,
+                            leadingIcon = RangoIcons.Mail,
+                            placeholder = stringResource(Res.string.login_email_placeholder),
+                            error = state.emailError,
+                            keyboardType = KeyboardType.Email,
+                        )
+                        RangoTextField(
+                            label = stringResource(Res.string.login_password_label),
+                            value = state.password,
+                            onValueChange = onPasswordChange,
+                            leadingIcon = RangoIcons.Lock,
+                            placeholder = stringResource(Res.string.login_password_placeholder),
+                            error = state.passwordError,
+                            password = !state.passwordVisible,
+                            keyboardType = KeyboardType.Password,
+                            imeAction = ImeAction.Done,
+                            keyboardActions = KeyboardActions(onDone = {
+                                focusManager.clearFocus()
+                                onSubmit()
+                            }),
+                            trailing = { RangoPasswordToggle(visible = state.passwordVisible, onToggle = onTogglePasswordVisibility) },
+                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            RangoCheckboxLabel(
+                                checked = state.keepSignedIn,
+                                label = stringResource(Res.string.login_keep_signed_in),
+                                onToggle = onToggleKeepSignedIn,
+                            )
+                            Text(
+                                text = stringResource(Res.string.login_forgot_password),
+                                style = typography.label.copy(fontSize = 12.5.sp, fontWeight = FontWeight.Bold),
+                                color = colors.primary,
+                                modifier = Modifier.clickable(onClick = onForgotPassword),
+                            )
+                        }
+                        RangoPrimaryButton(
+                            text = stringResource(Res.string.login_submit),
+                            onClick = {
+                                focusManager.clearFocus()
+                                onSubmit()
+                            },
+                            loading = state.loading,
+                            loadingText = stringResource(Res.string.login_submitting),
+                            successText = if (state.success) stringResource(Res.string.login_success) else null,
+                            modifier = Modifier.padding(top = 4.dp),
+                        )
+                    }
                 }
-                RangoPrimaryButton(
-                    text = stringResource(Res.string.login_submit),
-                    onClick = {
-                        focusManager.clearFocus()
-                        onSubmit()
-                    },
-                    loading = state.loading,
-                    loadingText = stringResource(Res.string.login_submitting),
-                    successText = if (state.success) stringResource(Res.string.login_success) else null,
-                    modifier = Modifier.padding(top = 4.dp),
+                RangoTextAction(
+                    prompt = stringResource(Res.string.login_no_account),
+                    action = stringResource(Res.string.login_create_account),
+                    onClick = onSignup,
+                    modifier = Modifier.padding(top = 22.dp),
                 )
             }
         }
-        RangoTextAction(
-            prompt = stringResource(Res.string.login_no_account),
-            action = stringResource(Res.string.login_create_account),
-            onClick = onSignup,
-            modifier = Modifier.padding(start = 22.dp, end = 22.dp, bottom = 24.dp),
-        )
     }
 }
 
