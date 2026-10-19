@@ -22,7 +22,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.AnnotatedString
@@ -174,9 +173,8 @@ fun SignupScreen(
                 onClick = onSubmit,
                 loading = state.loading,
                 loadingText = stringResource(Res.string.signup_submitting),
-                modifier = Modifier
-                    .padding(top = 4.dp)
-                    .alpha(if (state.termsAccepted) 1f else 0.55f),
+                dimmed = !state.termsAccepted,
+                modifier = Modifier.padding(top = 4.dp),
             )
             RangoTextAction(
                 prompt = stringResource(Res.string.signup_have_account),

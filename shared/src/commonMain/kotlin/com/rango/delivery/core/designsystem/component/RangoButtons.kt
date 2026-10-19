@@ -15,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
 import com.rango.delivery.core.designsystem.theme.Rango
 import com.rango.delivery.core.designsystem.theme.RangoRadius
@@ -30,26 +31,34 @@ fun RangoPrimaryButton(
     enabled: Boolean = true,
     loading: Boolean = false,
     loadingText: String? = null,
+    dimmed: Boolean = false,
 ) {
     val colors = Rango.colors
+    val faded = colors.primary.copy(alpha = 0.55f).compositeOver(colors.surface)
     Button(
         onClick = { if (!loading) onClick() },
         enabled = enabled,
         shape = ButtonShape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = colors.primary,
+            containerColor = if (dimmed) faded else colors.primary,
             contentColor = colors.onPrimary,
-            disabledContainerColor = colors.primary.copy(alpha = 0.55f),
+            disabledContainerColor = faded,
             disabledContentColor = colors.onPrimary,
         ),
         modifier = modifier
             .fillMaxWidth()
             .height(RangoSize.buttonHeight)
-            .shadow(
-                elevation = 12.dp,
-                shape = ButtonShape,
-                ambientColor = colors.primary.copy(alpha = 0.75f),
-                spotColor = colors.primary.copy(alpha = 0.75f),
+            .then(
+                if (dimmed || !enabled) {
+                    Modifier
+                } else {
+                    Modifier.shadow(
+                        elevation = 12.dp,
+                        shape = ButtonShape,
+                        ambientColor = colors.primary.copy(alpha = 0.75f),
+                        spotColor = colors.primary.copy(alpha = 0.75f),
+                    )
+                },
             ),
     ) {
         if (loading) {
