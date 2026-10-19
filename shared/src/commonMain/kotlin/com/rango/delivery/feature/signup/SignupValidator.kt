@@ -1,5 +1,7 @@
 package com.rango.delivery.feature.signup
 
+import com.rango.delivery.core.validation.isValidEmail
+
 enum class SignupField(val apiName: String) {
     Name("name"),
     Email("email"),
@@ -33,11 +35,9 @@ data class SignupForm(
 }
 
 object SignupValidator {
-    private val emailRegex = Regex("^[^@\\s]+@[^@\\s]+\\.[a-z]{2,}$", RegexOption.IGNORE_CASE)
-
     fun validate(form: SignupForm): Map<SignupField, String> = buildMap {
         if (form.name.trim().length < 3) put(SignupField.Name, "Informe seu nome completo.")
-        if (!emailRegex.matches(form.email.trim())) put(SignupField.Email, "E-mail inválido.")
+        if (!isValidEmail(form.email)) put(SignupField.Email, "E-mail inválido.")
         if (form.phone.count(Char::isDigit) < 10) put(SignupField.Phone, "Telefone incompleto.")
         if (form.password.length < 6) put(SignupField.Password, "Mínimo de 6 caracteres.")
         if (form.confirmation.isEmpty() || form.confirmation != form.password) {
