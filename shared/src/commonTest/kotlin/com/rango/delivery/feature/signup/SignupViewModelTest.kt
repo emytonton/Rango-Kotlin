@@ -110,6 +110,9 @@ class SignupViewModelTest {
     private class FakeAuthRepository(private val failure: Exception? = null) : AuthRepository {
         var received: SignupData? = null
 
+        override suspend fun login(email: String, password: String, keepSignedIn: Boolean): UserDto =
+            error("não usado no cadastro")
+
         override suspend fun register(data: SignupData): UserDto {
             failure?.let { throw it }
             received = data

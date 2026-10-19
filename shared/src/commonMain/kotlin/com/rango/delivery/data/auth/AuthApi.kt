@@ -13,6 +13,10 @@ class AuthApi(private val client: HttpClient) {
         client.post("/auth/refresh") { setBody(RefreshRequest(refreshToken)) }.body()
     }
 
+    suspend fun login(request: LoginRequest): AuthSessionDto = apiCall {
+        client.post("/auth/login") { setBody(request) }.body()
+    }
+
     suspend fun register(request: RegisterRequest): AuthSessionDto = apiCall {
         client.post("/auth/register") { setBody(request) }.body()
     }
@@ -20,6 +24,13 @@ class AuthApi(private val client: HttpClient) {
 
 @Serializable
 data class RefreshRequest(val refreshToken: String)
+
+@Serializable
+data class LoginRequest(
+    val email: String,
+    val password: String,
+    val keepSignedIn: Boolean,
+)
 
 @Serializable
 data class RegisterRequest(
