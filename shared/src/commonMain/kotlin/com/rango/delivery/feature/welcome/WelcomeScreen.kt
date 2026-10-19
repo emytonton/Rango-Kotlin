@@ -1,5 +1,6 @@
 package com.rango.delivery.feature.welcome
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
@@ -22,31 +24,32 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.rango.delivery.core.designsystem.component.RangoBrandMark
-import com.rango.delivery.core.designsystem.component.RangoImagePlaceholder
 import com.rango.delivery.core.designsystem.component.RangoInfoBanner
 import com.rango.delivery.core.designsystem.component.RangoPrimaryButton
 import com.rango.delivery.core.designsystem.component.RangoSecondaryButton
 import com.rango.delivery.core.designsystem.icon.RangoIcons
 import com.rango.delivery.core.designsystem.theme.Rango
+import com.rango.delivery.core.designsystem.theme.RangoRadius
 import com.rango.delivery.core.designsystem.theme.RangoSpacing
 import com.rango.delivery.core.designsystem.theme.RangoTheme
 import com.rango.delivery.core.designsystem.theme.ThemeMode
 import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.welcome_hero_label
+import com.rango.delivery.resources.welcome_hero
 import com.rango.delivery.resources.welcome_login
 import com.rango.delivery.resources.welcome_saved_session
 import com.rango.delivery.resources.welcome_signup
 import com.rango.delivery.resources.welcome_subtitle
 import com.rango.delivery.resources.welcome_terms
 import com.rango.delivery.resources.welcome_title
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-
-private const val HERO_HUE = 48f
 
 @Composable
 fun WelcomeRoute(
@@ -96,13 +99,15 @@ fun WelcomeScreen(
                 .padding(start = RangoSpacing.screenHorizontal, end = RangoSpacing.screenHorizontal, top = 14.dp),
         ) {
             RangoBrandMark()
-            RangoImagePlaceholder(
-                hue = HERO_HUE,
-                label = stringResource(Res.string.welcome_hero_label),
+            Image(
+                painter = painterResource(Res.drawable.welcome_hero),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .padding(top = 22.dp)
                     .fillMaxWidth()
-                    .height(318.dp),
+                    .height(318.dp)
+                    .clip(RoundedCornerShape(RangoRadius.xl)),
             )
             Text(
                 text = stringResource(Res.string.welcome_title),

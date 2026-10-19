@@ -1,5 +1,4 @@
 <resources>
-    <string name="welcome_hero_label">hero · foto de delivery</string>
     <string name="welcome_title">Comida boa,\nentrega rápida.</string>
     <string name="welcome_subtitle">Os melhores restaurantes da sua região em poucos toques. Pediu, chegou.</string>
     <string name="welcome_saved_session">Sessão salva com segurança · %1$s</string>
