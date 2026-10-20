@@ -52,5 +52,12 @@
     <string name="home_profile">Perfil</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
-    <string name="route_home">Home</string>
+    <string name="route_search">Busca</string>
+    <string name="route_orders">Pedidos</string>
+    <string name="route_favorites">Favoritos</string>
+    <string name="route_profile">Perfil</string>
+    <string name="route_cart">Carrinho</string>
+    <string name="route_notifications">Notificações</string>
+    <string name="route_address">Endereço</string>
+    <string name="route_product">Produto</string>
 </resources>
