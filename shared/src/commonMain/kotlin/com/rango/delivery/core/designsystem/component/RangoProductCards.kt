@@ -43,6 +43,7 @@ data class ProductCardModel(
     val deliveryTime: String,
     val imageHue: Float,
     val isFavorite: Boolean,
+    val imageUrl: String? = null,
 )
 
 private val StarColor = Color(0xFFF5A623)
@@ -66,10 +67,10 @@ fun RangoProductTile(
             .border(1.dp, colors.border, shape),
     ) {
         Box(modifier = Modifier.fillMaxWidth().height(118.dp).clickable(onClick = onOpen)) {
-            RangoImagePlaceholder(
+            RangoProductImage(
+                imageUrl = product.imageUrl,
                 hue = product.imageHue,
                 cornerRadius = 0.dp,
-                lightness = 0.83f,
                 modifier = Modifier.fillMaxWidth().height(118.dp),
             )
             FavoriteButton(
@@ -160,10 +161,10 @@ fun RangoProductRow(
             .border(1.dp, colors.border, shape)
             .padding(12.dp),
     ) {
-        RangoImagePlaceholder(
+        RangoProductImage(
+            imageUrl = product.imageUrl,
             hue = product.imageHue,
             cornerRadius = 16.dp,
-            lightness = 0.83f,
             modifier = Modifier.size(84.dp).clickable(onClick = onOpen),
         )
         Column(verticalArrangement = Arrangement.spacedBy(4.dp), modifier = Modifier.weight(1f)) {

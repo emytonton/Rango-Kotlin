@@ -9,6 +9,7 @@ import com.rango.delivery.core.format.formatPrice
 import com.rango.delivery.core.format.formatRating
 import com.rango.delivery.core.network.ApiException
 import com.rango.delivery.core.network.NetworkException
+import com.rango.delivery.core.network.apiBaseUrl
 import com.rango.delivery.data.auth.SessionExpiredException
 import com.rango.delivery.data.cart.CartRepository
 import com.rango.delivery.data.catalog.CatalogRepository
@@ -178,4 +179,5 @@ internal fun ProductSummaryDto.toCard() = ProductCardModel(
     deliveryTime = formatDeliveryTime(deliveryTime.min, deliveryTime.max),
     imageHue = imageHue.toFloat(),
     isFavorite = isFavorite,
+    imageUrl = imageUrl?.let { apiBaseUrl + it },
 )

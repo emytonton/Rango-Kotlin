@@ -36,6 +36,7 @@ data class ProductSummaryDto(
     val rating: Double,
     val deliveryTime: DeliveryTimeDto,
     val imageHue: Int,
+    val imageUrl: String? = null,
     val isAvailable: Boolean = true,
     val isFavorite: Boolean = false,
 )
