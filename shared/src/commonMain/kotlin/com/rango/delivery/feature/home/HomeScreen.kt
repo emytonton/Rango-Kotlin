@@ -133,7 +133,7 @@ private fun HomeHeader(state: HomeUiState, actions: HomeActions) {
     Column(modifier = Modifier.fillMaxWidth().background(colors.surface).windowInsetsPadding(WindowInsets.statusBars)) {
         Column(
             verticalArrangement = Arrangement.spacedBy(13.dp),
-            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 4.dp, bottom = 13.dp),
+            modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 4.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(11.dp)) {
                 Avatar(initials = state.initials, onClick = actions.onProfile)
@@ -175,8 +175,8 @@ private fun HomeHeader(state: HomeUiState, actions: HomeActions) {
                 )
             }
             RangoSearchBarButton(placeholder = stringResource(Res.string.home_search_placeholder), onClick = actions.onSearch)
-            CategoryChips(state = state, onSelect = actions.onSelectCategory)
         }
+        CategoryChips(state = state, onSelect = actions.onSelectCategory)
         HorizontalDivider(thickness = 1.dp, color = colors.border)
     }
 }
@@ -207,7 +207,7 @@ private fun CategoryChips(state: HomeUiState, onSelect: (HomeCategory?) -> Unit)
     LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(horizontal = 20.dp),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = 0.dp),
+        modifier = Modifier.fillMaxWidth().padding(top = 13.dp, bottom = 13.dp),
     ) {
         item {
             RangoCategoryChip(
