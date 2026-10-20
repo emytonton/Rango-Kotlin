@@ -55,6 +55,7 @@ class WelcomeViewModelTest {
     private class FakeSessionRepository(private val result: SessionRestore) : SessionRepository {
         override val accessToken: StateFlow<String?> = MutableStateFlow(null)
         override suspend fun restore(): SessionRestore = result
+        override suspend fun renewAccessToken(expiredToken: String?): String? = null
         override fun save(session: AuthSessionDto) = Unit
         override fun clear() = Unit
     }
