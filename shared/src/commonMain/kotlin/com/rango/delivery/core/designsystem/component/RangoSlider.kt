@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
+import com.rango.delivery.core.designsystem.modifier.excludeSystemGestures
 import com.rango.delivery.core.designsystem.theme.Rango
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -55,6 +56,6 @@ fun RangoSlider(
                 drawLine(colors.primary, Offset(0f, y), Offset(size.width * fraction, y), stroke, StrokeCap.Round)
             }
         },
-        modifier = modifier,
+        modifier = modifier.excludeSystemGestures(),
     )
 }
