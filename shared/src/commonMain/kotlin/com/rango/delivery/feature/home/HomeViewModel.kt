@@ -180,4 +180,5 @@ internal fun ProductSummaryDto.toCard() = ProductCardModel(
     imageHue = imageHue.toFloat(),
     isFavorite = isFavorite,
     imageUrl = imageUrl?.let { apiBaseUrl + it },
+    category = category.name,
 )

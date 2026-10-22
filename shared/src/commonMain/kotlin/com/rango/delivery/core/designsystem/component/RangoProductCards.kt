@@ -44,6 +44,7 @@ data class ProductCardModel(
     val imageHue: Float,
     val isFavorite: Boolean,
     val imageUrl: String? = null,
+    val category: String = "",
 )
 
 private val StarColor = Color(0xFFF5A623)
@@ -148,6 +149,7 @@ fun RangoProductRow(
     onToggleFavorite: () -> Unit,
     onAdd: () -> Unit,
     modifier: Modifier = Modifier,
+    subtitle: String = product.description,
 ) {
     val colors = Rango.colors
     val shape = RoundedCornerShape(20.dp)
@@ -175,7 +177,7 @@ fun RangoProductRow(
                 modifier = Modifier.clickable(onClick = onOpen),
             )
             Text(
-                text = product.description,
+                text = subtitle,
                 style = Rango.typography.caption.copy(fontSize = 11.5.sp),
                 color = colors.text2,
                 maxLines = 1,
