@@ -15,7 +15,7 @@ data object SignupRoute
 data object HomeRoute
 
 @Serializable
-data object SearchRoute
+data class SearchRoute(val homeSection: String? = null)
 
 @Serializable
 data object OrdersRoute
