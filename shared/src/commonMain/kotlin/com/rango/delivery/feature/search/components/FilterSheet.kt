@@ -19,8 +19,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.Slider
-import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -33,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rango.delivery.core.designsystem.component.RangoFilterChip
 import com.rango.delivery.core.designsystem.component.RangoRadioRow
+import com.rango.delivery.core.designsystem.component.RangoSlider
 import com.rango.delivery.core.designsystem.icon.RangoIcons
 import com.rango.delivery.core.designsystem.theme.Rango
 import com.rango.delivery.core.format.formatPrice
@@ -182,18 +181,11 @@ private fun PriceSection(draft: SearchFilters, onChange: (SearchFilters) -> Unit
                 color = colors.primary,
             )
         }
-        Slider(
+        RangoSlider(
             value = draft.maxPrice.toFloat(),
             onValueChange = { onChange(draft.copy(maxPrice = it.roundToInt())) },
             valueRange = SearchFilters.PRICE_MIN.toFloat()..SearchFilters.PRICE_MAX.toFloat(),
             steps = (SearchFilters.PRICE_MAX - SearchFilters.PRICE_MIN) / SearchFilters.PRICE_STEP - 1,
-            colors = SliderDefaults.colors(
-                thumbColor = colors.primary,
-                activeTrackColor = colors.primary,
-                inactiveTrackColor = colors.border,
-                activeTickColor = Color.Transparent,
-                inactiveTickColor = Color.Transparent,
-            ),
             modifier = Modifier.fillMaxWidth().height(28.dp),
         )
         Row(modifier = Modifier.fillMaxWidth()) {
