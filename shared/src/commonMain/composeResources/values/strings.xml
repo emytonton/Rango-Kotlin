@@ -5,9 +5,26 @@
     <string name="welcome_login">Entrar</string>
     <string name="welcome_signup">Criar conta</string>
     <string name="welcome_terms">Ao continuar você aceita os Termos de uso e a Política de privacidade.</string>
+    <string name="signup_title">Criar conta</string>
+    <string name="signup_name_label">Nome completo</string>
+    <string name="signup_name_placeholder">Maria Silva</string>
+    <string name="signup_email_label">E-mail</string>
+    <string name="signup_email_placeholder">voce@email.com</string>
+    <string name="signup_phone_label">Telefone</string>
+    <string name="signup_phone_placeholder">(11) 90000-0000</string>
+    <string name="signup_password_label">Senha</string>
+    <string name="signup_password_placeholder">Mínimo 6 caracteres</string>
+    <string name="signup_confirmation_label">Confirmar senha</string>
+    <string name="signup_confirmation_placeholder">Repita a senha</string>
+    <string name="signup_terms">Li e aceito os %1$s e a %2$s.</string>
+    <string name="signup_terms_of_use">Termos de uso</string>
+    <string name="signup_privacy_policy">Política de privacidade</string>
+    <string name="signup_submit">Criar conta</string>
+    <string name="signup_submitting">Criando conta...</string>
+    <string name="signup_have_account">Já tem conta?</string>
+    <string name="signup_login">Entrar</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_login">Login</string>
-    <string name="route_signup">Cadastro</string>
     <string name="route_home">Home</string>
 </resources>
