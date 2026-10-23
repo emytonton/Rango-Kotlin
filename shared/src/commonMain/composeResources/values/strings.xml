@@ -1,0 +1,13 @@
+<resources>
+    <string name="welcome_title">Comida boa,\nentrega rápida.</string>
+    <string name="welcome_subtitle">Os melhores restaurantes da sua região em poucos toques. Pediu, chegou.</string>
+    <string name="welcome_saved_session">Sessão salva com segurança · %1$s</string>
+    <string name="welcome_login">Entrar</string>
+    <string name="welcome_signup">Criar conta</string>
+    <string name="welcome_terms">Ao continuar você aceita os Termos de uso e a Política de privacidade.</string>
+    <string name="pending_message">Esta tela ainda não foi implementada.</string>
+    <string name="pending_back">Voltar</string>
+    <string name="route_login">Login</string>
+    <string name="route_signup">Cadastro</string>
+    <string name="route_home">Home</string>
+</resources>
