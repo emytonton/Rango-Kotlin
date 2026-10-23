@@ -10,6 +10,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.unit.dp
+import com.rango.delivery.core.designsystem.icon.RangoIcons
 import com.rango.delivery.core.designsystem.theme.Rango
 import com.rango.delivery.core.designsystem.theme.RangoRadius
 import com.rango.delivery.core.designsystem.theme.RangoSize
@@ -32,15 +34,20 @@ fun RangoPrimaryButton(
     loading: Boolean = false,
     loadingText: String? = null,
     dimmed: Boolean = false,
+    successText: String? = null,
 ) {
     val colors = Rango.colors
     val faded = colors.primary.copy(alpha = 0.55f).compositeOver(colors.surface)
     Button(
-        onClick = { if (!loading) onClick() },
+        onClick = { if (!loading && successText == null) onClick() },
         enabled = enabled,
         shape = ButtonShape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = if (dimmed) faded else colors.primary,
+            containerColor = when {
+                successText != null -> colors.success
+                dimmed -> faded
+                else -> colors.primary
+            },
             contentColor = colors.onPrimary,
             disabledContainerColor = faded,
             disabledContentColor = colors.onPrimary,
@@ -61,7 +68,11 @@ fun RangoPrimaryButton(
                 },
             ),
     ) {
-        if (loading) {
+        if (successText != null) {
+            Icon(RangoIcons.CheckCircle, contentDescription = null, modifier = Modifier.size(22.dp))
+            Spacer(Modifier.width(9.dp))
+            Text(text = successText, style = Rango.typography.button)
+        } else if (loading) {
             CircularProgressIndicator(
                 color = colors.onPrimary,
                 strokeWidth = 2.5.dp,

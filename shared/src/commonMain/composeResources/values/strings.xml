@@ -23,8 +23,20 @@
     <string name="signup_submitting">Criando conta...</string>
     <string name="signup_have_account">Já tem conta?</string>
     <string name="signup_login">Entrar</string>
+    <string name="login_title">Bem-vinda de volta</string>
+    <string name="login_subtitle">Entre para continuar seus pedidos.</string>
+    <string name="login_email_label">E-mail</string>
+    <string name="login_email_placeholder">voce@email.com</string>
+    <string name="login_password_label">Senha</string>
+    <string name="login_password_placeholder">Sua senha</string>
+    <string name="login_keep_signed_in">Manter conectado</string>
+    <string name="login_forgot_password">Esqueci minha senha</string>
+    <string name="login_submit">Entrar</string>
+    <string name="login_submitting">Entrando...</string>
+    <string name="login_success">Bem-vinda!</string>
+    <string name="login_no_account">Não tem conta?</string>
+    <string name="login_create_account">Criar conta</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
-    <string name="route_login">Login</string>
     <string name="route_home">Home</string>
 </resources>
