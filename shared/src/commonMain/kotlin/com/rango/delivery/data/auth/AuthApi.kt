@@ -5,20 +5,31 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 
 class AuthApi(private val client: HttpClient) {
 
     suspend fun refresh(refreshToken: String): AuthSessionDto = apiCall {
-        client.post("/auth/refresh") { setBody(RefreshRequest(refreshToken)) }.body()
+        client.post("/auth/refresh") {
+            contentType(ContentType.Application.Json)
+            setBody(RefreshRequest(refreshToken))
+        }.body()
     }
 
     suspend fun login(request: LoginRequest): AuthSessionDto = apiCall {
-        client.post("/auth/login") { setBody(request) }.body()
+        client.post("/auth/login") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
     }
 
     suspend fun register(request: RegisterRequest): AuthSessionDto = apiCall {
-        client.post("/auth/register") { setBody(request) }.body()
+        client.post("/auth/register") {
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
     }
 }
 

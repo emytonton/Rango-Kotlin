@@ -18,6 +18,7 @@ sealed interface SessionRestore {
 interface SessionRepository {
     val accessToken: StateFlow<String?>
     suspend fun restore(): SessionRestore
+    suspend fun renewAccessToken(expiredToken: String?): String?
     fun save(session: AuthSessionDto)
     fun clear()
 }
@@ -48,6 +49,21 @@ class DefaultSessionRepository(
             }
         } catch (e: NetworkException) {
             SessionRestore.Unreachable(userName)
+        }
+    }
+
+    override suspend fun renewAccessToken(expiredToken: String?): String? = refreshMutex.withLock {
+        val current = _accessToken.value
+        if (current != null && current != expiredToken) return current
+        val refreshToken = storage.get(KEY_REFRESH) ?: return null
+        try {
+            val session = api.refresh(refreshToken)
+            save(session)
+            session.accessToken
+        } catch (e: ApiException) {
+            if (e.status != 401) throw e
+            clear()
+            null
         }
     }
 
