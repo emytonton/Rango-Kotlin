@@ -3,9 +3,14 @@ package com.rango.delivery.navigation
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.rango.delivery.feature.search.SearchFilters
+import com.rango.delivery.feature.search.SearchRoute
+import com.rango.delivery.feature.search.SearchViewModel
 import com.rango.delivery.di.AppContainer
 import com.rango.delivery.feature.welcome.WelcomeRoute
 import com.rango.delivery.feature.welcome.WelcomeViewModel
@@ -21,7 +26,6 @@ import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_orders
 import com.rango.delivery.resources.route_product
 import com.rango.delivery.resources.route_profile
-import com.rango.delivery.resources.route_search
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
 import com.rango.delivery.feature.signup.SignupRoute
@@ -83,22 +87,33 @@ fun RangoNavHost(container: AppContainer) {
                 viewModel = viewModel { HomeViewModel(container.catalogRepository, container.cartRepository) },
                 navigation = HomeActions(
                     onOpenProduct = { navController.navigate(ProductRoute(it)) },
-                    onSeeAll = { navController.navigate(SearchRoute) },
+                    onSeeAll = { navController.navigate(SearchRoute(homeSection = it)) },
                     onProfile = { navController.navigate(ProfileRoute) },
                     onAddress = { navController.navigate(AddressRoute) },
                     onNotifications = { navController.navigate(NotificationsRoute) },
                     onCart = { navController.navigate(CartRoute) },
-                    onSearch = { navController.navigate(SearchRoute) },
-                    onTab = { tab -> tabRoute(tab)?.let { navController.navigate(it) { launchSingleTop = true } } },
+                    onSearch = { navController.navigate(SearchRoute()) },
+                    onTab = navController::navigateToTab,
                 ),
-                onSessionExpired = {
-                    navController.navigate(WelcomeRoute) {
-                        popUpTo(HomeRoute) { inclusive = true }
-                    }
-                },
+                onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<SearchRoute>(Res.string.route_search, navController::popBackStack)
+        composable<SearchRoute> { entry ->
+            val route = entry.toRoute<SearchRoute>()
+            SearchRoute(
+                viewModel = viewModel {
+                    SearchViewModel(
+                        searchRepository = container.searchRepository,
+                        catalogRepository = container.catalogRepository,
+                        cartRepository = container.cartRepository,
+                        initialFilters = SearchFilters.forHomeSection(route.homeSection),
+                    )
+                },
+                onOpenProduct = { navController.navigate(ProductRoute(it)) },
+                onTab = navController::navigateToTab,
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         pending<OrdersRoute>(Res.string.route_orders, navController::popBackStack)
         pending<FavoritesRoute>(Res.string.route_favorites, navController::popBackStack)
         pending<ProfileRoute>(Res.string.route_profile, navController::popBackStack)
@@ -109,12 +124,27 @@ fun RangoNavHost(container: AppContainer) {
     }
 }
 
-private fun tabRoute(tab: RangoTab): Any? = when (tab) {
-    RangoTab.Home -> null
-    RangoTab.Search -> SearchRoute
-    RangoTab.Orders -> OrdersRoute
-    RangoTab.Favorites -> FavoritesRoute
-    RangoTab.Profile -> ProfileRoute
+private fun NavHostController.navigateToTab(tab: RangoTab) {
+    val route: Any = when (tab) {
+        RangoTab.Home -> {
+            popBackStack(HomeRoute, inclusive = false)
+            return
+        }
+        RangoTab.Search -> SearchRoute()
+        RangoTab.Orders -> OrdersRoute
+        RangoTab.Favorites -> FavoritesRoute
+        RangoTab.Profile -> ProfileRoute
+    }
+    navigate(route) {
+        popUpTo(HomeRoute)
+        launchSingleTop = true
+    }
+}
+
+private fun NavHostController.navigateToWelcome() {
+    navigate(WelcomeRoute) {
+        popUpTo(HomeRoute) { inclusive = true }
+    }
 }
 
 private inline fun <reified T : Any> NavGraphBuilder.pending(title: StringResource, noinline onBack: () -> Unit) {
