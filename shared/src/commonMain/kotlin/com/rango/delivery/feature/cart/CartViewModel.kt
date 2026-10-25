@@ -111,11 +111,11 @@ class CartViewModel(private val cartRepository: CartRepository) : ViewModel() {
     }
 
     fun onCouponChange(value: String) {
-        _uiState.update { it.copy(couponInput = value.uppercase().take(COUPON_MAX_LENGTH), couponApplied = false) }
+        _uiState.update { it.copy(couponInput = value.take(COUPON_MAX_LENGTH), couponApplied = false) }
     }
 
     fun onApplyCoupon() {
-        val code = _uiState.value.couponInput.trim()
+        val code = _uiState.value.couponInput.trim().uppercase()
         if (code.isEmpty()) return
         mutate {
             val cart = cartRepository.applyCoupon(code)

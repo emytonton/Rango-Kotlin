@@ -22,9 +22,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rango.delivery.core.designsystem.icon.RangoIcons
@@ -68,6 +72,7 @@ fun CouponField(
                 singleLine = true,
                 textStyle = textStyle.copy(color = colors.text),
                 cursorBrush = SolidColor(colors.primary),
+                visualTransformation = UppercaseTransformation,
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters, imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { apply() }),
                 modifier = Modifier.weight(1f),
@@ -96,4 +101,8 @@ fun CouponField(
             Text(stringResource(Res.string.cart_coupon_apply), style = textStyle, color = colors.primary)
         }
     }
+}
+
+private object UppercaseTransformation : VisualTransformation {
+    override fun filter(text: AnnotatedString) = TransformedText(AnnotatedString(text.text.uppercase()), OffsetMapping.Identity)
 }

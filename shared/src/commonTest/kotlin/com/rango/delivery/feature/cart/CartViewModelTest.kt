@@ -94,7 +94,8 @@ class CartViewModelTest {
 
     @Test
     fun validCouponAddsDiscountLine() = runTest {
-        val viewModel = CartViewModel(FakeCart())
+        val cart = FakeCart()
+        val viewModel = CartViewModel(cart)
 
         viewModel.onCouponChange("rango10")
         viewModel.onApplyCoupon()
@@ -102,6 +103,7 @@ class CartViewModelTest {
         val state = viewModel.uiState.value
         assertTrue(state.couponApplied)
         assertEquals("RANGO10", state.couponInput)
+        assertEquals("RANGO10", cart.lastCoupon)
         assertEquals(SummaryLine("Desconto · RANGO10", "- R$ 7,78", highlight = true), state.summary.last())
         assertEquals(CartEvent.ShowToast("Cupom RANGO10 aplicado · 10% off.", ToastKind.Success), viewModel.events.first())
     }
@@ -120,6 +122,7 @@ class CartViewModelTest {
     private class FakeCart(private var quantity: Int = 2) : CartRepository {
         var lastQuantity: Pair<Long, Int>? = null
         var removed: Long? = null
+        var lastCoupon: String? = null
         private var empty = false
         private var coupon = false
 
@@ -140,6 +143,7 @@ class CartViewModelTest {
             return dto()
         }
         override suspend fun applyCoupon(code: String): CartDto {
+            lastCoupon = code
             if (code != "RANGO10") throw ApiException(422, "INVALID_COUPON", "Cupom inválido.")
             coupon = true
             return dto()
