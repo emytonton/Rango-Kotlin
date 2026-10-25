@@ -11,6 +11,7 @@ import com.rango.delivery.data.catalog.DeliveryTimeDto
 import com.rango.delivery.data.catalog.HomeDto
 import com.rango.delivery.data.catalog.HomeSectionDto
 import com.rango.delivery.data.catalog.HomeUserDto
+import com.rango.delivery.data.catalog.ProductDetailDto
 import com.rango.delivery.data.catalog.ProductSummaryDto
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -114,6 +115,7 @@ class HomeViewModelTest {
             )
         }
 
+        override suspend fun product(productId: String): ProductDetailDto = error("não usado")
         override suspend fun productsByCategory(categorySlug: String) = listOf(product)
 
         override suspend fun setFavorite(productId: String, favorite: Boolean): Boolean {
@@ -123,7 +125,7 @@ class HomeViewModelTest {
     }
 
     private class FakeCart(private val countAfterAdd: Int = 1) : CartRepository {
-        override suspend fun addItem(productId: String, quantity: Int) = countAfterAdd
+        override suspend fun addItem(productId: String, quantity: Int, addonIds: List<String>, notes: String) = countAfterAdd
     }
 
     private companion object {

@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.rango.delivery.feature.product.ProductRoute
+import com.rango.delivery.feature.product.ProductViewModel
 import com.rango.delivery.feature.search.SearchFilters
 import com.rango.delivery.feature.search.SearchRoute
 import com.rango.delivery.feature.search.SearchViewModel
@@ -24,7 +26,6 @@ import com.rango.delivery.resources.route_cart
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_orders
-import com.rango.delivery.resources.route_product
 import com.rango.delivery.resources.route_profile
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
@@ -120,7 +121,16 @@ fun RangoNavHost(container: AppContainer) {
         pending<CartRoute>(Res.string.route_cart, navController::popBackStack)
         pending<NotificationsRoute>(Res.string.route_notifications, navController::popBackStack)
         pending<AddressRoute>(Res.string.route_address, navController::popBackStack)
-        pending<ProductRoute>(Res.string.route_product, navController::popBackStack)
+        composable<ProductRoute> { entry ->
+            val route = entry.toRoute<ProductRoute>()
+            ProductRoute(
+                viewModel = viewModel {
+                    ProductViewModel(route.productId, container.catalogRepository, container.cartRepository)
+                },
+                onBack = navController::popBackStack,
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
     }
 }
 

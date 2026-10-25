@@ -36,13 +36,18 @@ class CartApi(private val client: HttpClient) {
 }
 
 interface CartRepository {
-    suspend fun addItem(productId: String, quantity: Int = 1): Int
+    suspend fun addItem(
+        productId: String,
+        quantity: Int = 1,
+        addonIds: List<String> = emptyList(),
+        notes: String = "",
+    ): Int
 }
 
 class DefaultCartRepository(
     private val api: CartApi,
     private val caller: AuthorizedCaller,
 ) : CartRepository {
-    override suspend fun addItem(productId: String, quantity: Int): Int =
-        caller.call { api.addItem(it, AddCartItemRequest(productId, quantity)) }.summary.itemCount
+    override suspend fun addItem(productId: String, quantity: Int, addonIds: List<String>, notes: String): Int =
+        caller.call { api.addItem(it, AddCartItemRequest(productId, quantity, addonIds, notes)) }.summary.itemCount
 }

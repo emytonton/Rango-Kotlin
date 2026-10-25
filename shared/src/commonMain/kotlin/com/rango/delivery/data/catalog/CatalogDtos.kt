@@ -49,3 +49,25 @@ data class ProductPageDto(val data: List<ProductSummaryDto>)
 
 @Serializable
 data class FavoriteStateDto(val productId: String, val isFavorite: Boolean)
+
+@Serializable
+data class AddonDto(val id: String, val name: String, val price: Double)
+
+@Serializable
+data class ProductDetailDto(
+    val id: String,
+    val name: String,
+    val restaurant: String,
+    val category: CategoryDto,
+    val description: String,
+    val price: Double,
+    val oldPrice: Double? = null,
+    val rating: Double,
+    val deliveryTime: DeliveryTimeDto,
+    val imageHue: Int,
+    val imageUrl: String? = null,
+    val isAvailable: Boolean = true,
+    val isFavorite: Boolean = false,
+    val ingredients: String,
+    val addons: List<AddonDto> = emptyList(),
+)

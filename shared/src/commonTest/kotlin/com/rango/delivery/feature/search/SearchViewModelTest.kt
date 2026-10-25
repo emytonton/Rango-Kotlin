@@ -6,6 +6,7 @@ import com.rango.delivery.data.catalog.CatalogRepository
 import com.rango.delivery.data.catalog.CategoryDto
 import com.rango.delivery.data.catalog.DeliveryTimeDto
 import com.rango.delivery.data.catalog.HomeDto
+import com.rango.delivery.data.catalog.ProductDetailDto
 import com.rango.delivery.data.catalog.ProductSummaryDto
 import com.rango.delivery.data.search.ProductQuery
 import com.rango.delivery.data.search.SearchRepository
@@ -163,12 +164,13 @@ class SearchViewModelTest {
 
     private class FakeCatalog : CatalogRepository {
         override suspend fun home(): HomeDto = error("não usado")
+        override suspend fun product(productId: String): ProductDetailDto = error("não usado")
         override suspend fun productsByCategory(categorySlug: String) = emptyList<ProductSummaryDto>()
         override suspend fun setFavorite(productId: String, favorite: Boolean) = favorite
     }
 
     private class FakeCart : CartRepository {
-        override suspend fun addItem(productId: String, quantity: Int) = 1
+        override suspend fun addItem(productId: String, quantity: Int, addonIds: List<String>, notes: String) = 1
     }
 
     private companion object {

@@ -15,6 +15,10 @@ class CatalogApi(private val client: HttpClient) {
         client.get("/home") { bearerAuth(token) }.body()
     }
 
+    suspend fun product(token: String, productId: String): ProductDetailDto = apiCall {
+        client.get("/products/$productId") { bearerAuth(token) }.body()
+    }
+
     suspend fun productsByCategory(token: String, categorySlug: String): List<ProductSummaryDto> = apiCall {
         client.get("/products") {
             bearerAuth(token)
