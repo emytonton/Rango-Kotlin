@@ -8,6 +8,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.rango.delivery.feature.cart.CartActions
+import com.rango.delivery.feature.cart.CartRoute
+import com.rango.delivery.feature.cart.CartViewModel
 import com.rango.delivery.feature.product.ProductRoute
 import com.rango.delivery.feature.product.ProductViewModel
 import com.rango.delivery.feature.search.SearchFilters
@@ -22,7 +25,7 @@ import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
 import com.rango.delivery.resources.route_address
-import com.rango.delivery.resources.route_cart
+import com.rango.delivery.resources.route_checkout
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_orders
@@ -118,7 +121,19 @@ fun RangoNavHost(container: AppContainer) {
         pending<OrdersRoute>(Res.string.route_orders, navController::popBackStack)
         pending<FavoritesRoute>(Res.string.route_favorites, navController::popBackStack)
         pending<ProfileRoute>(Res.string.route_profile, navController::popBackStack)
-        pending<CartRoute>(Res.string.route_cart, navController::popBackStack)
+        composable<CartRoute> {
+            CartRoute(
+                viewModel = viewModel { CartViewModel(container.cartRepository) },
+                navigation = CartActions(
+                    onBack = navController::popBackStack,
+                    onOpenProduct = { navController.navigate(ProductRoute(it)) },
+                    onCheckout = { navController.navigate(CheckoutRoute) },
+                    onContinueShopping = { navController.popBackStack(HomeRoute, inclusive = false) },
+                ),
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
+        pending<CheckoutRoute>(Res.string.route_checkout, navController::popBackStack)
         pending<NotificationsRoute>(Res.string.route_notifications, navController::popBackStack)
         pending<AddressRoute>(Res.string.route_address, navController::popBackStack)
         composable<ProductRoute> { entry ->
