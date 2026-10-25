@@ -37,21 +37,24 @@ fun RangoEmptyState(
     modifier: Modifier = Modifier,
     actionText: String? = null,
     onAction: () -> Unit = {},
+    large: Boolean = false,
+    primaryAction: Boolean = false,
 ) {
     val colors = Rango.colors
+    val boxRadius = if (large) 44.dp else 32.dp
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(14.dp),
-        modifier = modifier.fillMaxWidth().padding(horizontal = 10.dp, vertical = 40.dp),
+        verticalArrangement = Arrangement.spacedBy(if (large) 15.dp else 14.dp),
+        modifier = modifier.fillMaxWidth().padding(horizontal = if (large) 30.dp else 10.dp, vertical = if (large) 30.dp else 40.dp),
     ) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(96.dp)
-                .clip(RoundedCornerShape(32.dp))
+                .size(if (large) 132.dp else 96.dp)
+                .clip(RoundedCornerShape(boxRadius))
                 .background(colors.surface)
                 .drawBehind {
-                    val radius = 32.dp.toPx()
+                    val radius = boxRadius.toPx()
                     drawRoundRect(
                         color = colors.border,
                         cornerRadius = CornerRadius(radius, radius),
@@ -59,17 +62,34 @@ fun RangoEmptyState(
                     )
                 },
         ) {
-            Icon(icon, contentDescription = null, tint = colors.text2, modifier = Modifier.size(42.dp))
+            Icon(icon, contentDescription = null, tint = colors.text2, modifier = Modifier.size(if (large) 58.dp else 42.dp))
         }
-        Text(text = title, style = Rango.typography.section.copy(letterSpacing = 0.sp), color = colors.text, textAlign = TextAlign.Center)
+        Text(
+            text = title,
+            style = Rango.typography.section.copy(fontSize = if (large) 19.sp else 17.sp, letterSpacing = 0.sp),
+            color = colors.text,
+            textAlign = TextAlign.Center,
+        )
         Text(
             text = message,
-            style = Rango.typography.body.copy(fontSize = 13.sp, lineHeight = 1.5.em),
+            style = Rango.typography.body.copy(fontSize = if (large) 13.5.sp else 13.sp, lineHeight = 1.5.em),
             color = colors.text2,
             textAlign = TextAlign.Center,
             modifier = Modifier.widthIn(max = 250.dp),
         )
-        if (actionText != null) {
+        if (actionText != null && primaryAction) {
+            Text(
+                text = actionText,
+                style = Rango.typography.body.copy(fontSize = 14.5.sp, fontWeight = FontWeight.Bold),
+                color = colors.onPrimary,
+                modifier = Modifier
+                    .padding(top = 6.dp)
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(colors.primary)
+                    .clickable(onClick = onAction)
+                    .padding(horizontal = 26.dp, vertical = 15.dp),
+            )
+        } else if (actionText != null) {
             val shape = RoundedCornerShape(14.dp)
             Text(
                 text = actionText,
