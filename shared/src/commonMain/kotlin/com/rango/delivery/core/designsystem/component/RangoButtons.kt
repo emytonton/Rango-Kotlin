@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.compositeOver
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import com.rango.delivery.core.designsystem.icon.RangoIcons
 import com.rango.delivery.core.designsystem.theme.Rango
@@ -35,6 +36,7 @@ fun RangoPrimaryButton(
     loadingText: String? = null,
     dimmed: Boolean = false,
     successText: String? = null,
+    icon: ImageVector? = null,
 ) {
     val colors = Rango.colors
     val faded = colors.primary.copy(alpha = 0.55f).compositeOver(colors.surface)
@@ -83,6 +85,10 @@ fun RangoPrimaryButton(
                 Text(text = loadingText, style = Rango.typography.button)
             }
         } else {
+            if (icon != null) {
+                Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))
+                Spacer(Modifier.width(8.dp))
+            }
             Text(text = text, style = Rango.typography.button)
         }
     }
