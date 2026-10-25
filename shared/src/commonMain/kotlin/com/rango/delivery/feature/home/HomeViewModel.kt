@@ -83,6 +83,20 @@ class HomeViewModel(
         }
     }
 
+    fun refresh() {
+        if (_uiState.value.loading) return
+        viewModelScope.launch {
+            try {
+                val home = catalogRepository.home()
+                _uiState.update { it.withHome(home).copy(errorMessage = null) }
+            } catch (e: SessionExpiredException) {
+                _events.send(HomeEvent.SessionExpired)
+            } catch (e: Exception) {
+                if (e is CancellationException) throw e
+            }
+        }
+    }
+
     fun onSelectCategory(category: HomeCategory?) {
         categoryJob?.cancel()
         _uiState.update { it.copy(selectedCategory = category, categoryProducts = emptyList(), categoryLoading = category != null) }
