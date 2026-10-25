@@ -1,5 +1,6 @@
 package com.rango.delivery.feature.product
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,10 +23,13 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
@@ -148,7 +153,28 @@ fun ProductScreen(state: ProductUiState, actions: ProductActions) {
 @Composable
 private fun ProductContent(product: ProductDetail, state: ProductUiState, actions: ProductActions) {
     val colors = Rango.colors
-    Box(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    val scrollState = rememberScrollState()
+    val density = LocalDensity.current
+    val heroCovered by remember {
+        derivedStateOf { scrollState.value > with(density) { (HeroHeight - 22.dp).roundToPx() } }
+    }
+    Box(modifier = Modifier.fillMaxSize()) {
+        ProductScrollContent(product, state, actions, scrollState)
+        if (heroCovered) {
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .windowInsetsTopHeight(WindowInsets.statusBars)
+                    .background(colors.surface),
+            )
+        }
+    }
+}
+
+@Composable
+private fun ProductScrollContent(product: ProductDetail, state: ProductUiState, actions: ProductActions, scrollState: ScrollState) {
+    val colors = Rango.colors
+    Box(modifier = Modifier.fillMaxSize().verticalScroll(scrollState)) {
         RangoProductImage(
             imageUrl = product.imageUrl,
             hue = product.imageHue,
