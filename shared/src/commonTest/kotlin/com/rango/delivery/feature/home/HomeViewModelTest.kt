@@ -3,6 +3,7 @@ package com.rango.delivery.feature.home
 import com.rango.delivery.core.designsystem.component.ToastKind
 import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.data.auth.SessionExpiredException
+import com.rango.delivery.data.cart.CartDto
 import com.rango.delivery.data.cart.CartRepository
 import com.rango.delivery.data.catalog.AddressDto
 import com.rango.delivery.data.catalog.CatalogRepository
@@ -126,6 +127,11 @@ class HomeViewModelTest {
 
     private class FakeCart(private val countAfterAdd: Int = 1) : CartRepository {
         override suspend fun addItem(productId: String, quantity: Int, addonIds: List<String>, notes: String) = countAfterAdd
+        override suspend fun cart(): CartDto = error("não usado")
+        override suspend fun updateQuantity(itemId: Long, quantity: Int): CartDto = error("não usado")
+        override suspend fun removeItem(itemId: Long): CartDto = error("não usado")
+        override suspend fun clear(): CartDto = error("não usado")
+        override suspend fun applyCoupon(code: String): CartDto = error("não usado")
     }
 
     private companion object {
