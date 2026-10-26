@@ -91,7 +91,11 @@ class AddressViewModelTest {
             400,
             "VALIDATION_ERROR",
             "Dados inválidos.",
-            listOf(ApiFieldError("cep", "CEP inválido."), ApiFieldError("city", "Informe a cidade.")),
+            listOf(
+                ApiFieldError("cep", "CEP inválido."),
+                ApiFieldError("neighborhood", "Informe o bairro."),
+                ApiFieldError("city", "Informe a cidade."),
+            ),
         )
         val viewModel = AddressViewModel(FakeAddresses(createFailure = failure))
         viewModel.onToggleForm()
@@ -100,7 +104,7 @@ class AddressViewModelTest {
 
         val errors = viewModel.uiState.value.form.errors
         assertEquals("CEP inválido.", errors[AddressField.Cep])
-        assertEquals("Informe a cidade.", errors[AddressField.District])
+        assertEquals("Informe o bairro.", errors[AddressField.District])
         assertTrue(viewModel.uiState.value.formOpen)
     }
 

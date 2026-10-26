@@ -142,7 +142,9 @@ class AddressViewModel(private val addressRepository: AddressRepository) : ViewM
             } catch (e: SessionExpiredException) {
                 _events.send(AddressEvent.SessionExpired)
             } catch (e: ApiException) {
-                val errors = e.details.mapNotNull { detail -> fieldFor(detail.field)?.let { it to detail.message } }.toMap()
+                val errors = buildMap {
+                    e.details.forEach { detail -> fieldFor(detail.field)?.let { putIfAbsent(it, detail.message) } }
+                }
                 if (errors.isEmpty()) toast(e.message, ToastKind.Error)
                 _uiState.update { it.copy(form = it.form.copy(errors = errors)) }
             } catch (e: NetworkException) {
