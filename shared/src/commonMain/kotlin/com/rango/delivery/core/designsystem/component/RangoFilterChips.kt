@@ -77,17 +77,23 @@ fun RangoRadioRow(label: String, selected: Boolean, onClick: () -> Unit, modifie
             .clickable(onClick = onClick)
             .padding(horizontal = 12.dp, vertical = 11.dp),
     ) {
-        Box(
-            contentAlignment = Alignment.Center,
-            modifier = Modifier.size(21.dp).border(2.dp, if (selected) colors.primary else colors.border, CircleShape),
-        ) {
-            if (selected) Box(Modifier.size(11.dp).background(colors.primary, CircleShape))
-        }
+        RangoRadioIndicator(selected = selected)
         Text(
             text = label,
             style = Rango.typography.body.copy(fontSize = 13.5.sp, fontWeight = FontWeight.SemiBold),
             color = colors.text,
             modifier = Modifier.weight(1f),
         )
+    }
+}
+
+@Composable
+fun RangoRadioIndicator(selected: Boolean, modifier: Modifier = Modifier) {
+    val colors = Rango.colors
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.size(21.dp).border(2.dp, if (selected) colors.primary else colors.border, CircleShape),
+    ) {
+        if (selected) Box(Modifier.size(11.dp).background(colors.primary, CircleShape))
     }
 }
