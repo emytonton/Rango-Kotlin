@@ -30,6 +30,9 @@ data object ProfileRoute
 data object CartRoute
 
 @Serializable
+data object CheckoutRoute
+
+@Serializable
 data object NotificationsRoute
 
 @Serializable

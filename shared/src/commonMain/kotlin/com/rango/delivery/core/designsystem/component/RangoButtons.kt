@@ -1,6 +1,7 @@
 package com.rango.delivery.core.designsystem.component
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.Spacer
@@ -37,6 +38,7 @@ fun RangoPrimaryButton(
     dimmed: Boolean = false,
     successText: String? = null,
     icon: ImageVector? = null,
+    trailingText: String? = null,
 ) {
     val colors = Rango.colors
     val faded = colors.primary.copy(alpha = 0.55f).compositeOver(colors.surface)
@@ -54,6 +56,7 @@ fun RangoPrimaryButton(
             disabledContainerColor = faded,
             disabledContentColor = colors.onPrimary,
         ),
+        contentPadding = if (trailingText != null) PaddingValues(horizontal = 20.dp) else ButtonDefaults.ContentPadding,
         modifier = modifier
             .fillMaxWidth()
             .height(RangoSize.buttonHeight)
@@ -84,6 +87,10 @@ fun RangoPrimaryButton(
                 Spacer(Modifier.width(9.dp))
                 Text(text = loadingText, style = Rango.typography.button)
             }
+        } else if (trailingText != null) {
+            Text(text = text, style = Rango.typography.button)
+            Spacer(Modifier.weight(1f))
+            Text(text = trailingText, style = Rango.typography.button)
         } else {
             if (icon != null) {
                 Icon(icon, contentDescription = null, modifier = Modifier.size(20.dp))

@@ -3,6 +3,7 @@ package com.rango.delivery.feature.product
 import com.rango.delivery.core.designsystem.component.ToastKind
 import com.rango.delivery.core.network.ApiException
 import com.rango.delivery.core.network.NetworkException
+import com.rango.delivery.data.cart.CartDto
 import com.rango.delivery.data.cart.CartRepository
 import com.rango.delivery.data.catalog.AddonDto
 import com.rango.delivery.data.catalog.CatalogRepository
@@ -157,5 +158,15 @@ class ProductViewModelTest {
             lastNotes = notes
             return quantity
         }
+
+        override suspend fun cart(): CartDto = error("não usado")
+
+        override suspend fun updateQuantity(itemId: Long, quantity: Int): CartDto = error("não usado")
+
+        override suspend fun removeItem(itemId: Long): CartDto = error("não usado")
+
+        override suspend fun clear(): CartDto = error("não usado")
+
+        override suspend fun applyCoupon(code: String): CartDto = error("não usado")
     }
 }

@@ -1,6 +1,7 @@
 package com.rango.delivery.feature.search
 
 import com.rango.delivery.core.designsystem.component.ToastKind
+import com.rango.delivery.data.cart.CartDto
 import com.rango.delivery.data.cart.CartRepository
 import com.rango.delivery.data.catalog.CatalogRepository
 import com.rango.delivery.data.catalog.CategoryDto
@@ -171,6 +172,11 @@ class SearchViewModelTest {
 
     private class FakeCart : CartRepository {
         override suspend fun addItem(productId: String, quantity: Int, addonIds: List<String>, notes: String) = 1
+        override suspend fun cart(): CartDto = error("não usado")
+        override suspend fun updateQuantity(itemId: Long, quantity: Int): CartDto = error("não usado")
+        override suspend fun removeItem(itemId: Long): CartDto = error("não usado")
+        override suspend fun clear(): CartDto = error("não usado")
+        override suspend fun applyCoupon(code: String): CartDto = error("não usado")
     }
 
     private companion object {

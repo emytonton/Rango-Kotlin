@@ -33,42 +33,43 @@ fun RangoQuantityStepper(
     decreaseLabel: String,
     increaseLabel: String,
     modifier: Modifier = Modifier,
+    compact: Boolean = false,
 ) {
     val colors = Rango.colors
-    val shape = RoundedCornerShape(15.dp)
+    val shape = RoundedCornerShape(if (compact) 12.dp else 15.dp)
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(3.dp),
+        horizontalArrangement = Arrangement.spacedBy(if (compact) 2.dp else 3.dp),
         modifier = modifier
             .background(colors.surface2, shape)
             .border(1.dp, colors.border, shape)
-            .padding(5.dp),
+            .padding(if (compact) 3.dp else 5.dp),
     ) {
-        StepButton(RangoIcons.Remove, decreaseLabel, onDecrease)
+        StepButton(RangoIcons.Remove, decreaseLabel, onDecrease, compact)
         Text(
             text = quantity.toString(),
-            style = Rango.typography.body.copy(fontSize = 15.sp, fontWeight = FontWeight.ExtraBold),
+            style = Rango.typography.body.copy(fontSize = if (compact) 13.5.sp else 15.sp, fontWeight = FontWeight.ExtraBold),
             color = colors.text,
             textAlign = TextAlign.Center,
-            modifier = Modifier.widthIn(min = 26.dp),
+            modifier = Modifier.widthIn(min = if (compact) 22.dp else 26.dp),
         )
-        StepButton(RangoIcons.Add, increaseLabel, onIncrease)
+        StepButton(RangoIcons.Add, increaseLabel, onIncrease, compact)
     }
 }
 
 @Composable
-private fun StepButton(icon: ImageVector, contentDescription: String, onClick: () -> Unit) {
+private fun StepButton(icon: ImageVector, contentDescription: String, onClick: () -> Unit, compact: Boolean) {
     val colors = Rango.colors
-    val shape = RoundedCornerShape(11.dp)
+    val shape = RoundedCornerShape(if (compact) 9.dp else 11.dp)
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
-            .size(36.dp)
-            .shadow(1.dp, shape, ambientColor = colors.shadow, spotColor = colors.shadow)
+            .size(if (compact) 28.dp else 36.dp)
+            .then(if (compact) Modifier else Modifier.shadow(1.dp, shape, ambientColor = colors.shadow, spotColor = colors.shadow))
             .clip(shape)
             .background(colors.surface)
             .clickable(onClick = onClick),
     ) {
-        Icon(icon, contentDescription = contentDescription, tint = colors.text, modifier = Modifier.size(19.dp))
+        Icon(icon, contentDescription = contentDescription, tint = colors.text, modifier = Modifier.size(if (compact) 17.dp else 19.dp))
     }
 }
