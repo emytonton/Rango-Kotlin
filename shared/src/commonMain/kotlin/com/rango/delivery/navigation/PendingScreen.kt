@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
+import com.rango.delivery.core.designsystem.component.RangoPrimaryButton
 import com.rango.delivery.core.designsystem.component.RangoSecondaryButton
 import com.rango.delivery.core.designsystem.theme.Rango
 import com.rango.delivery.core.designsystem.theme.RangoSpacing
@@ -22,7 +23,12 @@ import com.rango.delivery.resources.pending_message
 import org.jetbrains.compose.resources.stringResource
 
 @Composable
-fun PendingScreen(title: String, onBack: (() -> Unit)?) {
+fun PendingScreen(
+    title: String,
+    onBack: (() -> Unit)?,
+    shortcutText: String? = null,
+    onShortcut: () -> Unit = {},
+) {
     Column(
         verticalArrangement = Arrangement.spacedBy(RangoSpacing.md, Alignment.CenterVertically),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -39,6 +45,9 @@ fun PendingScreen(title: String, onBack: (() -> Unit)?) {
             color = Rango.colors.text2,
             textAlign = TextAlign.Center,
         )
+        if (shortcutText != null) {
+            RangoPrimaryButton(text = shortcutText, onClick = onShortcut)
+        }
         if (onBack != null) {
             RangoSecondaryButton(text = stringResource(Res.string.pending_back), onClick = onBack)
         }

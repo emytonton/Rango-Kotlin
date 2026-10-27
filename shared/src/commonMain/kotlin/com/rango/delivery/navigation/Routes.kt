@@ -39,4 +39,7 @@ data object NotificationsRoute
 data object AddressRoute
 
 @Serializable
+data object PaymentRoute
+
+@Serializable
 data class ProductRoute(val productId: String)
