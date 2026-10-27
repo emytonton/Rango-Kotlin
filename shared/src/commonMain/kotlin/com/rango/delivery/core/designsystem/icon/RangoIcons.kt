@@ -170,6 +170,16 @@ object RangoIcons {
 
     val AddLocationAlt: ImageVector by lazy { icon("AddLocationAlt", "M20,1v3h3v2h-3v3h-2V6h-3V4h3V1H20zM12,13c1.1,0 2,-0.9 2,-2c0,-1.1 -0.9,-2 -2,-2s-2,0.9 -2,2C10,12.1 10.9,13 12,13zM14,3.25V5.4c0,1.39 1.11,2.6 2.5,2.6H17v0.5C17,9.88 18.12,11 19.5,11H19.95c0.03,0.33 0.05,0.66 0.05,1c0,3.03 -2.5,7.05 -8,12.12C6.5,19.05 4,15.03 4,12c0,-4.97 3.8,-9 8,-9C12.69,3 13.36,3.09 14,3.25z") }
 
+    val QrCode2: ImageVector by lazy { icon("QrCode2", "M15,21h-2v-2h2V21zM13,14h-2v5h2V14zM21,12h-2v4h2V12zM19,10h-2v2h2V10zM7,12H5v2h2V12zM5,10H3v2h2V10zM12,5h2V3h-2V5zM4.5,4.5v3h3v-3H4.5zM9,9H3V3h6V9zM4.5,16.5v3h3v-3H4.5zM9,21H3v-6h6V21zM16.5,4.5v3h3v-3H16.5zM21,9h-6V3h6V9zM19,19v-3l-4,0v2h2v3h4v-2H19zM17,12l-4,0v2h4V12zM13,10H7v2h2v2h2v-2h2V10zM14,9V7h-2V5h-2v4L14,9zM6.75,5.25h-1.5v1.5h1.5V5.25zM6.75,17.25h-1.5v1.5h1.5V17.25zM18.75,5.25h-1.5v1.5h1.5V5.25z") }
+
+    val CreditCard: ImageVector by lazy { icon("CreditCard", "M20,4H4c-1.11,0 -1.99,0.89 -1.99,2L2,18c0,1.11 0.89,2 2,2h16c1.11,0 2,-0.89 2,-2V6c0,-1.11 -0.89,-2 -2,-2zM20,18H4v-6h16v6zM20,8H4V6h16v2z") }
+
+    val CreditScore: ImageVector by lazy { icon("CreditScore", "M20,4H4C2.89,4 2.01,4.89 2.01,6L2,18c0,1.11 0.89,2 2,2h5v-2H4v-6h18V6C22,4.89 21.11,4 20,4zM20,8H4V6h16V8zM14.93,19.17l-2.83,-2.83l-1.41,1.41L14.93,22L22,14.93l-1.41,-1.41L14.93,19.17z") }
+
+    val Payments: ImageVector by lazy { icon("Payments", "M19,14V6c0,-1.1 -0.9,-2 -2,-2H3c-1.1,0 -2,0.9 -2,2v8c0,1.1 0.9,2 2,2h14c1.1,0 2,-0.9 2,-2zM10,13c-1.66,0 -3,-1.34 -3,-3s1.34,-3 3,-3 3,1.34 3,3 -1.34,3 -3,3zM23,7v11c0,1.1 -0.9,2 -2,2H4v-2h17V7h2z") }
+
+    val CalendarMonth: ImageVector by lazy { icon("CalendarMonth", "M19,4h-1V2h-2v2H8V2H6v2H5C3.89,4 3.01,4.9 3.01,6L3,20c0,1.1 0.89,2 2,2h14c1.1,0 2,-0.9 2,-2V6C21,4.9 20.1,4 19,4zM19,20H5V10h14V20zM9,14H7v-2h2V14zM13,14h-2v-2h2V14zM17,14h-2v-2h2V14zM9,18H7v-2h2V18zM13,18h-2v-2h2V18zM17,18h-2v-2h2V18z") }
+
     private fun icon(name: String, path: String): ImageVector =
         ImageVector.Builder(
             name = name,

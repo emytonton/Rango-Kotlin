@@ -13,6 +13,8 @@ import com.rango.delivery.feature.address.AddressViewModel
 import com.rango.delivery.feature.cart.CartActions
 import com.rango.delivery.feature.cart.CartRoute
 import com.rango.delivery.feature.cart.CartViewModel
+import com.rango.delivery.feature.payment.PaymentRoute
+import com.rango.delivery.feature.payment.PaymentViewModel
 import com.rango.delivery.feature.product.ProductRoute
 import com.rango.delivery.feature.product.ProductViewModel
 import com.rango.delivery.feature.search.SearchFilters
@@ -29,6 +31,7 @@ import com.rango.delivery.resources.Res
 import com.rango.delivery.resources.route_checkout
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
+import com.rango.delivery.resources.payment_title
 import com.rango.delivery.resources.route_orders
 import com.rango.delivery.resources.route_profile
 import com.rango.delivery.feature.login.LoginRoute
@@ -134,7 +137,21 @@ fun RangoNavHost(container: AppContainer) {
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<CheckoutRoute>(Res.string.route_checkout, navController::popBackStack)
+        composable<CheckoutRoute> {
+            PendingScreen(
+                title = stringResource(Res.string.route_checkout),
+                onBack = { navController.popBackStack() },
+                shortcutText = stringResource(Res.string.payment_title),
+                onShortcut = { navController.navigate(PaymentRoute) },
+            )
+        }
+        composable<PaymentRoute> {
+            PaymentRoute(
+                viewModel = viewModel { PaymentViewModel(container.paymentRepository, container.paymentSelection) },
+                onBack = navController::popBackStack,
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         pending<NotificationsRoute>(Res.string.route_notifications, navController::popBackStack)
         composable<AddressRoute> {
             AddressRoute(

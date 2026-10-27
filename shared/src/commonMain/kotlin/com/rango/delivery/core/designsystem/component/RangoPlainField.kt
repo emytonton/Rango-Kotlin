@@ -23,6 +23,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rango.delivery.core.designsystem.theme.Rango
@@ -38,6 +39,7 @@ fun RangoPlainField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Next,
     maxLength: Int = Int.MAX_VALUE,
+    visualTransformation: VisualTransformation = VisualTransformation.None,
 ) {
     val colors = Rango.colors
     val shape = RoundedCornerShape(14.dp)
@@ -63,6 +65,7 @@ fun RangoPlainField(
                 textStyle = textStyle.copy(color = colors.text),
                 cursorBrush = SolidColor(colors.primary),
                 keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+                visualTransformation = visualTransformation,
                 modifier = Modifier.weight(1f),
                 decorationBox = { inner ->
                     Box(contentAlignment = Alignment.CenterStart) {

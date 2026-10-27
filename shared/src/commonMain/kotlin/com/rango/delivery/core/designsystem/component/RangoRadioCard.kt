@@ -21,6 +21,7 @@ fun RangoRadioCard(
     selected: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    indicatorAtEnd: Boolean = false,
     content: @Composable RowScope.() -> Unit,
 ) {
     val colors = Rango.colors
@@ -36,7 +37,8 @@ fun RangoRadioCard(
             .clickable(onClick = onClick)
             .padding(14.dp),
     ) {
-        RangoRadioIndicator(selected = selected)
+        if (!indicatorAtEnd) RangoRadioIndicator(selected = selected)
         content()
+        if (indicatorAtEnd) RangoRadioIndicator(selected = selected)
     }
 }
