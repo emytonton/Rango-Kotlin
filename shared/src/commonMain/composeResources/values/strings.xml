@@ -111,6 +111,16 @@
     <string name="cart_continue">Continuar comprando</string>
     <string name="cart_retry">Tentar novamente</string>
     <string name="route_checkout">Finalizar pedido</string>
+    <string name="address_title">Endereço de entrega</string>
+    <string name="address_new_title">Novo endereço</string>
+    <string name="address_cep">CEP</string>
+    <string name="address_street">Rua e número</string>
+    <string name="address_complement">Complemento</string>
+    <string name="address_district">Bairro e cidade</string>
+    <string name="address_save">Salvar endereço</string>
+    <string name="address_add">Cadastrar novo endereço</string>
+    <string name="address_use">Usar este endereço</string>
+    <string name="address_retry">Tentar novamente</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>

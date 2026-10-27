@@ -1,6 +1,9 @@
 package com.rango.delivery.di
 
 import com.rango.delivery.core.network.createHttpClient
+import com.rango.delivery.data.address.AddressApi
+import com.rango.delivery.data.address.AddressRepository
+import com.rango.delivery.data.address.DefaultAddressRepository
 import com.rango.delivery.data.auth.AuthApi
 import com.rango.delivery.data.auth.AuthRepository
 import com.rango.delivery.data.auth.AuthorizedCaller
@@ -29,5 +32,6 @@ class AppContainer(secureStorage: SecureStorage) {
 
     val catalogRepository: CatalogRepository = DefaultCatalogRepository(CatalogApi(httpClient), authorizedCaller)
     val cartRepository: CartRepository = DefaultCartRepository(CartApi(httpClient), authorizedCaller)
+    val addressRepository: AddressRepository = DefaultAddressRepository(AddressApi(httpClient), authorizedCaller)
     val searchRepository: SearchRepository = DefaultSearchRepository(SearchApi(httpClient), authorizedCaller)
 }

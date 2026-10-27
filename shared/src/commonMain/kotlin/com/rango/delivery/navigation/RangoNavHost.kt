@@ -8,6 +8,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
+import com.rango.delivery.feature.address.AddressRoute
+import com.rango.delivery.feature.address.AddressViewModel
 import com.rango.delivery.feature.cart.CartActions
 import com.rango.delivery.feature.cart.CartRoute
 import com.rango.delivery.feature.cart.CartViewModel
@@ -24,7 +26,6 @@ import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.route_address
 import com.rango.delivery.resources.route_checkout
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
@@ -135,7 +136,13 @@ fun RangoNavHost(container: AppContainer) {
         }
         pending<CheckoutRoute>(Res.string.route_checkout, navController::popBackStack)
         pending<NotificationsRoute>(Res.string.route_notifications, navController::popBackStack)
-        pending<AddressRoute>(Res.string.route_address, navController::popBackStack)
+        composable<AddressRoute> {
+            AddressRoute(
+                viewModel = viewModel { AddressViewModel(container.addressRepository) },
+                onBack = navController::popBackStack,
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         composable<ProductRoute> { entry ->
             val route = entry.toRoute<ProductRoute>()
             ProductRoute(
