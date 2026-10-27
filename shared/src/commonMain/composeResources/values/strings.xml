@@ -121,6 +121,14 @@
     <string name="address_add">Cadastrar novo endereço</string>
     <string name="address_use">Usar este endereço</string>
     <string name="address_retry">Tentar novamente</string>
+    <string name="payment_title">Forma de pagamento</string>
+    <string name="payment_card_title">Dados do cartão</string>
+    <string name="payment_card_number">Número do cartão</string>
+    <string name="payment_card_holder">Nome impresso no cartão</string>
+    <string name="payment_card_expiry_cvv">Validade e CVV</string>
+    <string name="payment_card_secure">dados enviados por conexão segura</string>
+    <string name="payment_confirm">Confirmar forma de pagamento</string>
+    <string name="payment_retry">Tentar novamente</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>
