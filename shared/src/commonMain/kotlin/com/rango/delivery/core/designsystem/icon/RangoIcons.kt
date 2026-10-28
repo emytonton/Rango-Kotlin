@@ -180,6 +180,8 @@ object RangoIcons {
 
     val CalendarMonth: ImageVector by lazy { icon("CalendarMonth", "M19,4h-1V2h-2v2H8V2H6v2H5C3.89,4 3.01,4.9 3.01,6L3,20c0,1.1 0.89,2 2,2h14c1.1,0 2,-0.9 2,-2V6C21,4.9 20.1,4 19,4zM19,20H5V10h14V20zM9,14H7v-2h2V14zM13,14h-2v-2h2V14zM17,14h-2v-2h2V14zM9,18H7v-2h2V18zM13,18h-2v-2h2V18zM17,18h-2v-2h2V18z") }
 
+    val Wallet: ImageVector by lazy { icon("Wallet", "M18,4H6C3.79,4 2,5.79 2,8v8c0,2.21 1.79,4 4,4h12c2.21,0 4,-1.79 4,-4V8C22,5.79 20.21,4 18,4zM16.14,13.77c-0.24,0.2 -0.57,0.28 -0.88,0.2L4.15,11.25C4.45,10.52 5.16,10 6,10h12c0.67,0 1.26,0.34 1.63,0.84L16.14,13.77zM6,6h12c1.1,0 2,0.9 2,2v0.55C19.41,8.21 18.73,8 18,8H6C5.27,8 4.59,8.21 4,8.55V8C4,6.9 4.9,6 6,6z") }
+
     private fun icon(name: String, path: String): ImageVector =
         ImageVector.Builder(
             name = name,
