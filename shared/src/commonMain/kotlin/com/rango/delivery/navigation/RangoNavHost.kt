@@ -13,6 +13,9 @@ import com.rango.delivery.feature.address.AddressViewModel
 import com.rango.delivery.feature.cart.CartActions
 import com.rango.delivery.feature.cart.CartRoute
 import com.rango.delivery.feature.cart.CartViewModel
+import com.rango.delivery.feature.checkout.CheckoutNavigation
+import com.rango.delivery.feature.checkout.CheckoutRoute
+import com.rango.delivery.feature.checkout.CheckoutViewModel
 import com.rango.delivery.feature.payment.PaymentRoute
 import com.rango.delivery.feature.payment.PaymentViewModel
 import com.rango.delivery.feature.product.ProductRoute
@@ -28,10 +31,9 @@ import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.route_checkout
+import com.rango.delivery.resources.route_confirmed
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
-import com.rango.delivery.resources.payment_title
 import com.rango.delivery.resources.route_orders
 import com.rango.delivery.resources.route_profile
 import com.rango.delivery.feature.login.LoginRoute
@@ -138,12 +140,32 @@ fun RangoNavHost(container: AppContainer) {
             )
         }
         composable<CheckoutRoute> {
-            PendingScreen(
-                title = stringResource(Res.string.route_checkout),
-                onBack = { navController.popBackStack() },
-                shortcutText = stringResource(Res.string.payment_title),
-                onShortcut = { navController.navigate(PaymentRoute) },
+            CheckoutRoute(
+                viewModel = viewModel {
+                    CheckoutViewModel(
+                        cartRepository = container.cartRepository,
+                        addressRepository = container.addressRepository,
+                        paymentRepository = container.paymentRepository,
+                        paymentSelection = container.paymentSelection,
+                        orderRepository = container.orderRepository,
+                    )
+                },
+                navigation = CheckoutNavigation(
+                    onBack = navController::popBackStack,
+                    onOpenCart = { navController.popBackStack(CartRoute, inclusive = false) },
+                    onOpenAddress = { navController.navigate(AddressRoute) },
+                    onOpenPayment = { navController.navigate(PaymentRoute) },
+                    onOrderPlaced = { code ->
+                        navController.navigate(ConfirmedRoute(code)) {
+                            popUpTo(HomeRoute)
+                        }
+                    },
+                ),
+                onSessionExpired = navController::navigateToWelcome,
             )
+        }
+        composable<ConfirmedRoute> {
+            PendingScreen(stringResource(Res.string.route_confirmed), onBack = { navController.popBackStack() })
         }
         composable<PaymentRoute> {
             PaymentRoute(

@@ -145,14 +145,6 @@ class CartViewModel(private val cartRepository: CartRepository) : ViewModel() {
     private fun apply(cart: CartDto, syncCoupon: Boolean) {
         val summary = cart.summary
         val coupon = cart.coupon?.takeIf { it.applied }
-        val lines = buildList {
-            add(SummaryLine("Subtotal", formatPrice(summary.subtotal)))
-            val free = summary.deliveryFee == 0.0 && summary.subtotal > 0
-            add(SummaryLine("Taxa de entrega", if (free) "Grátis" else formatPrice(summary.deliveryFee), highlight = free))
-            if (summary.discount > 0) {
-                add(SummaryLine("Desconto · ${coupon?.code.orEmpty()}", "- ${formatPrice(summary.discount)}", highlight = true))
-            }
-        }
         _uiState.update { state ->
             state.copy(
                 loading = false,
@@ -173,7 +165,7 @@ class CartViewModel(private val cartRepository: CartRepository) : ViewModel() {
                 },
                 itemCount = summary.itemCount,
                 subtotal = formatPrice(summary.subtotal),
-                summary = lines,
+                summary = cart.summaryLines(),
                 total = formatPrice(summary.total),
                 couponInput = if (syncCoupon) coupon?.code.orEmpty() else if (coupon != null) coupon.code else state.couponInput,
                 couponApplied = coupon != null,

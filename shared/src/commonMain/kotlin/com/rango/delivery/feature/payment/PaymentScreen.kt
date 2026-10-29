@@ -22,7 +22,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -35,7 +34,6 @@ import com.rango.delivery.core.designsystem.component.RangoPrimaryButton
 import com.rango.delivery.core.designsystem.component.RangoRadioCard
 import com.rango.delivery.core.designsystem.component.RangoSkeleton
 import com.rango.delivery.core.designsystem.component.RangoTopBar
-import com.rango.delivery.core.designsystem.icon.RangoIcons
 import com.rango.delivery.core.designsystem.theme.Rango
 import com.rango.delivery.core.designsystem.theme.RangoTheme
 import com.rango.delivery.core.designsystem.theme.ThemeMode
@@ -154,14 +152,6 @@ private fun PaymentRow(option: PaymentOption, selected: Boolean, onClick: () -> 
         }
     }
 }
-
-private val PaymentType.icon: ImageVector
-    get() = when (this) {
-        PaymentType.Pix -> RangoIcons.QrCode2
-        PaymentType.Credit -> RangoIcons.CreditCard
-        PaymentType.Debit -> RangoIcons.CreditScore
-        PaymentType.Cash -> RangoIcons.Payments
-    }
 
 @Preview
 @Composable

@@ -111,6 +111,7 @@
     <string name="cart_continue">Continuar comprando</string>
     <string name="cart_retry">Tentar novamente</string>
     <string name="route_checkout">Finalizar pedido</string>
+    <string name="route_confirmed">Pedido confirmado</string>
     <string name="address_title">Endereço de entrega</string>
     <string name="address_new_title">Novo endereço</string>
     <string name="address_cep">CEP</string>
@@ -129,6 +130,17 @@
     <string name="payment_card_secure">dados enviados por conexão segura</string>
     <string name="payment_confirm">Confirmar forma de pagamento</string>
     <string name="payment_retry">Tentar novamente</string>
+    <string name="checkout_title">Finalizar pedido</string>
+    <string name="checkout_address">Endereço de entrega</string>
+    <string name="checkout_payment">Forma de pagamento</string>
+    <string name="checkout_change">Alterar</string>
+    <string name="checkout_no_address">Nenhum endereço selecionado.</string>
+    <string name="checkout_no_payment">Escolha como pagar.</string>
+    <string name="checkout_summary">Resumo do pedido</string>
+    <string name="checkout_total">Total</string>
+    <string name="checkout_confirm">Confirmar pedido</string>
+    <string name="checkout_processing">Processando pagamento...</string>
+    <string name="checkout_retry">Tentar novamente</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>

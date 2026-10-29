@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -28,6 +29,8 @@ fun RangoSummaryCard(
     totalLabel: String,
     total: String,
     modifier: Modifier = Modifier,
+    title: String? = null,
+    header: (@Composable ColumnScope.() -> Unit)? = null,
 ) {
     val colors = Rango.colors
     val shape = RoundedCornerShape(20.dp)
@@ -39,6 +42,17 @@ fun RangoSummaryCard(
             .border(1.dp, colors.border, shape)
             .padding(16.dp),
     ) {
+        if (title != null) {
+            Text(
+                text = title,
+                style = Rango.typography.body.copy(fontSize = 13.5.sp, fontWeight = FontWeight.ExtraBold),
+                color = colors.text,
+            )
+        }
+        if (header != null) {
+            header()
+            HorizontalDivider(thickness = 1.dp, color = colors.border)
+        }
         lines.forEach { line ->
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()) {
                 Text(
