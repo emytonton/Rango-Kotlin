@@ -16,6 +16,8 @@ import com.rango.delivery.feature.cart.CartViewModel
 import com.rango.delivery.feature.checkout.CheckoutNavigation
 import com.rango.delivery.feature.checkout.CheckoutRoute
 import com.rango.delivery.feature.checkout.CheckoutViewModel
+import com.rango.delivery.feature.confirmed.ConfirmedRoute
+import com.rango.delivery.feature.confirmed.ConfirmedViewModel
 import com.rango.delivery.feature.payment.PaymentRoute
 import com.rango.delivery.feature.payment.PaymentViewModel
 import com.rango.delivery.feature.product.ProductRoute
@@ -31,7 +33,7 @@ import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.route_confirmed
+import com.rango.delivery.resources.route_tracking
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_orders
@@ -164,8 +166,17 @@ fun RangoNavHost(container: AppContainer) {
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        composable<ConfirmedRoute> {
-            PendingScreen(stringResource(Res.string.route_confirmed), onBack = { navController.popBackStack() })
+        composable<ConfirmedRoute> { entry ->
+            val route = entry.toRoute<ConfirmedRoute>()
+            ConfirmedRoute(
+                viewModel = viewModel { ConfirmedViewModel(route.orderCode, container.orderRepository) },
+                onTrack = { navController.navigate(TrackingRoute(route.orderCode)) },
+                onHome = { navController.popBackStack(HomeRoute, inclusive = false) },
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
+        composable<TrackingRoute> {
+            PendingScreen(stringResource(Res.string.route_tracking), onBack = { navController.popBackStack() })
         }
         composable<PaymentRoute> {
             PaymentRoute(
