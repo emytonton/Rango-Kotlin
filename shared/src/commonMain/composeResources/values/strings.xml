@@ -141,6 +141,14 @@
     <string name="checkout_confirm">Confirmar pedido</string>
     <string name="checkout_processing">Processando pagamento...</string>
     <string name="checkout_retry">Tentar novamente</string>
+    <string name="confirmed_title">Pedido realizado\ncom sucesso!</string>
+    <string name="confirmed_message">Você receberá notificações sobre cada etapa do preparo e da entrega.</string>
+    <string name="confirmed_number">Número do pedido</string>
+    <string name="confirmed_eta">Previsão de entrega</string>
+    <string name="confirmed_payment">Pagamento</string>
+    <string name="confirmed_track">Acompanhar pedido</string>
+    <string name="confirmed_home">Voltar ao início</string>
+    <string name="confirmed_retry">Tentar novamente</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>
