@@ -144,6 +144,8 @@ class CheckoutViewModelTest {
             if (hold) kotlinx.coroutines.awaitCancellation()
             return CreatedOrderDto(10483, "RG-10483", "live")
         }
+
+        override suspend fun detail(code: String) = error("não usado")
     }
 
     private class FakeCart : CartRepository {
