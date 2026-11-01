@@ -26,6 +26,7 @@ fun RangoTopBar(
     onBack: () -> Unit,
     modifier: Modifier = Modifier,
     subtitle: String? = null,
+    monospaceSubtitle: Boolean = false,
     actions: @Composable RowScope.() -> Unit = {},
 ) {
     val colors = Rango.colors
@@ -43,7 +44,12 @@ fun RangoTopBar(
                     color = colors.text,
                 )
                 if (subtitle != null) {
-                    Text(text = subtitle, style = Rango.typography.label.copy(fontSize = 11.5.sp), color = colors.text2)
+                    val style = if (monospaceSubtitle) {
+                        Rango.typography.mono.copy(fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
+                    } else {
+                        Rango.typography.label.copy(fontSize = 11.5.sp)
+                    }
+                    Text(text = subtitle, style = style, color = colors.text2)
                 }
             }
             actions()
