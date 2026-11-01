@@ -25,6 +25,8 @@ import com.rango.delivery.feature.product.ProductViewModel
 import com.rango.delivery.feature.search.SearchFilters
 import com.rango.delivery.feature.search.SearchRoute
 import com.rango.delivery.feature.search.SearchViewModel
+import com.rango.delivery.feature.tracking.TrackingRoute
+import com.rango.delivery.feature.tracking.TrackingViewModel
 import com.rango.delivery.di.AppContainer
 import com.rango.delivery.feature.welcome.WelcomeRoute
 import com.rango.delivery.feature.welcome.WelcomeViewModel
@@ -33,7 +35,6 @@ import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.route_tracking
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_orders
@@ -175,8 +176,14 @@ fun RangoNavHost(container: AppContainer) {
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        composable<TrackingRoute> {
-            PendingScreen(stringResource(Res.string.route_tracking), onBack = { navController.popBackStack() })
+        composable<TrackingRoute> { entry ->
+            val route = entry.toRoute<TrackingRoute>()
+            TrackingRoute(
+                viewModel = viewModel { TrackingViewModel(route.orderCode, container.orderRepository) },
+                orderCode = route.orderCode,
+                onBack = navController::popBackStack,
+                onSessionExpired = navController::navigateToWelcome,
+            )
         }
         composable<PaymentRoute> {
             PaymentRoute(
