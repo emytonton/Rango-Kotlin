@@ -182,6 +182,14 @@ object RangoIcons {
 
     val Wallet: ImageVector by lazy { icon("Wallet", "M18,4H6C3.79,4 2,5.79 2,8v8c0,2.21 1.79,4 4,4h12c2.21,0 4,-1.79 4,-4V8C22,5.79 20.21,4 18,4zM16.14,13.77c-0.24,0.2 -0.57,0.28 -0.88,0.2L4.15,11.25C4.45,10.52 5.16,10 6,10h12c0.67,0 1.26,0.34 1.63,0.84L16.14,13.77zM6,6h12c1.1,0 2,0.9 2,2v0.55C19.41,8.21 18.73,8 18,8H6C5.27,8 4.59,8.21 4,8.55V8C4,6.9 4.9,6 6,6z") }
 
+    val ReceiptLong: ImageVector by lazy { icon("ReceiptLong", "M19.5,3.5L18,2l-1.5,1.5L15,2l-1.5,1.5L12,2l-1.5,1.5L9,2L7.5,3.5L6,2v14H3v3c0,1.66 1.34,3 3,3h12c1.66,0 3,-1.34 3,-3V2L19.5,3.5zM15,20H6c-0.55,0 -1,-0.45 -1,-1v-1h10V20zM19,19c0,0.55 -0.45,1 -1,1s-1,-0.45 -1,-1v-3H8V5h11V19zM9,7h6v2H9V7zM16,7h2v2h-2V7zM9,10h6v2H9V10zM16,10h2v2h-2V10z") }
+
+    val TaskAlt: ImageVector by lazy { icon("TaskAlt", "M22,5.18L10.59,16.6l-4.24,-4.24l1.41,-1.41l2.83,2.83l10,-10L22,5.18zM19.79,10.22C19.92,10.79 20,11.39 20,12c0,4.42 -3.58,8 -8,8s-8,-3.58 -8,-8c0,-4.42 3.58,-8 8,-8c1.58,0 3.04,0.46 4.28,1.25l1.44,-1.44C16.1,2.67 14.13,2 12,2C6.48,2 2,6.48 2,12c0,5.52 4.48,10 10,10s10,-4.48 10,-10c0,-1.19 -0.22,-2.33 -0.6,-3.39L19.79,10.22z") }
+
+    val Skillet: ImageVector by lazy { icon("Skillet", "M10,7c-3.31,0 -6,2.69 -6,6s2.69,6 6,6c2.97,0 5.43,-2.16 5.91,-5H22v-2h-6.09C15.43,9.16 12.97,7 10,7z") }
+
+    val ChatBubbleOutline: ImageVector by lazy { icon("ChatBubbleOutline", "M20,2H4c-1.1,0 -2,0.9 -2,2v18l4,-4h14c1.1,0 2,-0.9 2,-2V4c0,-1.1 -0.9,-2 -2,-2zM20,16H6l-2,2V4h16v12z") }
+
     private fun icon(name: String, path: String): ImageVector =
         ImageVector.Builder(
             name = name,
