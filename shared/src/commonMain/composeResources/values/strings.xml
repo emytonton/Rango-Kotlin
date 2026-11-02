@@ -111,7 +111,6 @@
     <string name="cart_continue">Continuar comprando</string>
     <string name="cart_retry">Tentar novamente</string>
     <string name="route_checkout">Finalizar pedido</string>
-    <string name="route_tracking">Acompanhar pedido</string>
     <string name="address_title">Endereço de entrega</string>
     <string name="address_new_title">Novo endereço</string>
     <string name="address_cep">CEP</string>
@@ -149,6 +148,13 @@
     <string name="confirmed_track">Acompanhar pedido</string>
     <string name="confirmed_home">Voltar ao início</string>
     <string name="confirmed_retry">Tentar novamente</string>
+    <string name="tracking_title">Acompanhar pedido</string>
+    <string name="tracking_map_caption">mapa · rota em tempo real</string>
+    <string name="tracking_courier_role">Entregador · %1$s</string>
+    <string name="tracking_chat">Conversar com o entregador</string>
+    <string name="tracking_call">Ligar para o entregador</string>
+    <string name="tracking_contact_unavailable">Contato com o entregador indisponível na demonstração.</string>
+    <string name="tracking_retry">Tentar novamente</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>

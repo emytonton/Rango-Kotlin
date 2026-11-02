@@ -41,6 +41,17 @@ data class OrderAmountsDto(
 )
 
 @Serializable
+data class TimelineStepDto(
+    val step: Int,
+    val label: String,
+    val state: String,
+    val reachedAt: String? = null,
+)
+
+@Serializable
+data class CourierDto(val name: String, val vehicle: String, val photoUrl: String? = null)
+
+@Serializable
 data class OrderDetailDto(
     val id: Long,
     val code: String,
@@ -52,6 +63,10 @@ data class OrderDetailDto(
     val estimatedDelivery: EstimatedDeliveryDto,
     val payment: OrderPaymentDto,
     val amounts: OrderAmountsDto,
+    val hint: String = "",
+    val timeline: List<TimelineStepDto> = emptyList(),
+    val courier: CourierDto? = null,
+    val mapImageUrl: String? = null,
 )
 
 class OrderApi(private val client: HttpClient) {
