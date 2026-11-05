@@ -14,6 +14,7 @@ import com.rango.delivery.data.cart.CartSummaryDto
 import com.rango.delivery.data.catalog.AddonDto
 import com.rango.delivery.data.order.CreateOrderRequest
 import com.rango.delivery.data.order.CreatedOrderDto
+import com.rango.delivery.data.order.OrderGroup
 import com.rango.delivery.data.order.OrderRepository
 import com.rango.delivery.data.payment.CreateCardRequest
 import com.rango.delivery.data.payment.PaymentMethodDto
@@ -146,6 +147,10 @@ class CheckoutViewModelTest {
         }
 
         override suspend fun detail(code: String) = error("não usado")
+
+        override suspend fun list(group: OrderGroup) = error("não usado")
+
+        override suspend fun reorder(code: String) = error("não usado")
     }
 
     private class FakeCart : CartRepository {

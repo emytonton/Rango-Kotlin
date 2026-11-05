@@ -7,6 +7,7 @@ import com.rango.delivery.data.order.CreateOrderRequest
 import com.rango.delivery.data.order.EstimatedDeliveryDto
 import com.rango.delivery.data.order.OrderAmountsDto
 import com.rango.delivery.data.order.OrderDetailDto
+import com.rango.delivery.data.order.OrderGroup
 import com.rango.delivery.data.order.OrderPaymentDto
 import com.rango.delivery.data.order.OrderRepository
 import com.rango.delivery.data.order.TimelineStepDto
@@ -149,5 +150,9 @@ class TrackingViewModelTest {
             failure?.let { throw it }
             return queue[minOf(calls++, queue.lastIndex)]
         }
+
+        override suspend fun list(group: OrderGroup) = error("não usado")
+
+        override suspend fun reorder(code: String) = error("não usado")
     }
 }

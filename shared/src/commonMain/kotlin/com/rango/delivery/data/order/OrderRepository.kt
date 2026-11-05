@@ -2,10 +2,12 @@ package com.rango.delivery.data.order
 
 import com.rango.delivery.core.network.apiCall
 import com.rango.delivery.data.auth.AuthorizedCaller
+import com.rango.delivery.data.cart.CartDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
 import io.ktor.client.request.get
+import io.ktor.client.request.parameter
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -69,7 +71,46 @@ data class OrderDetailDto(
     val mapImageUrl: String? = null,
 )
 
+@Serializable
+data class OrderThumbnailDto(val productId: String? = null, val imageHue: Int, val imageUrl: String? = null)
+
+@Serializable
+data class OrderSummaryDto(
+    val id: Long,
+    val code: String,
+    val status: String,
+    val statusLabel: String,
+    val step: Int,
+    val createdAt: String,
+    val total: Double,
+    val itemCount: Int,
+    val itemsSummary: String,
+    val thumbnail: OrderThumbnailDto,
+)
+
+@Serializable
+data class OrderPageDto(val data: List<OrderSummaryDto>)
+
+@Serializable
+data class ReorderResultDto(val cart: CartDto, val skippedProductIds: List<String> = emptyList())
+
+enum class OrderGroup(val query: String) { Live("live"), Past("past") }
+
+const val ORDER_PAGE_SIZE = 50
+
 class OrderApi(private val client: HttpClient) {
+
+    suspend fun list(token: String, group: OrderGroup): OrderPageDto = apiCall {
+        client.get("/orders") {
+            bearerAuth(token)
+            parameter("group", group.query)
+            parameter("pageSize", ORDER_PAGE_SIZE)
+        }.body()
+    }
+
+    suspend fun reorder(token: String, code: String): ReorderResultDto = apiCall {
+        client.post("/orders/$code/reorder") { bearerAuth(token) }.body()
+    }
 
     suspend fun detail(token: String, code: String): OrderDetailDto = apiCall {
         client.get("/orders/$code") { bearerAuth(token) }.body()
@@ -87,6 +128,8 @@ class OrderApi(private val client: HttpClient) {
 interface OrderRepository {
     suspend fun create(request: CreateOrderRequest): CreatedOrderDto
     suspend fun detail(code: String): OrderDetailDto
+    suspend fun list(group: OrderGroup): List<OrderSummaryDto>
+    suspend fun reorder(code: String): ReorderResultDto
 }
 
 class DefaultOrderRepository(
@@ -96,4 +139,8 @@ class DefaultOrderRepository(
     override suspend fun create(request: CreateOrderRequest): CreatedOrderDto = caller.call { api.create(it, request) }
 
     override suspend fun detail(code: String): OrderDetailDto = caller.call { api.detail(it, code) }
+
+    override suspend fun list(group: OrderGroup): List<OrderSummaryDto> = caller.call { api.list(it, group) }.data
+
+    override suspend fun reorder(code: String): ReorderResultDto = caller.call { api.reorder(it, code) }
 }
