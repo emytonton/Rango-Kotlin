@@ -155,6 +155,16 @@
     <string name="tracking_call">Ligar para o entregador</string>
     <string name="tracking_contact_unavailable">Contato com o entregador indisponível na demonstração.</string>
     <string name="tracking_retry">Tentar novamente</string>
+    <string name="orders_title">Meus pedidos</string>
+    <string name="orders_tab_live">Em andamento</string>
+    <string name="orders_tab_past">Anteriores</string>
+    <string name="orders_track">Acompanhar</string>
+    <string name="orders_reorder">Pedir novamente</string>
+    <string name="orders_empty_live">Nenhum pedido em andamento</string>
+    <string name="orders_empty_past">Nenhum pedido anterior</string>
+    <string name="orders_empty_message">Quando você fizer um pedido, ele aparece aqui.</string>
+    <string name="orders_empty_action">Fazer um pedido</string>
+    <string name="orders_retry">Tentar novamente</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>
