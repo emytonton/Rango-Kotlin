@@ -18,6 +18,9 @@ import com.rango.delivery.feature.checkout.CheckoutRoute
 import com.rango.delivery.feature.checkout.CheckoutViewModel
 import com.rango.delivery.feature.confirmed.ConfirmedRoute
 import com.rango.delivery.feature.confirmed.ConfirmedViewModel
+import com.rango.delivery.feature.orders.OrdersNavigation
+import com.rango.delivery.feature.orders.OrdersRoute
+import com.rango.delivery.feature.orders.OrdersViewModel
 import com.rango.delivery.feature.payment.PaymentRoute
 import com.rango.delivery.feature.payment.PaymentViewModel
 import com.rango.delivery.feature.product.ProductRoute
@@ -37,7 +40,7 @@ import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
-import com.rango.delivery.resources.route_orders
+import com.rango.delivery.resources.route_order_detail
 import com.rango.delivery.resources.route_profile
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
@@ -127,7 +130,20 @@ fun RangoNavHost(container: AppContainer) {
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<OrdersRoute>(Res.string.route_orders, navController::popBackStack)
+        composable<OrdersRoute> {
+            OrdersRoute(
+                viewModel = viewModel { OrdersViewModel(container.orderRepository) },
+                navigation = OrdersNavigation(
+                    onOpenOrder = { navController.navigate(OrderDetailRoute(it)) },
+                    onTrack = { navController.navigate(TrackingRoute(it)) },
+                    onCart = { navController.navigate(CartRoute) },
+                    onHome = { navController.popBackStack(HomeRoute, inclusive = false) },
+                    onTab = navController::navigateToTab,
+                ),
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
+        pending<OrderDetailRoute>(Res.string.route_order_detail, navController::popBackStack)
         pending<FavoritesRoute>(Res.string.route_favorites, navController::popBackStack)
         pending<ProfileRoute>(Res.string.route_profile, navController::popBackStack)
         composable<CartRoute> {

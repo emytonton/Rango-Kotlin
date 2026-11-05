@@ -48,4 +48,7 @@ data class ConfirmedRoute(val orderCode: String)
 data class TrackingRoute(val orderCode: String)
 
 @Serializable
+data class OrderDetailRoute(val orderCode: String)
+
+@Serializable
 data class ProductRoute(val productId: String)
