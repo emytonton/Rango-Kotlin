@@ -192,6 +192,10 @@ object RangoIcons {
 
     val ChevronRight: ImageVector by lazy { icon("ChevronRight", "M10,6L8.59,7.41 13.17,12l-4.58,4.59L10,18l6,-6z") }
 
+    val Flag: ImageVector by lazy { icon("Flag", "M14.4,6L14,4H5v17h2v-7h5.6l0.4,2h7V6z") }
+
+    val Replay: ImageVector by lazy { icon("Replay", "M12,5V1L7,6l5,5V7c3.31,0 6,2.69 6,6s-2.69,6 -6,6 -6,-2.69 -6,-6H4c0,4.42 3.58,8 8,8s8,-3.58 8,-8 -3.58,-8 -8,-8z") }
+
     private fun icon(name: String, path: String): ImageVector =
         ImageVector.Builder(
             name = name,
