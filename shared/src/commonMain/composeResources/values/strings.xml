@@ -179,7 +179,6 @@
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>
-    <string name="route_order_detail">Detalhes do pedido</string>
     <string name="route_favorites">Favoritos</string>
     <string name="route_profile">Perfil</string>
     <string name="route_cart">Carrinho</string>

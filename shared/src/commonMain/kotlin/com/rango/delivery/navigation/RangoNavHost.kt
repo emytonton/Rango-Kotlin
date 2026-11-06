@@ -18,6 +18,8 @@ import com.rango.delivery.feature.checkout.CheckoutRoute
 import com.rango.delivery.feature.checkout.CheckoutViewModel
 import com.rango.delivery.feature.confirmed.ConfirmedRoute
 import com.rango.delivery.feature.confirmed.ConfirmedViewModel
+import com.rango.delivery.feature.orderdetail.OrderDetailRoute
+import com.rango.delivery.feature.orderdetail.OrderDetailViewModel
 import com.rango.delivery.feature.orders.OrdersNavigation
 import com.rango.delivery.feature.orders.OrdersRoute
 import com.rango.delivery.feature.orders.OrdersViewModel
@@ -40,7 +42,6 @@ import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
 import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
-import com.rango.delivery.resources.route_order_detail
 import com.rango.delivery.resources.route_profile
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
@@ -143,7 +144,16 @@ fun RangoNavHost(container: AppContainer) {
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<OrderDetailRoute>(Res.string.route_order_detail, navController::popBackStack)
+        composable<OrderDetailRoute> { entry ->
+            val route = entry.toRoute<OrderDetailRoute>()
+            OrderDetailRoute(
+                viewModel = viewModel { OrderDetailViewModel(route.orderCode, container.orderRepository) },
+                orderCode = route.orderCode,
+                onBack = navController::popBackStack,
+                onCart = { navController.navigate(CartRoute) },
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         pending<FavoritesRoute>(Res.string.route_favorites, navController::popBackStack)
         pending<ProfileRoute>(Res.string.route_profile, navController::popBackStack)
         composable<CartRoute> {
