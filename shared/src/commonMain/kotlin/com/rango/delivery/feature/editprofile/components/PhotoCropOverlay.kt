@@ -29,6 +29,7 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -127,6 +128,7 @@ fun PhotoCropOverlay(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
+                .clipToBounds()
                 .pointerInput(crop) {
                     if (crop == null) return@pointerInput
                     detectTransformGestures { _, pan, gestureZoom, _ ->
@@ -152,7 +154,7 @@ fun PhotoCropOverlay(
                     val circle = Rect(center, viewport / 2)
                     val mask = Path().apply {
                         fillType = PathFillType.EvenOdd
-                        addRect(Rect(Offset.Zero, size))
+                        addRect(Rect(topLeft, drawn))
                         addOval(circle)
                     }
                     drawPath(mask, Color.Black.copy(alpha = 0.62f))
