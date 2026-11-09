@@ -15,6 +15,7 @@ import com.rango.delivery.data.payment.PaymentMethodDto
 import com.rango.delivery.data.payment.PaymentRepository
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.profile.SettingsDto
+import com.rango.delivery.data.profile.UpdateProfileRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -128,6 +129,12 @@ class ProfileViewModelTest {
         override suspend fun settings() = SettingsDto(theme)
 
         override suspend fun unreadNotifications() = unread
+
+        override suspend fun update(request: UpdateProfileRequest): UserDto = error("não usado")
+
+        override suspend fun uploadAvatar(jpeg: ByteArray): UserDto = error("não usado")
+
+        override suspend fun removeAvatar(): UserDto = error("não usado")
     }
 
     private class FakeAddresses : AddressRepository {
