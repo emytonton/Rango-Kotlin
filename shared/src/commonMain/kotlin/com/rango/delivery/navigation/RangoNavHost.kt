@@ -1,6 +1,9 @@
 package com.rango.delivery.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -20,6 +23,9 @@ import com.rango.delivery.feature.confirmed.ConfirmedRoute
 import com.rango.delivery.feature.confirmed.ConfirmedViewModel
 import com.rango.delivery.feature.orderdetail.OrderDetailRoute
 import com.rango.delivery.feature.orderdetail.OrderDetailViewModel
+import com.rango.delivery.feature.favorites.FavoritesNavigation
+import com.rango.delivery.feature.favorites.FavoritesRoute
+import com.rango.delivery.feature.favorites.FavoritesViewModel
 import com.rango.delivery.feature.orders.OrdersNavigation
 import com.rango.delivery.feature.orders.OrdersRoute
 import com.rango.delivery.feature.orders.OrdersViewModel
@@ -35,12 +41,12 @@ import com.rango.delivery.feature.tracking.TrackingViewModel
 import com.rango.delivery.di.AppContainer
 import com.rango.delivery.feature.welcome.WelcomeRoute
 import com.rango.delivery.feature.welcome.WelcomeViewModel
+import com.rango.delivery.core.designsystem.component.LocalTabBadges
 import com.rango.delivery.core.designsystem.component.RangoTab
 import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.route_favorites
 import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_profile
 import com.rango.delivery.feature.login.LoginRoute
@@ -53,7 +59,15 @@ import org.jetbrains.compose.resources.stringResource
 @Composable
 fun RangoNavHost(container: AppContainer) {
     val navController = rememberNavController()
+    val favoriteIds by container.favoriteRepository.favoriteIds.collectAsStateWithLifecycle()
 
+    CompositionLocalProvider(LocalTabBadges provides mapOf(RangoTab.Favorites to favoriteIds.size)) {
+        RangoNavGraph(container, navController)
+    }
+}
+
+@Composable
+private fun RangoNavGraph(container: AppContainer, navController: NavHostController) {
     NavHost(navController = navController, startDestination = WelcomeRoute) {
         composable<WelcomeRoute> {
             WelcomeRoute(
@@ -154,7 +168,17 @@ fun RangoNavHost(container: AppContainer) {
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<FavoritesRoute>(Res.string.route_favorites, navController::popBackStack)
+        composable<FavoritesRoute> {
+            FavoritesRoute(
+                viewModel = viewModel { FavoritesViewModel(container.favoriteRepository, container.cartRepository) },
+                navigation = FavoritesNavigation(
+                    onOpenProduct = { navController.navigate(ProductRoute(it)) },
+                    onExplore = { navController.popBackStack(HomeRoute, inclusive = false) },
+                    onTab = navController::navigateToTab,
+                ),
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         pending<ProfileRoute>(Res.string.route_profile, navController::popBackStack)
         composable<CartRoute> {
             CartRoute(
