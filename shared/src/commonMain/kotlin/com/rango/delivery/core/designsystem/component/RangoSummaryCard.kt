@@ -16,6 +16,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rango.delivery.core.designsystem.theme.Rango
@@ -31,6 +32,7 @@ fun RangoSummaryCard(
     modifier: Modifier = Modifier,
     title: String? = null,
     header: (@Composable ColumnScope.() -> Unit)? = null,
+    totalFontSize: TextUnit = 22.sp,
 ) {
     val colors = Rango.colors
     val shape = RoundedCornerShape(20.dp)
@@ -78,7 +80,7 @@ fun RangoSummaryCard(
             )
             Text(
                 text = total,
-                style = Rango.typography.title.copy(fontSize = 22.sp, letterSpacing = (-0.6).sp),
+                style = Rango.typography.title.copy(fontSize = totalFontSize, letterSpacing = (-0.6).sp),
                 color = colors.primary,
             )
         }

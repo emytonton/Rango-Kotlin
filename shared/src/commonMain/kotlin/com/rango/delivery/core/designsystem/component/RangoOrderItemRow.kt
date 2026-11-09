@@ -11,6 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rango.delivery.core.designsystem.theme.Rango
@@ -24,6 +25,9 @@ fun RangoOrderItemRow(
     imageHue: Float,
     modifier: Modifier = Modifier,
     addons: String? = null,
+    restaurant: String? = null,
+    imageSize: Dp = 36.dp,
+    imageRadius: Dp = 11.dp,
 ) {
     val colors = Rango.colors
     Row(
@@ -31,8 +35,8 @@ fun RangoOrderItemRow(
         horizontalArrangement = Arrangement.spacedBy(11.dp),
         modifier = modifier.fillMaxWidth(),
     ) {
-        RangoProductImage(imageUrl = imageUrl, hue = imageHue, cornerRadius = 11.dp, modifier = Modifier.size(36.dp))
-        Column(modifier = Modifier.weight(1f)) {
+        RangoProductImage(imageUrl = imageUrl, hue = imageHue, cornerRadius = imageRadius, modifier = Modifier.size(imageSize))
+        Column(verticalArrangement = Arrangement.spacedBy(1.dp), modifier = Modifier.weight(1f)) {
             Text(
                 text = "$quantity× $name",
                 style = Rango.typography.body.copy(fontSize = 13.sp, fontWeight = FontWeight.Bold),
@@ -43,6 +47,13 @@ fun RangoOrderItemRow(
             if (addons != null) {
                 Text(
                     text = "+ $addons",
+                    style = Rango.typography.caption.copy(fontSize = 11.sp, fontWeight = FontWeight.Medium),
+                    color = colors.text2,
+                )
+            }
+            if (restaurant != null) {
+                Text(
+                    text = restaurant,
                     style = Rango.typography.caption.copy(fontSize = 11.sp, fontWeight = FontWeight.Medium),
                     color = colors.text2,
                 )

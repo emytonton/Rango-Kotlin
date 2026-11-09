@@ -54,14 +54,32 @@ data class TimelineStepDto(
 data class CourierDto(val name: String, val vehicle: String, val photoUrl: String? = null)
 
 @Serializable
+data class OrderItemDto(
+    val productId: String? = null,
+    val name: String,
+    val restaurant: String? = null,
+    val imageHue: Int,
+    val imageUrl: String? = null,
+    val quantity: Int,
+    val unitPrice: Double,
+    val total: Double,
+)
+
+@Serializable
+data class OrderAddressDto(val label: String, val line: String, val cityLine: String)
+
+@Serializable
 data class OrderDetailDto(
     val id: Long,
     val code: String,
     val status: String,
     val statusLabel: String,
     val step: Int,
+    val createdAt: String = "",
     val itemCount: Int,
     val total: Double,
+    val items: List<OrderItemDto> = emptyList(),
+    val address: OrderAddressDto? = null,
     val estimatedDelivery: EstimatedDeliveryDto,
     val payment: OrderPaymentDto,
     val amounts: OrderAmountsDto,
