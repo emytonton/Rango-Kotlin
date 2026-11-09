@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
@@ -118,6 +118,7 @@ fun ProfileRoute(
 fun ProfileScreen(state: ProfileUiState, actions: ProfileActions) {
     val colors = Rango.colors
     Column(modifier = Modifier.fillMaxSize().background(colors.background)) {
+        Box(Modifier.fillMaxWidth().windowInsetsTopHeight(WindowInsets.statusBars).background(colors.surface))
         Column(modifier = Modifier.weight(1f).fillMaxWidth().verticalScroll(rememberScrollState())) {
             ProfileHeader(state, actions.navigation)
             when {
@@ -138,7 +139,7 @@ fun ProfileScreen(state: ProfileUiState, actions: ProfileActions) {
 @Composable
 private fun ProfileHeader(state: ProfileUiState, navigation: ProfileNavigation) {
     val colors = Rango.colors
-    Column(modifier = Modifier.fillMaxWidth().background(colors.surface).windowInsetsPadding(WindowInsets.statusBars)) {
+    Column(modifier = Modifier.fillMaxWidth().background(colors.surface)) {
         Column(
             verticalArrangement = Arrangement.spacedBy(15.dp),
             modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 20.dp, top = 12.dp, bottom = 22.dp),
