@@ -34,6 +34,8 @@ import com.rango.delivery.feature.payment.PaymentRoute
 import com.rango.delivery.feature.payment.PaymentViewModel
 import com.rango.delivery.feature.product.ProductRoute
 import com.rango.delivery.feature.profile.ProfileNavigation
+import com.rango.delivery.feature.editprofile.EditProfileRoute
+import com.rango.delivery.feature.editprofile.EditProfileViewModel
 import com.rango.delivery.feature.profile.ProfileRoute
 import com.rango.delivery.feature.profile.ProfileViewModel
 import com.rango.delivery.feature.product.ProductViewModel
@@ -54,7 +56,6 @@ import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
 import com.rango.delivery.resources.route_notifications
-import com.rango.delivery.resources.route_edit_profile
 import com.rango.delivery.resources.route_settings
 import com.rango.delivery.resources.route_theme
 import com.rango.delivery.feature.login.LoginRoute
@@ -211,7 +212,13 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<EditProfileRoute>(Res.string.route_edit_profile, navController::popBackStack)
+        composable<EditProfileRoute> {
+            EditProfileRoute(
+                viewModel = viewModel { EditProfileViewModel(container.profileRepository) },
+                onBack = navController::popBackStack,
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         pending<SettingsRoute>(Res.string.route_settings, navController::popBackStack)
         pending<ThemeRoute>(Res.string.route_theme, navController::popBackStack)
         composable<CartRoute> {

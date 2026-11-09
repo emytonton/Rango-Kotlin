@@ -215,7 +215,6 @@
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>
-    <string name="route_edit_profile">Editar perfil</string>
     <string name="route_settings">Configurações</string>
     <string name="route_theme">Tema</string>
     <string name="route_cart">Carrinho</string>
