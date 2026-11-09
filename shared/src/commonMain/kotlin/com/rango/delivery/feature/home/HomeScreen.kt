@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rango.delivery.core.designsystem.component.RangoAvatar
 import com.rango.delivery.core.designsystem.component.LocalToast
 import com.rango.delivery.core.designsystem.component.ProductCardModel
 import com.rango.delivery.core.designsystem.component.RangoBadgeIconButton
@@ -142,7 +143,14 @@ private fun HomeHeader(state: HomeUiState, actions: HomeActions) {
             modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 4.dp),
         ) {
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(11.dp)) {
-                Avatar(initials = state.initials, onClick = actions.onProfile)
+                RangoAvatar(
+                    initials = state.initials,
+                    imageUrl = state.avatarUrl,
+                    size = 42.dp,
+                    cornerRadius = 15.dp,
+                    fontSize = 13.sp,
+                    modifier = Modifier.clip(RoundedCornerShape(15.dp)).clickable(onClick = actions.onProfile),
+                )
                 Column(verticalArrangement = Arrangement.spacedBy(1.dp), modifier = Modifier.weight(1f)) {
                     Text(
                         text = stringResource(Res.string.home_greeting, state.firstName),
@@ -184,27 +192,6 @@ private fun HomeHeader(state: HomeUiState, actions: HomeActions) {
         }
         CategoryChips(state = state, onSelect = actions.onSelectCategory)
         HorizontalDivider(thickness = 1.dp, color = colors.border)
-    }
-}
-
-@Composable
-private fun Avatar(initials: String, onClick: () -> Unit) {
-    val colors = Rango.colors
-    val shape = RoundedCornerShape(15.dp)
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .size(42.dp)
-            .clip(shape)
-            .background(colors.soft)
-            .border(1.dp, colors.border, shape)
-            .clickable(onClick = onClick),
-    ) {
-        Text(
-            text = initials,
-            style = Rango.typography.label.copy(fontSize = 13.sp, fontWeight = FontWeight.ExtraBold),
-            color = colors.primary,
-        )
     }
 }
 
