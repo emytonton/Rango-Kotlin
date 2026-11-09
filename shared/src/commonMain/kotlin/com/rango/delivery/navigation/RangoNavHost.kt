@@ -2,6 +2,7 @@ package com.rango.delivery.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -43,6 +44,8 @@ import com.rango.delivery.feature.welcome.WelcomeRoute
 import com.rango.delivery.feature.welcome.WelcomeViewModel
 import com.rango.delivery.core.designsystem.component.LocalTabBadges
 import com.rango.delivery.core.designsystem.component.RangoTab
+import com.rango.delivery.data.favorite.FavoriteRepository
+import kotlinx.coroutines.CancellationException
 import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
@@ -114,6 +117,7 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
             )
         }
         composable<HomeRoute> {
+            LaunchedEffect(Unit) { container.favoriteRepository.syncQuietly() }
             HomeRoute(
                 viewModel = viewModel { HomeViewModel(container.catalogRepository, container.cartRepository) },
                 navigation = HomeActions(
@@ -277,6 +281,15 @@ private fun NavHostController.navigateToTab(tab: RangoTab) {
     navigate(route) {
         popUpTo(HomeRoute)
         launchSingleTop = true
+    }
+}
+
+private suspend fun FavoriteRepository.syncQuietly() {
+    try {
+        list()
+    } catch (e: CancellationException) {
+        throw e
+    } catch (e: Exception) {
     }
 }
 
