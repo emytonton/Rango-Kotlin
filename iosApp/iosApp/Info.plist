@@ -4,5 +4,9 @@
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>O Rango usa a câmera para tirar a sua foto de perfil.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>O Rango acessa a galeria para você escolher a sua foto de perfil.</string>
 </dict>
 </plist>
