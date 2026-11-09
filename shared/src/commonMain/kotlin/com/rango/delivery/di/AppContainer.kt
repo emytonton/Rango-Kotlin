@@ -16,6 +16,9 @@ import com.rango.delivery.data.cart.DefaultCartRepository
 import com.rango.delivery.data.catalog.CatalogApi
 import com.rango.delivery.data.catalog.CatalogRepository
 import com.rango.delivery.data.catalog.DefaultCatalogRepository
+import com.rango.delivery.data.favorite.DefaultFavoriteRepository
+import com.rango.delivery.data.favorite.FavoriteApi
+import com.rango.delivery.data.favorite.FavoriteRepository
 import com.rango.delivery.data.order.DefaultOrderRepository
 import com.rango.delivery.data.order.OrderApi
 import com.rango.delivery.data.order.OrderRepository
@@ -37,7 +40,9 @@ class AppContainer(secureStorage: SecureStorage) {
 
     private val authorizedCaller = AuthorizedCaller(sessionRepository)
 
-    val catalogRepository: CatalogRepository = DefaultCatalogRepository(CatalogApi(httpClient), authorizedCaller)
+    val favoriteRepository: FavoriteRepository = DefaultFavoriteRepository(FavoriteApi(httpClient), authorizedCaller)
+    val catalogRepository: CatalogRepository =
+        DefaultCatalogRepository(CatalogApi(httpClient), authorizedCaller, favoriteRepository)
     val cartRepository: CartRepository = DefaultCartRepository(CartApi(httpClient), authorizedCaller)
     val addressRepository: AddressRepository = DefaultAddressRepository(AddressApi(httpClient), authorizedCaller)
     val searchRepository: SearchRepository = DefaultSearchRepository(SearchApi(httpClient), authorizedCaller)

@@ -1,6 +1,7 @@
 package com.rango.delivery.data.catalog
 
 import com.rango.delivery.data.auth.AuthorizedCaller
+import com.rango.delivery.data.favorite.FavoriteRepository
 
 interface CatalogRepository {
     suspend fun home(): HomeDto
@@ -12,6 +13,7 @@ interface CatalogRepository {
 class DefaultCatalogRepository(
     private val api: CatalogApi,
     private val caller: AuthorizedCaller,
+    private val favorites: FavoriteRepository,
 ) : CatalogRepository {
 
     override suspend fun home(): HomeDto = caller.call { api.home(it) }
@@ -22,5 +24,5 @@ class DefaultCatalogRepository(
         caller.call { api.productsByCategory(it, categorySlug) }
 
     override suspend fun setFavorite(productId: String, favorite: Boolean): Boolean =
-        caller.call { api.setFavorite(it, productId, favorite) }.isFavorite
+        favorites.setFavorite(productId, favorite)
 }
