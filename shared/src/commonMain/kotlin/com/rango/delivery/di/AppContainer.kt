@@ -16,6 +16,9 @@ import com.rango.delivery.data.cart.DefaultCartRepository
 import com.rango.delivery.data.catalog.CatalogApi
 import com.rango.delivery.data.catalog.CatalogRepository
 import com.rango.delivery.data.catalog.DefaultCatalogRepository
+import com.rango.delivery.data.connection.ConnectionApi
+import com.rango.delivery.data.connection.ConnectionRepository
+import com.rango.delivery.data.connection.DefaultConnectionRepository
 import com.rango.delivery.data.favorite.DefaultFavoriteRepository
 import com.rango.delivery.data.favorite.FavoriteApi
 import com.rango.delivery.data.favorite.FavoriteRepository
@@ -33,6 +36,7 @@ import com.rango.delivery.data.search.DefaultSearchRepository
 import com.rango.delivery.data.search.SearchApi
 import com.rango.delivery.data.search.SearchRepository
 import com.rango.delivery.data.storage.SecureStorage
+import com.rango.delivery.data.sync.DataSync
 
 class AppContainer(secureStorage: SecureStorage) {
     private val httpClient = createHttpClient()
@@ -53,4 +57,6 @@ class AppContainer(secureStorage: SecureStorage) {
     val paymentSelection = PaymentSelection()
     val orderRepository: OrderRepository = DefaultOrderRepository(OrderApi(httpClient), authorizedCaller)
     val profileRepository: ProfileRepository = DefaultProfileRepository(ProfileApi(httpClient), authorizedCaller)
+    val connectionRepository: ConnectionRepository = DefaultConnectionRepository(ConnectionApi(httpClient))
+    val dataSync = DataSync(profileRepository, favoriteRepository, cartRepository)
 }
