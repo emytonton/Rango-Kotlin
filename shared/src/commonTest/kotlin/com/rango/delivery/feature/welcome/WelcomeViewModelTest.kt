@@ -58,5 +58,6 @@ class WelcomeViewModelTest {
         override suspend fun renewAccessToken(expiredToken: String?): String? = null
         override fun save(session: AuthSessionDto) = Unit
         override fun clear() = Unit
+        override suspend fun logout() = Unit
     }
 }

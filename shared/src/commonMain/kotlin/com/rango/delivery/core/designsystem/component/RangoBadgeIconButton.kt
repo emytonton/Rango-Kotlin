@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.rango.delivery.core.designsystem.theme.Rango
@@ -32,14 +33,15 @@ fun RangoBadgeIconButton(
     filled: Boolean = false,
     showDot: Boolean = false,
     count: Int = 0,
+    size: Dp = 42.dp,
 ) {
     val colors = Rango.colors
-    val shape = RoundedCornerShape(14.dp)
+    val shape = RoundedCornerShape(size / 3)
     Box(modifier = modifier) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = Modifier
-                .size(42.dp)
+                .size(size)
                 .clip(shape)
                 .background(if (filled) colors.primary else colors.surface)
                 .then(if (filled) Modifier else Modifier.border(1.dp, colors.border, shape))

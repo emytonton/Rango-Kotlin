@@ -26,6 +26,9 @@ import com.rango.delivery.data.payment.DefaultPaymentRepository
 import com.rango.delivery.data.payment.PaymentApi
 import com.rango.delivery.data.payment.PaymentRepository
 import com.rango.delivery.data.payment.PaymentSelection
+import com.rango.delivery.data.profile.DefaultProfileRepository
+import com.rango.delivery.data.profile.ProfileApi
+import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.search.DefaultSearchRepository
 import com.rango.delivery.data.search.SearchApi
 import com.rango.delivery.data.search.SearchRepository
@@ -49,4 +52,5 @@ class AppContainer(secureStorage: SecureStorage) {
     val paymentRepository: PaymentRepository = DefaultPaymentRepository(PaymentApi(httpClient), authorizedCaller)
     val paymentSelection = PaymentSelection()
     val orderRepository: OrderRepository = DefaultOrderRepository(OrderApi(httpClient), authorizedCaller)
+    val profileRepository: ProfileRepository = DefaultProfileRepository(ProfileApi(httpClient), authorizedCaller)
 }

@@ -52,3 +52,12 @@ data class OrderDetailRoute(val orderCode: String)
 
 @Serializable
 data class ProductRoute(val productId: String)
+
+@Serializable
+data object EditProfileRoute
+
+@Serializable
+data object SettingsRoute
+
+@Serializable
+data object ThemeRoute
