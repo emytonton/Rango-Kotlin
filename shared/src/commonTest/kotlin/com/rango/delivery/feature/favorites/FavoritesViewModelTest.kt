@@ -126,6 +126,8 @@ class FavoritesViewModelTest {
             changed = productId to favorite
             return favorite
         }
+
+        override fun clearLocal() = Unit
     }
 
     private class FakeCart : CartRepository {

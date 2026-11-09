@@ -35,6 +35,7 @@ interface FavoriteRepository {
     val favoriteIds: StateFlow<Set<String>>
     suspend fun list(): List<ProductSummaryDto>
     suspend fun setFavorite(productId: String, favorite: Boolean): Boolean
+    fun clearLocal()
 }
 
 class DefaultFavoriteRepository(
@@ -55,5 +56,9 @@ class DefaultFavoriteRepository(
         val result = caller.call { api.set(it, productId, favorite) }.isFavorite
         ids.update { if (result) it + productId else it - productId }
         return result
+    }
+
+    override fun clearLocal() {
+        ids.value = emptySet()
     }
 }

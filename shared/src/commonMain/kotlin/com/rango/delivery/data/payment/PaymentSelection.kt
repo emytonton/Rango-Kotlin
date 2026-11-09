@@ -19,4 +19,8 @@ class PaymentSelection {
     fun select(payment: SelectedPayment) {
         _selected.value = payment
     }
+
+    fun clear() {
+        _selected.value = null
+    }
 }
