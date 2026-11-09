@@ -54,6 +54,7 @@ class AuthorizedCallerTest {
         override suspend fun restore(): SessionRestore = SessionRestore.None
         override suspend fun renewAccessToken(expiredToken: String?): String? = renewed?.also { state.value = it }
         override fun save(session: AuthSessionDto) = Unit
+        override suspend fun logout() = Unit
         override fun clear() {
             cleared = true
             state.value = null

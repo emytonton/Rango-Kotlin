@@ -21,6 +21,7 @@ interface SessionRepository {
     suspend fun renewAccessToken(expiredToken: String?): String?
     fun save(session: AuthSessionDto)
     fun clear()
+    suspend fun logout()
 }
 
 class DefaultSessionRepository(
@@ -77,6 +78,17 @@ class DefaultSessionRepository(
         storage.remove(KEY_REFRESH)
         storage.remove(KEY_USER_NAME)
         _accessToken.value = null
+    }
+
+    override suspend fun logout() {
+        val refreshToken = storage.get(KEY_REFRESH)
+        clear()
+        if (refreshToken == null) return
+        try {
+            api.logout(refreshToken)
+        } catch (e: ApiException) {
+        } catch (e: NetworkException) {
+        }
     }
 
     private companion object {
