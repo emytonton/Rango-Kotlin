@@ -33,6 +33,9 @@ import com.rango.delivery.feature.orders.OrdersViewModel
 import com.rango.delivery.feature.payment.PaymentRoute
 import com.rango.delivery.feature.payment.PaymentViewModel
 import com.rango.delivery.feature.product.ProductRoute
+import com.rango.delivery.feature.profile.ProfileNavigation
+import com.rango.delivery.feature.profile.ProfileRoute
+import com.rango.delivery.feature.profile.ProfileViewModel
 import com.rango.delivery.feature.product.ProductViewModel
 import com.rango.delivery.feature.search.SearchFilters
 import com.rango.delivery.feature.search.SearchRoute
@@ -51,7 +54,9 @@ import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
 import com.rango.delivery.resources.route_notifications
-import com.rango.delivery.resources.route_profile
+import com.rango.delivery.resources.route_edit_profile
+import com.rango.delivery.resources.route_settings
+import com.rango.delivery.resources.route_theme
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
 import com.rango.delivery.feature.signup.SignupRoute
@@ -183,7 +188,32 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<ProfileRoute>(Res.string.route_profile, navController::popBackStack)
+        composable<ProfileRoute> {
+            ProfileRoute(
+                viewModel = viewModel {
+                    ProfileViewModel(
+                        profileRepository = container.profileRepository,
+                        addressRepository = container.addressRepository,
+                        paymentRepository = container.paymentRepository,
+                        sessionRepository = container.sessionRepository,
+                    )
+                },
+                navigation = ProfileNavigation(
+                    onNotifications = { navController.navigate(NotificationsRoute) },
+                    onEditProfile = { navController.navigate(EditProfileRoute) },
+                    onAddresses = { navController.navigate(AddressRoute) },
+                    onPayments = { navController.navigate(PaymentRoute) },
+                    onSettings = { navController.navigate(SettingsRoute) },
+                    onTheme = { navController.navigate(ThemeRoute) },
+                    onTab = navController::navigateToTab,
+                ),
+                onLoggedOut = navController::navigateToWelcome,
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
+        pending<EditProfileRoute>(Res.string.route_edit_profile, navController::popBackStack)
+        pending<SettingsRoute>(Res.string.route_settings, navController::popBackStack)
+        pending<ThemeRoute>(Res.string.route_theme, navController::popBackStack)
         composable<CartRoute> {
             CartRoute(
                 viewModel = viewModel { CartViewModel(container.cartRepository) },
