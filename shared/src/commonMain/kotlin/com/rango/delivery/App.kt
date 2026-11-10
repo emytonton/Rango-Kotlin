@@ -70,7 +70,7 @@ fun App(container: AppContainer) {
             .build()
     }
     val pushWatcher = container.pushWatcher
-    LaunchedEffect(pushWatcher) { pushWatcher.run() }
+    LaunchedEffect(pushWatcher) { pushWatcher.start() }
     LifecycleStartEffect(pushWatcher) {
         pushWatcher.inForeground = true
         onStopOrDispose { pushWatcher.inForeground = false }

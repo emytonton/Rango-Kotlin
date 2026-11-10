@@ -5,10 +5,16 @@ import com.rango.delivery.data.notification.NotificationDto
 import com.rango.delivery.data.notification.NotificationRepository
 import com.rango.delivery.data.storage.SecureStorage
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
+import kotlin.concurrent.Volatile
 
 data class PushMessage(val id: Long, val title: String, val body: String)
 
@@ -18,6 +24,7 @@ class PushWatcher(
     private val storage: SecureStorage,
     private val notifier: LocalNotifier,
     private val intervalMillis: Long = POLL_INTERVAL_MS,
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
 ) {
     private val _banner = MutableStateFlow<PushMessage?>(null)
     val banner: StateFlow<PushMessage?> = _banner.asStateFlow()
@@ -25,9 +32,17 @@ class PushWatcher(
     private val _openRequested = MutableStateFlow(false)
     val openRequested: StateFlow<Boolean> = _openRequested.asStateFlow()
 
+    @Volatile
     var inForeground: Boolean = true
 
-    suspend fun run() {
+    private var job: Job? = null
+
+    fun start() {
+        if (job?.isActive == true) return
+        job = scope.launch { run() }
+    }
+
+    private suspend fun run() {
         while (true) {
             if (sessionRepository.accessToken.value != null) poll()
             delay(intervalMillis)
