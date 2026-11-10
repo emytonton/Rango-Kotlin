@@ -13,6 +13,7 @@ import com.rango.delivery.data.auth.UserDto
 import com.rango.delivery.data.payment.CreateCardRequest
 import com.rango.delivery.data.payment.PaymentMethodDto
 import com.rango.delivery.data.payment.PaymentRepository
+import com.rango.delivery.data.profile.NotificationPrefsDto
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.profile.SettingsDto
 import com.rango.delivery.data.storage.InMemoryStorage
@@ -132,6 +133,7 @@ class ProfileViewModelTest {
 
         override suspend fun unreadNotifications() = unread
         override suspend fun updateTheme(theme: String) = SettingsDto(theme)
+        override suspend fun updateNotifications(prefs: NotificationPrefsDto) = SettingsDto(notifications = prefs)
 
         override suspend fun update(request: UpdateProfileRequest): UserDto = error("não usado")
 

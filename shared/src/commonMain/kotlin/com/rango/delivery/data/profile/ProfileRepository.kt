@@ -21,13 +21,19 @@ import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class SettingsDto(val theme: String = "system")
+data class NotificationPrefsDto(val orders: Boolean, val promos: Boolean, val news: Boolean)
+
+@Serializable
+data class SettingsDto(
+    val theme: String = "system",
+    val notifications: NotificationPrefsDto = NotificationPrefsDto(orders = true, promos = true, news = false),
+)
 
 @Serializable
 data class NotificationCountDto(val unreadCount: Int = 0)
 
 @Serializable
-data class UpdateSettingsRequest(val theme: String)
+data class UpdateSettingsRequest(val theme: String? = null, val notifications: NotificationPrefsDto? = null)
 
 @Serializable
 data class UpdateProfileRequest(val name: String, val email: String, val phone: String)
@@ -94,6 +100,7 @@ interface ProfileRepository {
     suspend fun me(): UserDto
     suspend fun settings(): SettingsDto
     suspend fun updateTheme(theme: String): SettingsDto
+    suspend fun updateNotifications(prefs: NotificationPrefsDto): SettingsDto
     suspend fun unreadNotifications(): Int
     suspend fun update(request: UpdateProfileRequest): UserDto
     suspend fun uploadAvatar(jpeg: ByteArray): UserDto
@@ -109,7 +116,10 @@ class DefaultProfileRepository(
     override suspend fun settings(): SettingsDto = caller.call { api.settings(it) }
 
     override suspend fun updateTheme(theme: String): SettingsDto =
-        caller.call { api.updateSettings(it, UpdateSettingsRequest(theme)) }
+        caller.call { api.updateSettings(it, UpdateSettingsRequest(theme = theme)) }
+
+    override suspend fun updateNotifications(prefs: NotificationPrefsDto): SettingsDto =
+        caller.call { api.updateSettings(it, UpdateSettingsRequest(notifications = prefs)) }
 
     override suspend fun unreadNotifications(): Int = caller.call { api.unreadNotifications(it) }
 

@@ -3,6 +3,7 @@ package com.rango.delivery.feature.theme
 import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.data.auth.SessionExpiredException
 import com.rango.delivery.data.auth.UserDto
+import com.rango.delivery.data.profile.NotificationPrefsDto
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.profile.SettingsDto
 import com.rango.delivery.data.profile.UpdateProfileRequest
@@ -116,6 +117,7 @@ class ThemeViewModelTest {
             return SettingsDto(theme)
         }
 
+        override suspend fun updateNotifications(prefs: NotificationPrefsDto) = SettingsDto(notifications = prefs)
         override suspend fun me(): UserDto = error("não usado")
         override suspend fun settings() = SettingsDto()
         override suspend fun unreadNotifications() = 0
