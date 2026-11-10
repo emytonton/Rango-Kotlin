@@ -35,6 +35,7 @@ import com.rango.delivery.data.payment.PaymentSelection
 import com.rango.delivery.data.profile.DefaultProfileRepository
 import com.rango.delivery.data.profile.ProfileApi
 import com.rango.delivery.data.profile.ProfileRepository
+import com.rango.delivery.data.push.LocalNotifier
 import com.rango.delivery.data.search.DefaultSearchRepository
 import com.rango.delivery.data.search.SearchApi
 import com.rango.delivery.data.search.SearchRepository
@@ -42,7 +43,7 @@ import com.rango.delivery.data.storage.SecureStorage
 import com.rango.delivery.data.sync.DataSync
 import com.rango.delivery.data.theme.ThemeRepository
 
-class AppContainer(secureStorage: SecureStorage) {
+class AppContainer(secureStorage: SecureStorage, localNotifier: LocalNotifier) {
     private val httpClient = createHttpClient()
     private val authApi = AuthApi(httpClient)
 
