@@ -204,6 +204,7 @@ class SettingsViewModelTest {
         }
 
         override suspend fun unreadNotifications() = 0
+        override suspend fun updateTheme(theme: String) = SettingsDto(theme)
         override suspend fun update(request: UpdateProfileRequest): UserDto = error("não usado")
         override suspend fun uploadAvatar(jpeg: ByteArray): UserDto = error("não usado")
         override suspend fun removeAvatar(): UserDto = error("não usado")

@@ -129,6 +129,7 @@ class ProfileViewModelTest {
         override suspend fun settings() = SettingsDto(theme)
 
         override suspend fun unreadNotifications() = unread
+        override suspend fun updateTheme(theme: String) = SettingsDto(theme)
 
         override suspend fun update(request: UpdateProfileRequest): UserDto = error("não usado")
 
