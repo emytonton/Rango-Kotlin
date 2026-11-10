@@ -6,7 +6,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -31,6 +30,8 @@ import com.rango.delivery.feature.favorites.FavoritesRoute
 import com.rango.delivery.feature.favorites.FavoritesViewModel
 import com.rango.delivery.feature.notifications.NotificationsRoute
 import com.rango.delivery.feature.notifications.NotificationsViewModel
+import com.rango.delivery.feature.notificationsettings.NotificationSettingsRoute
+import com.rango.delivery.feature.notificationsettings.NotificationSettingsViewModel
 import com.rango.delivery.feature.orders.OrdersNavigation
 import com.rango.delivery.feature.orders.OrdersRoute
 import com.rango.delivery.feature.orders.OrdersViewModel
@@ -63,14 +64,10 @@ import kotlinx.coroutines.CancellationException
 import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
-import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.route_notification_settings
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
 import com.rango.delivery.feature.signup.SignupRoute
 import com.rango.delivery.feature.signup.SignupViewModel
-import org.jetbrains.compose.resources.StringResource
-import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun RangoNavHost(container: AppContainer) {
@@ -263,7 +260,15 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<NotificationSettingsRoute>(Res.string.route_notification_settings, navController::popBackStack)
+        composable<NotificationSettingsRoute> {
+            NotificationSettingsRoute(
+                viewModel = viewModel {
+                    NotificationSettingsViewModel(container.profileRepository, container.localNotifier)
+                },
+                onBack = navController::popBackStack,
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         composable<ThemeRoute> {
             ThemeRoute(
                 viewModel = viewModel { ThemeViewModel(container.themeRepository) },
@@ -392,8 +397,4 @@ private fun NavHostController.navigateToWelcome() {
     navigate(WelcomeRoute) {
         popUpTo(HomeRoute) { inclusive = true }
     }
-}
-
-private inline fun <reified T : Any> NavGraphBuilder.pending(title: StringResource, noinline onBack: () -> Unit) {
-    composable<T> { PendingScreen(stringResource(title), onBack = { onBack() }) }
 }
