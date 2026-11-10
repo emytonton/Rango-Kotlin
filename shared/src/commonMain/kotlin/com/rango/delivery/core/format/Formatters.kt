@@ -34,3 +34,17 @@ fun formatOrderDate(iso: String, now: Instant, timeZone: TimeZone): String {
     }
     return "$day · $time"
 }
+
+fun formatRelativeTime(iso: String, now: Instant, timeZone: TimeZone): String {
+    val instant = Instant.parse(iso)
+    val minutes = (now - instant).inWholeMinutes
+    if (minutes < 1) return "agora"
+    if (minutes < 60) return "há $minutes min"
+    val local = instant.toLocalDateTime(timeZone).date
+    val today = now.toLocalDateTime(timeZone).date
+    return when {
+        local == today -> "há ${minutes / 60} h"
+        local == today.minus(DatePeriod(days = 1)) -> "ontem"
+        else -> "${local.day.toString().padStart(2, '0')} ${MONTHS[local.month.ordinal]}"
+    }
+}
