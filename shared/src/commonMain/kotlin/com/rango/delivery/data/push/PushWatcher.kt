@@ -47,7 +47,7 @@ class PushWatcher(
 
     private suspend fun run() {
         while (true) {
-            if (sessionRepository.accessToken.value != null) poll()
+            if (sessionRepository.accessToken.value != null) poll() else storage.remove(KEY_SEEN)
             delay(intervalMillis)
         }
     }
