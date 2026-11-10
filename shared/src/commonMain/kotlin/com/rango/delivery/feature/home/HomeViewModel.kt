@@ -35,6 +35,7 @@ data class HomeUiState(
     val errorMessage: String? = null,
     val firstName: String = "",
     val initials: String = "",
+    val avatarUrl: String? = null,
     val addressShort: String? = null,
     val cartCount: Int = 0,
     val hasUnreadNotifications: Boolean = false,
@@ -175,6 +176,7 @@ class HomeViewModel(
 private fun HomeUiState.withHome(home: HomeDto): HomeUiState = copy(
     firstName = home.user.firstName,
     initials = home.user.name.split(" ").filter { it.isNotBlank() }.take(2).joinToString("") { it.first().uppercase() },
+    avatarUrl = home.user.avatarUrl?.let { apiBaseUrl + it },
     addressShort = home.selectedAddress?.line?.substringBefore(" · "),
     cartCount = home.cartItemCount,
     hasUnreadNotifications = home.unreadNotifications > 0,

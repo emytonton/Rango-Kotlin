@@ -240,6 +240,40 @@ object RangoIcons {
         )
     }
 
+    val PhotoCamera: ImageVector by lazy {
+        icon(
+            "PhotoCamera",
+            "M12,12m-3.2,0a3.2,3.2 0,1 1,6.4 0a3.2,3.2 0,1 1,-6.4 0" +
+                "M9,2L7.17,4H4c-1.1,0 -2,0.9 -2,2v12c0,1.1 0.9,2 2,2h16c1.1,0 2,-0.9 2,-2V6c0,-1.1 -0.9,-2 -2,-2h-3.17L15,2H9z" +
+                "M12,17c-2.76,0 -5,-2.24 -5,-5s2.24,-5 5,-5 5,2.24 5,5 -2.24,5 -5,5z",
+        )
+    }
+
+    val PhotoLibrary: ImageVector by lazy {
+        icon(
+            "PhotoLibrary",
+            "M22,16V4c0,-1.1 -0.9,-2 -2,-2H8c-1.1,0 -2,0.9 -2,2v12c0,1.1 0.9,2 2,2h12c1.1,0 2,-0.9 2,-2z" +
+                "M11,12l2.03,2.71L16,11l4,5H8l3,-4zM2,6v14c0,1.1 0.9,2 2,2h14v-2H4V6H2z",
+        )
+    }
+
+    val Delete: ImageVector by lazy {
+        icon("Delete", "M6,19c0,1.1 0.9,2 2,2h8c1.1,0 2,-0.9 2,-2V7H6v12zM19,4h-3.5l-1,-1h-5l-1,1H5v2h14V4z")
+    }
+
+    val ZoomIn: ImageVector by lazy {
+        icon("ZoomIn", ZOOM_LENS + "M12,10h-2v2H9v-2H7V9h2V7h1v2h2v1z")
+    }
+
+    val ZoomOut: ImageVector by lazy {
+        icon("ZoomOut", ZOOM_LENS + "M7,9h5v1H7z")
+    }
+
+    private const val ZOOM_LENS =
+        "M15.5,14h-0.79l-0.28,-0.27C15.41,12.59 16,11.11 16,9.5 16,5.91 13.09,3 9.5,3S3,5.91 3,9.5 5.91,16 9.5,16" +
+            "c1.61,0 3.09,-0.59 4.23,-1.57l0.27,0.28v0.79l5,4.99L20.49,19l-4.99,-5z" +
+            "M9.5,14C7.01,14 5,11.99 5,9.5S7.01,5 9.5,5 14,7.01 14,9.5 11.99,14 9.5,14z"
+
     private fun icon(name: String, path: String): ImageVector =
         ImageVector.Builder(
             name = name,
