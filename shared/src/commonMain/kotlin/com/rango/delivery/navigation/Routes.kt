@@ -61,3 +61,6 @@ data object SettingsRoute
 
 @Serializable
 data object ThemeRoute
+
+@Serializable
+data object NotificationSettingsRoute
