@@ -8,7 +8,7 @@ import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.data.auth.SessionExpiredException
 import com.rango.delivery.data.profile.NotificationPrefsDto
 import com.rango.delivery.data.profile.ProfileRepository
-import com.rango.delivery.data.push.LocalNotifier
+import com.rango.delivery.data.push.PushMessage
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
@@ -36,7 +36,7 @@ sealed interface NotificationSettingsEvent {
 
 class NotificationSettingsViewModel(
     private val profileRepository: ProfileRepository,
-    private val notifier: LocalNotifier,
+    private val showPush: (PushMessage) -> Unit,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(NotificationSettingsUiState())
@@ -77,7 +77,7 @@ class NotificationSettingsViewModel(
     }
 
     fun sendTest() {
-        notifier.show(TEST_NOTIFICATION_ID, TEST_TITLE, TEST_BODY)
+        showPush(PushMessage(TEST_NOTIFICATION_ID, TEST_TITLE, TEST_BODY))
     }
 
     private suspend fun revert() {

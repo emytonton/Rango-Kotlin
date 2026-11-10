@@ -263,7 +263,7 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
         composable<NotificationSettingsRoute> {
             NotificationSettingsRoute(
                 viewModel = viewModel {
-                    NotificationSettingsViewModel(container.profileRepository, container.localNotifier)
+                    NotificationSettingsViewModel(container.profileRepository, container.pushWatcher::show)
                 },
                 onBack = navController::popBackStack,
                 onSessionExpired = navController::navigateToWelcome,

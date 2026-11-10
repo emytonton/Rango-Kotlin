@@ -44,7 +44,7 @@ import com.rango.delivery.data.storage.SecureStorage
 import com.rango.delivery.data.sync.DataSync
 import com.rango.delivery.data.theme.ThemeRepository
 
-class AppContainer(secureStorage: SecureStorage, val localNotifier: LocalNotifier) {
+class AppContainer(secureStorage: SecureStorage, localNotifier: LocalNotifier) {
     private val httpClient = createHttpClient()
     private val authApi = AuthApi(httpClient)
 
