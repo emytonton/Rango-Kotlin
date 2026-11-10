@@ -36,6 +36,7 @@ import com.rango.delivery.data.profile.DefaultProfileRepository
 import com.rango.delivery.data.profile.ProfileApi
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.push.LocalNotifier
+import com.rango.delivery.data.push.PushWatcher
 import com.rango.delivery.data.search.DefaultSearchRepository
 import com.rango.delivery.data.search.SearchApi
 import com.rango.delivery.data.search.SearchRepository
@@ -67,4 +68,5 @@ class AppContainer(secureStorage: SecureStorage, localNotifier: LocalNotifier) {
     val connectionRepository: ConnectionRepository = DefaultConnectionRepository(ConnectionApi(httpClient))
     val themeRepository = ThemeRepository(secureStorage, profileRepository)
     val dataSync = DataSync(profileRepository, favoriteRepository, cartRepository, themeRepository)
+    val pushWatcher = PushWatcher(notificationRepository, sessionRepository, secureStorage, localNotifier)
 }

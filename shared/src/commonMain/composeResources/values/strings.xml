@@ -244,6 +244,8 @@
     <string name="notifications_empty_title">Nenhuma notificação</string>
     <string name="notifications_empty_message">Avisos sobre seus pedidos e promoções aparecem aqui.</string>
     <string name="notifications_retry">Tentar de novo</string>
+    <string name="push_app_name">Rango</string>
+    <string name="push_now">agora</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>
