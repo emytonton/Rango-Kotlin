@@ -244,13 +244,21 @@
     <string name="notifications_empty_title">Nenhuma notificação</string>
     <string name="notifications_empty_message">Avisos sobre seus pedidos e promoções aparecem aqui.</string>
     <string name="notifications_retry">Tentar de novo</string>
+    <string name="notification_settings_orders">Pedidos</string>
+    <string name="notification_settings_orders_hint">Confirmação, preparo e entrega</string>
+    <string name="notification_settings_promos">Promoções</string>
+    <string name="notification_settings_promos_hint">Cupons e ofertas exclusivas</string>
+    <string name="notification_settings_news">Novidades</string>
+    <string name="notification_settings_news_hint">Novos restaurantes e recursos</string>
+    <string name="notification_settings_test">Enviar notificação de teste</string>
+    <string name="notification_settings_granted">Permissão de notificações concedida pelo sistema.</string>
+    <string name="notification_settings_denied">Notificações desativadas no sistema. Toque para permitir.</string>
     <string name="push_app_name">Rango</string>
     <string name="push_now">agora</string>
     <string name="pending_message">Esta tela ainda não foi implementada.</string>
     <string name="pending_back">Voltar</string>
     <string name="route_search">Busca</string>
     <string name="route_cart">Carrinho</string>
-    <string name="route_notification_settings">Notificações</string>
     <string name="route_address">Endereço</string>
     <string name="route_product">Produto</string>
 </resources>

@@ -6,6 +6,7 @@ import com.rango.delivery.core.network.ApiException
 import com.rango.delivery.core.network.ApiFieldError
 import com.rango.delivery.data.auth.SessionExpiredException
 import com.rango.delivery.data.auth.UserDto
+import com.rango.delivery.data.profile.NotificationPrefsDto
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.profile.SettingsDto
 import com.rango.delivery.data.profile.UpdateProfileRequest
@@ -195,6 +196,7 @@ class EditProfileViewModelTest {
 
         override suspend fun unreadNotifications() = 0
         override suspend fun updateTheme(theme: String) = SettingsDto(theme)
+        override suspend fun updateNotifications(prefs: NotificationPrefsDto) = SettingsDto(notifications = prefs)
 
         override suspend fun update(request: UpdateProfileRequest): UserDto {
             updateFailure?.let { throw it }

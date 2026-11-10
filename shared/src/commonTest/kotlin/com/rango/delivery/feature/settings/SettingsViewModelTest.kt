@@ -15,6 +15,7 @@ import com.rango.delivery.data.connection.ConnectionRepository
 import com.rango.delivery.data.favorite.FavoriteRepository
 import com.rango.delivery.data.payment.PaymentSelection
 import com.rango.delivery.data.payment.SelectedPayment
+import com.rango.delivery.data.profile.NotificationPrefsDto
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.profile.SettingsDto
 import com.rango.delivery.data.storage.InMemoryStorage
@@ -209,6 +210,7 @@ class SettingsViewModelTest {
 
         override suspend fun unreadNotifications() = 0
         override suspend fun updateTheme(theme: String) = SettingsDto(theme)
+        override suspend fun updateNotifications(prefs: NotificationPrefsDto) = SettingsDto(notifications = prefs)
         override suspend fun update(request: UpdateProfileRequest): UserDto = error("não usado")
         override suspend fun uploadAvatar(jpeg: ByteArray): UserDto = error("não usado")
         override suspend fun removeAvatar(): UserDto = error("não usado")

@@ -83,13 +83,13 @@ class PushWatcher(
         _openRequested.value = false
     }
 
+    fun show(message: PushMessage) {
+        if (inForeground) _banner.value = message else notifier.show(message.id, message.title, message.body)
+    }
+
     private fun deliver(notification: NotificationDto) {
         _arrivals.value += 1
-        if (inForeground) {
-            _banner.value = PushMessage(notification.id, notification.title, notification.body)
-        } else {
-            notifier.show(notification.id, notification.title, notification.body)
-        }
+        show(PushMessage(notification.id, notification.title, notification.body))
     }
 
     private companion object {
