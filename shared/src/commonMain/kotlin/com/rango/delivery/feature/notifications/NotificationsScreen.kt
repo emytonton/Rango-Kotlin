@@ -43,6 +43,7 @@ import com.rango.delivery.resources.notifications_empty_title
 import com.rango.delivery.resources.notifications_read_all
 import com.rango.delivery.resources.notifications_retry
 import com.rango.delivery.resources.notifications_title
+import kotlinx.coroutines.flow.StateFlow
 import org.jetbrains.compose.resources.stringResource
 
 data class NotificationsActions(
@@ -58,8 +59,10 @@ fun NotificationsRoute(
     onBack: () -> Unit,
     onOpenOrder: (String) -> Unit,
     onSessionExpired: () -> Unit,
+    newArrivals: StateFlow<Int>,
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val arrivals by newArrivals.collectAsStateWithLifecycle()
     val toast = LocalToast.current
 
     LaunchedEffect(viewModel) {
@@ -70,6 +73,10 @@ fun NotificationsRoute(
                 NotificationsEvent.SessionExpired -> onSessionExpired()
             }
         }
+    }
+
+    LaunchedEffect(arrivals) {
+        viewModel.refresh()
     }
 
     LifecycleResumeEffect(viewModel) {

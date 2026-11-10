@@ -339,6 +339,7 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                 onBack = navController::popBackStack,
                 onOpenOrder = { navController.navigate(TrackingRoute(it)) },
                 onSessionExpired = navController::navigateToWelcome,
+                newArrivals = container.pushWatcher.arrivals,
             )
         }
         composable<AddressRoute> {

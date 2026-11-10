@@ -29,6 +29,9 @@ class PushWatcher(
     private val _banner = MutableStateFlow<PushMessage?>(null)
     val banner: StateFlow<PushMessage?> = _banner.asStateFlow()
 
+    private val _arrivals = MutableStateFlow(0)
+    val arrivals: StateFlow<Int> = _arrivals.asStateFlow()
+
     private val _openRequested = MutableStateFlow(false)
     val openRequested: StateFlow<Boolean> = _openRequested.asStateFlow()
 
@@ -81,6 +84,7 @@ class PushWatcher(
     }
 
     private fun deliver(notification: NotificationDto) {
+        _arrivals.value += 1
         if (inForeground) {
             _banner.value = PushMessage(notification.id, notification.title, notification.body)
         } else {
