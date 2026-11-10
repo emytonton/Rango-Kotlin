@@ -181,6 +181,7 @@ private fun PrefsGroup(state: NotificationSettingsUiState, onToggle: (Notificati
                 switchChecked = state.isOn(option.pref),
                 showChevron = false,
                 showDivider = index > 0,
+                largeHint = true,
                 onClick = { onToggle(option.pref) },
             )
         }
