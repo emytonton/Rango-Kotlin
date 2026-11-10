@@ -194,6 +194,7 @@ class EditProfileViewModelTest {
         override suspend fun settings() = SettingsDto()
 
         override suspend fun unreadNotifications() = 0
+        override suspend fun updateTheme(theme: String) = SettingsDto(theme)
 
         override suspend fun update(request: UpdateProfileRequest): UserDto {
             updateFailure?.let { throw it }

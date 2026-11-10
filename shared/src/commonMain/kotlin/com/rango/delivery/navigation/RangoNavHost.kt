@@ -45,6 +45,8 @@ import com.rango.delivery.feature.search.SearchViewModel
 import com.rango.delivery.feature.settings.SettingsNavigation
 import com.rango.delivery.feature.settings.SettingsRoute
 import com.rango.delivery.feature.settings.SettingsViewModel
+import com.rango.delivery.feature.theme.ThemeRoute
+import com.rango.delivery.feature.theme.ThemeViewModel
 import com.rango.delivery.feature.tracking.TrackingRoute
 import com.rango.delivery.feature.tracking.TrackingViewModel
 import com.rango.delivery.di.AppContainer
@@ -60,7 +62,6 @@ import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
 import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_notification_settings
-import com.rango.delivery.resources.route_theme
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
 import com.rango.delivery.feature.signup.SignupRoute
@@ -200,6 +201,7 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                         addressRepository = container.addressRepository,
                         paymentRepository = container.paymentRepository,
                         sessionRepository = container.sessionRepository,
+                        themeRepository = container.themeRepository,
                     )
                 },
                 navigation = ProfileNavigation(
@@ -232,6 +234,7 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                         sessionRepository = container.sessionRepository,
                         favoriteRepository = container.favoriteRepository,
                         paymentSelection = container.paymentSelection,
+                        themeRepository = container.themeRepository,
                     )
                 },
                 navigation = SettingsNavigation(
@@ -247,7 +250,13 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
             )
         }
         pending<NotificationSettingsRoute>(Res.string.route_notification_settings, navController::popBackStack)
-        pending<ThemeRoute>(Res.string.route_theme, navController::popBackStack)
+        composable<ThemeRoute> {
+            ThemeRoute(
+                viewModel = viewModel { ThemeViewModel(container.themeRepository) },
+                onBack = navController::popBackStack,
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         composable<CartRoute> {
             CartRoute(
                 viewModel = viewModel { CartViewModel(container.cartRepository) },

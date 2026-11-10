@@ -37,6 +37,7 @@ import com.rango.delivery.data.search.SearchApi
 import com.rango.delivery.data.search.SearchRepository
 import com.rango.delivery.data.storage.SecureStorage
 import com.rango.delivery.data.sync.DataSync
+import com.rango.delivery.data.theme.ThemeRepository
 
 class AppContainer(secureStorage: SecureStorage) {
     private val httpClient = createHttpClient()
@@ -58,5 +59,6 @@ class AppContainer(secureStorage: SecureStorage) {
     val orderRepository: OrderRepository = DefaultOrderRepository(OrderApi(httpClient), authorizedCaller)
     val profileRepository: ProfileRepository = DefaultProfileRepository(ProfileApi(httpClient), authorizedCaller)
     val connectionRepository: ConnectionRepository = DefaultConnectionRepository(ConnectionApi(httpClient))
-    val dataSync = DataSync(profileRepository, favoriteRepository, cartRepository)
+    val themeRepository = ThemeRepository(secureStorage, profileRepository)
+    val dataSync = DataSync(profileRepository, favoriteRepository, cartRepository, themeRepository)
 }

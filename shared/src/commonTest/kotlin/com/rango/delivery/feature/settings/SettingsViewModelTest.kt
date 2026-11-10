@@ -17,6 +17,8 @@ import com.rango.delivery.data.payment.PaymentSelection
 import com.rango.delivery.data.payment.SelectedPayment
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.profile.SettingsDto
+import com.rango.delivery.data.storage.InMemoryStorage
+import com.rango.delivery.data.theme.ThemeRepository
 import com.rango.delivery.data.profile.UpdateProfileRequest
 import com.rango.delivery.data.sync.DataSync
 import kotlinx.coroutines.Dispatchers
@@ -179,16 +181,18 @@ class SettingsViewModelTest {
         val cart = FakeCart()
         val session = FakeSession()
         val payment = PaymentSelection()
+        val theme = ThemeRepository(InMemoryStorage(), profile)
 
         fun viewModel(scope: TestScope): SettingsViewModel {
             Dispatchers.setMain(UnconfinedTestDispatcher(scope.testScheduler))
             return SettingsViewModel(
                 profileRepository = profile,
                 connectionRepository = connection,
-                dataSync = DataSync(profile, favorites, cart) { now },
+                dataSync = DataSync(profile, favorites, cart, theme) { now },
                 sessionRepository = session,
                 favoriteRepository = favorites,
                 paymentSelection = payment,
+                themeRepository = theme,
             )
         }
     }
@@ -204,6 +208,7 @@ class SettingsViewModelTest {
         }
 
         override suspend fun unreadNotifications() = 0
+        override suspend fun updateTheme(theme: String) = SettingsDto(theme)
         override suspend fun update(request: UpdateProfileRequest): UserDto = error("não usado")
         override suspend fun uploadAvatar(jpeg: ByteArray): UserDto = error("não usado")
         override suspend fun removeAvatar(): UserDto = error("não usado")
