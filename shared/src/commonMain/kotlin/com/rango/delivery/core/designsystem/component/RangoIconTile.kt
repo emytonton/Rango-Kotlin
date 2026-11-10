@@ -8,6 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -19,14 +20,15 @@ fun RangoIconTile(
     modifier: Modifier = Modifier,
     size: Dp = 42.dp,
     iconSize: Dp = 22.dp,
+    background: Color = Rango.colors.soft,
+    tint: Color = Rango.colors.primary,
 ) {
-    val colors = Rango.colors
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .size(size)
-            .background(colors.soft, RoundedCornerShape(size / 3)),
+            .background(background, RoundedCornerShape(size / 3)),
     ) {
-        Icon(icon, contentDescription = null, tint = colors.primary, modifier = Modifier.size(iconSize))
+        Icon(icon, contentDescription = null, tint = tint, modifier = Modifier.size(iconSize))
     }
 }

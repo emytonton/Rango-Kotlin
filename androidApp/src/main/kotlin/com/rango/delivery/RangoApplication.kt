@@ -2,6 +2,7 @@ package com.rango.delivery
 
 import android.app.Application
 import com.rango.delivery.di.AppContainer
+import com.rango.delivery.data.push.AndroidLocalNotifier
 import com.rango.delivery.data.storage.AndroidSecureStorage
 
 class RangoApplication : Application() {
@@ -11,6 +12,9 @@ class RangoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        container = AppContainer(secureStorage = AndroidSecureStorage(this))
+        container = AppContainer(
+            secureStorage = AndroidSecureStorage(this),
+            localNotifier = AndroidLocalNotifier(this),
+        )
     }
 }

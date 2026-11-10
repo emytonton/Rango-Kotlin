@@ -9,7 +9,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.rango.delivery.feature.address.AddressRoute
@@ -27,6 +29,8 @@ import com.rango.delivery.feature.orderdetail.OrderDetailViewModel
 import com.rango.delivery.feature.favorites.FavoritesNavigation
 import com.rango.delivery.feature.favorites.FavoritesRoute
 import com.rango.delivery.feature.favorites.FavoritesViewModel
+import com.rango.delivery.feature.notifications.NotificationsRoute
+import com.rango.delivery.feature.notifications.NotificationsViewModel
 import com.rango.delivery.feature.orders.OrdersNavigation
 import com.rango.delivery.feature.orders.OrdersRoute
 import com.rango.delivery.feature.orders.OrdersViewModel
@@ -60,7 +64,6 @@ import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_notification_settings
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
@@ -73,6 +76,17 @@ import org.jetbrains.compose.resources.stringResource
 fun RangoNavHost(container: AppContainer) {
     val navController = rememberNavController()
     val favoriteIds by container.favoriteRepository.favoriteIds.collectAsStateWithLifecycle()
+    val openNotifications by container.pushWatcher.openRequested.collectAsStateWithLifecycle()
+    val currentEntry by navController.currentBackStackEntryAsState()
+
+    LaunchedEffect(openNotifications, currentEntry) {
+        val destination = currentEntry?.destination ?: return@LaunchedEffect
+        val signedOut = destination.hasRoute<WelcomeRoute>() || destination.hasRoute<LoginRoute>() ||
+            destination.hasRoute<SignupRoute>()
+        if (!openNotifications || signedOut) return@LaunchedEffect
+        container.pushWatcher.consumeOpen()
+        if (!destination.hasRoute<NotificationsRoute>()) navController.navigate(NotificationsRoute)
+    }
 
     CompositionLocalProvider(LocalTabBadges provides mapOf(RangoTab.Favorites to favoriteIds.size)) {
         RangoNavGraph(container, navController)
@@ -319,7 +333,15 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<NotificationsRoute>(Res.string.route_notifications, navController::popBackStack)
+        composable<NotificationsRoute> {
+            NotificationsRoute(
+                viewModel = viewModel { NotificationsViewModel(container.notificationRepository) },
+                onBack = navController::popBackStack,
+                onOpenOrder = { navController.navigate(TrackingRoute(it)) },
+                onSessionExpired = navController::navigateToWelcome,
+                newArrivals = container.pushWatcher.arrivals,
+            )
+        }
         composable<AddressRoute> {
             AddressRoute(
                 viewModel = viewModel { AddressViewModel(container.addressRepository) },
