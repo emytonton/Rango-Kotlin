@@ -22,6 +22,9 @@ import com.rango.delivery.data.connection.DefaultConnectionRepository
 import com.rango.delivery.data.favorite.DefaultFavoriteRepository
 import com.rango.delivery.data.favorite.FavoriteApi
 import com.rango.delivery.data.favorite.FavoriteRepository
+import com.rango.delivery.data.notification.DefaultNotificationRepository
+import com.rango.delivery.data.notification.NotificationApi
+import com.rango.delivery.data.notification.NotificationRepository
 import com.rango.delivery.data.order.DefaultOrderRepository
 import com.rango.delivery.data.order.OrderApi
 import com.rango.delivery.data.order.OrderRepository
@@ -57,6 +60,8 @@ class AppContainer(secureStorage: SecureStorage) {
     val paymentRepository: PaymentRepository = DefaultPaymentRepository(PaymentApi(httpClient), authorizedCaller)
     val paymentSelection = PaymentSelection()
     val orderRepository: OrderRepository = DefaultOrderRepository(OrderApi(httpClient), authorizedCaller)
+    val notificationRepository: NotificationRepository =
+        DefaultNotificationRepository(NotificationApi(httpClient), authorizedCaller)
     val profileRepository: ProfileRepository = DefaultProfileRepository(ProfileApi(httpClient), authorizedCaller)
     val connectionRepository: ConnectionRepository = DefaultConnectionRepository(ConnectionApi(httpClient))
     val themeRepository = ThemeRepository(secureStorage, profileRepository)
