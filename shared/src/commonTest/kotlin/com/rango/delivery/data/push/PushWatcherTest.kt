@@ -113,6 +113,23 @@ class PushWatcherTest {
         assertTrue(notifier.shown.isEmpty())
     }
 
+    @Test
+    fun localMessageUsesBannerInForegroundAndSystemInBackground() {
+        val notifier = FakeNotifier()
+        val watcher = watcher(FakeNotifications(emptyList()), notifier)
+        val message = PushMessage(900_001, "Notificação de teste", "Tudo certo.")
+
+        watcher.show(message)
+        assertEquals(message, watcher.banner.value)
+        assertTrue(notifier.shown.isEmpty())
+
+        watcher.dismissBanner()
+        watcher.inForeground = false
+        watcher.show(message)
+        assertNull(watcher.banner.value)
+        assertEquals(listOf(900_001L), notifier.shown)
+    }
+
     private fun watcher(repository: NotificationRepository, notifier: LocalNotifier) =
         PushWatcher(repository, FakeSession(), InMemoryStorage(), notifier)
 
