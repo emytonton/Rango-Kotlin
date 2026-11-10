@@ -34,6 +34,16 @@ class FormattersTest {
     }
 
     @Test
+    fun relativeTimeShowsMinutesHoursYesterdayOrDate() {
+        val now = Instant.parse("2026-11-10T15:00:00Z")
+        assertEquals("agora", formatRelativeTime("2026-11-10T14:59:40.000Z", now, TimeZone.UTC))
+        assertEquals("há 4 min", formatRelativeTime("2026-11-10T14:56:00.000Z", now, TimeZone.UTC))
+        assertEquals("há 2 h", formatRelativeTime("2026-11-10T12:30:00.000Z", now, TimeZone.UTC))
+        assertEquals("ontem", formatRelativeTime("2026-11-09T23:00:00.000Z", now, TimeZone.UTC))
+        assertEquals("03 nov", formatRelativeTime("2026-11-03T10:00:00.000Z", now, TimeZone.UTC))
+    }
+
+    @Test
     fun orderDateUsesTheGivenTimeZone() {
         val now = Instant.parse("2026-11-05T12:00:00Z")
         val saoPaulo = TimeZone.of("America/Sao_Paulo")
