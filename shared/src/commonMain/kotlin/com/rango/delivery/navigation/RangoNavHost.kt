@@ -27,6 +27,8 @@ import com.rango.delivery.feature.orderdetail.OrderDetailViewModel
 import com.rango.delivery.feature.favorites.FavoritesNavigation
 import com.rango.delivery.feature.favorites.FavoritesRoute
 import com.rango.delivery.feature.favorites.FavoritesViewModel
+import com.rango.delivery.feature.notifications.NotificationsRoute
+import com.rango.delivery.feature.notifications.NotificationsViewModel
 import com.rango.delivery.feature.orders.OrdersNavigation
 import com.rango.delivery.feature.orders.OrdersRoute
 import com.rango.delivery.feature.orders.OrdersViewModel
@@ -60,7 +62,6 @@ import com.rango.delivery.feature.home.HomeActions
 import com.rango.delivery.feature.home.HomeRoute
 import com.rango.delivery.feature.home.HomeViewModel
 import com.rango.delivery.resources.Res
-import com.rango.delivery.resources.route_notifications
 import com.rango.delivery.resources.route_notification_settings
 import com.rango.delivery.feature.login.LoginRoute
 import com.rango.delivery.feature.login.LoginViewModel
@@ -319,7 +320,14 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                 onSessionExpired = navController::navigateToWelcome,
             )
         }
-        pending<NotificationsRoute>(Res.string.route_notifications, navController::popBackStack)
+        composable<NotificationsRoute> {
+            NotificationsRoute(
+                viewModel = viewModel { NotificationsViewModel(container.notificationRepository) },
+                onBack = navController::popBackStack,
+                onOpenOrder = { navController.navigate(TrackingRoute(it)) },
+                onSessionExpired = navController::navigateToWelcome,
+            )
+        }
         composable<AddressRoute> {
             AddressRoute(
                 viewModel = viewModel { AddressViewModel(container.addressRepository) },
