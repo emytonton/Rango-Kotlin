@@ -72,6 +72,7 @@ fun RangoSettingsRow(
     danger: Boolean = false,
     showDivider: Boolean = false,
     enabled: Boolean = true,
+    largeHint: Boolean = radioSelected != null,
 ) {
     val colors = Rango.colors
     val accent = if (danger) colors.error else colors.primary
@@ -94,7 +95,7 @@ fun RangoSettingsRow(
                 Icon(icon, contentDescription = null, tint = accent, modifier = Modifier.size(19.dp))
             }
             Column(
-                verticalArrangement = Arrangement.spacedBy(if (radioSelected != null) 2.dp else 1.dp),
+                verticalArrangement = Arrangement.spacedBy(if (largeHint) 2.dp else 1.dp),
                 modifier = Modifier.weight(1f),
             ) {
                 Text(
@@ -106,7 +107,7 @@ fun RangoSettingsRow(
                     Text(
                         text = hint,
                         style = Rango.typography.caption.copy(
-                            fontSize = if (radioSelected != null) 11.5.sp else 11.sp,
+                            fontSize = if (largeHint) 11.5.sp else 11.sp,
                             fontWeight = FontWeight.Medium,
                         ),
                         color = colors.text2,
