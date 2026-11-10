@@ -46,10 +46,10 @@ class WelcomeViewModelTest {
     }
 
     @Test
-    fun unreachableBackendKeepsSavedSessionBanner() = runTest {
+    fun unreachableBackendEntersWithSavedSession() = runTest {
         val viewModel = WelcomeViewModel(FakeSessionRepository(SessionRestore.Unreachable("Marina Alves")))
 
-        assertEquals(WelcomeUiState.Ready(savedSessionName = "Marina Alves"), viewModel.uiState.value)
+        assertEquals(WelcomeEvent.SessionRestored, viewModel.events.first())
     }
 
     private class FakeSessionRepository(private val result: SessionRestore) : SessionRepository {

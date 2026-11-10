@@ -39,8 +39,7 @@ class WelcomeViewModel(
         viewModelScope.launch {
             when (val result = sessionRepository.restore()) {
                 SessionRestore.None -> _uiState.value = WelcomeUiState.Ready()
-                is SessionRestore.Unreachable -> _uiState.value = WelcomeUiState.Ready(result.userName.ifBlank { null })
-                is SessionRestore.Restored -> _events.send(WelcomeEvent.SessionRestored)
+                is SessionRestore.Unreachable, is SessionRestore.Restored -> _events.send(WelcomeEvent.SessionRestored)
             }
         }
     }
