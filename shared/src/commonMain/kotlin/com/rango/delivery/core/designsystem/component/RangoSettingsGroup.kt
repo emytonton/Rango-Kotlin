@@ -67,6 +67,7 @@ fun RangoSettingsRow(
     hint: String? = null,
     value: String? = null,
     switchChecked: Boolean? = null,
+    radioSelected: Boolean? = null,
     showChevron: Boolean = true,
     danger: Boolean = false,
     showDivider: Boolean = false,
@@ -92,7 +93,10 @@ fun RangoSettingsRow(
             ) {
                 Icon(icon, contentDescription = null, tint = accent, modifier = Modifier.size(19.dp))
             }
-            Column(verticalArrangement = Arrangement.spacedBy(1.dp), modifier = Modifier.weight(1f)) {
+            Column(
+                verticalArrangement = Arrangement.spacedBy(if (radioSelected != null) 2.dp else 1.dp),
+                modifier = Modifier.weight(1f),
+            ) {
                 Text(
                     text = label,
                     style = Rango.typography.body.copy(fontSize = 14.sp, fontWeight = FontWeight.Bold),
@@ -101,7 +105,10 @@ fun RangoSettingsRow(
                 if (!hint.isNullOrEmpty()) {
                     Text(
                         text = hint,
-                        style = Rango.typography.caption.copy(fontSize = 11.sp, fontWeight = FontWeight.Medium),
+                        style = Rango.typography.caption.copy(
+                            fontSize = if (radioSelected != null) 11.5.sp else 11.sp,
+                            fontWeight = FontWeight.Medium,
+                        ),
                         color = colors.text2,
                     )
                 }
@@ -115,6 +122,9 @@ fun RangoSettingsRow(
             }
             if (switchChecked != null) {
                 RangoSwitch(checked = switchChecked)
+            }
+            if (radioSelected != null) {
+                RangoRadioIndicator(selected = radioSelected)
             }
             if (showChevron) {
                 Icon(RangoIcons.ChevronRight, contentDescription = null, tint = colors.text2, modifier = Modifier.size(20.dp))
