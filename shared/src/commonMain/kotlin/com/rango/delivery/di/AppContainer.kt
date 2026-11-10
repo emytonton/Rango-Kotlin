@@ -18,6 +18,7 @@ import com.rango.delivery.data.catalog.CatalogRepository
 import com.rango.delivery.data.catalog.DefaultCatalogRepository
 import com.rango.delivery.data.connection.ConnectionApi
 import com.rango.delivery.data.connection.ConnectionRepository
+import com.rango.delivery.data.connection.ConnectivityMonitor
 import com.rango.delivery.data.connection.DefaultConnectionRepository
 import com.rango.delivery.data.favorite.DefaultFavoriteRepository
 import com.rango.delivery.data.favorite.FavoriteApi
@@ -44,7 +45,11 @@ import com.rango.delivery.data.storage.SecureStorage
 import com.rango.delivery.data.sync.DataSync
 import com.rango.delivery.data.theme.ThemeRepository
 
-class AppContainer(secureStorage: SecureStorage, localNotifier: LocalNotifier) {
+class AppContainer(
+    secureStorage: SecureStorage,
+    localNotifier: LocalNotifier,
+    val connectivityMonitor: ConnectivityMonitor,
+) {
     private val httpClient = createHttpClient()
     private val authApi = AuthApi(httpClient)
 
