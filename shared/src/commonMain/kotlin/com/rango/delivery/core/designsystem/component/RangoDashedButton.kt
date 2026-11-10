@@ -26,8 +26,15 @@ import androidx.compose.ui.unit.sp
 import com.rango.delivery.core.designsystem.theme.Rango
 
 @Composable
-fun RangoDashedButton(text: String, icon: ImageVector, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun RangoDashedButton(
+    text: String,
+    icon: ImageVector,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    accent: Boolean = false,
+) {
     val colors = Rango.colors
+    val borderColor = if (accent) colors.primary else colors.border
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
@@ -39,7 +46,7 @@ fun RangoDashedButton(text: String, icon: ImageVector, onClick: () -> Unit, modi
                 val radius = 16.dp.toPx()
                 val stroke = 1.5.dp.toPx()
                 drawRoundRect(
-                    color = colors.border,
+                    color = borderColor,
                     topLeft = Offset(stroke / 2, stroke / 2),
                     size = Size(size.width - stroke, size.height - stroke),
                     cornerRadius = CornerRadius(radius, radius),
@@ -52,7 +59,7 @@ fun RangoDashedButton(text: String, icon: ImageVector, onClick: () -> Unit, modi
         Text(
             text = text,
             style = Rango.typography.body.copy(fontSize = 13.5.sp, fontWeight = FontWeight.Bold),
-            color = colors.text,
+            color = if (accent) colors.primary else colors.text,
         )
     }
 }
