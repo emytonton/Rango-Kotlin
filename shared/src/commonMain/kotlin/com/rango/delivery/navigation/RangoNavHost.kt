@@ -201,6 +201,7 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                         addressRepository = container.addressRepository,
                         paymentRepository = container.paymentRepository,
                         sessionRepository = container.sessionRepository,
+                        themeRepository = container.themeRepository,
                     )
                 },
                 navigation = ProfileNavigation(
@@ -233,6 +234,7 @@ private fun RangoNavGraph(container: AppContainer, navController: NavHostControl
                         sessionRepository = container.sessionRepository,
                         favoriteRepository = container.favoriteRepository,
                         paymentSelection = container.paymentSelection,
+                        themeRepository = container.themeRepository,
                     )
                 },
                 navigation = SettingsNavigation(

@@ -15,6 +15,8 @@ import com.rango.delivery.data.payment.PaymentMethodDto
 import com.rango.delivery.data.payment.PaymentRepository
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.profile.SettingsDto
+import com.rango.delivery.data.storage.InMemoryStorage
+import com.rango.delivery.data.theme.ThemeRepository
 import com.rango.delivery.data.profile.UpdateProfileRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -112,7 +114,7 @@ class ProfileViewModelTest {
 
     private fun TestScope.viewModel(profile: ProfileRepository, session: FakeSession = FakeSession()): ProfileViewModel {
         Dispatchers.setMain(UnconfinedTestDispatcher(testScheduler))
-        return ProfileViewModel(profile, FakeAddresses(), FakePayments(), session)
+        return ProfileViewModel(profile, FakeAddresses(), FakePayments(), session, ThemeRepository(InMemoryStorage(), profile))
     }
 
     private class FakeProfile(

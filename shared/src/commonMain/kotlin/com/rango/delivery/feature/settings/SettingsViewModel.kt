@@ -12,6 +12,7 @@ import com.rango.delivery.data.favorite.FavoriteRepository
 import com.rango.delivery.data.payment.PaymentSelection
 import com.rango.delivery.data.profile.ProfileRepository
 import com.rango.delivery.data.sync.DataSync
+import com.rango.delivery.data.theme.ThemeRepository
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,6 +61,7 @@ class SettingsViewModel(
     private val sessionRepository: SessionRepository,
     private val favoriteRepository: FavoriteRepository,
     private val paymentSelection: PaymentSelection,
+    private val themeRepository: ThemeRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState(lastSyncedAt = dataSync.lastSyncedAt.value))
@@ -72,6 +74,9 @@ class SettingsViewModel(
         viewModelScope.launch {
             dataSync.lastSyncedAt.collect { at -> _uiState.update { it.copy(lastSyncedAt = at) } }
         }
+        viewModelScope.launch {
+            themeRepository.theme.collect { theme -> _uiState.update { it.copy(theme = theme) } }
+        }
         refresh()
     }
 
@@ -80,8 +85,7 @@ class SettingsViewModel(
         viewModelScope.launch { checkConnection() }
         viewModelScope.launch {
             try {
-                val settings = profileRepository.settings()
-                _uiState.update { it.copy(theme = settings.theme) }
+                themeRepository.onRemote(profileRepository.settings().theme)
             } catch (e: SessionExpiredException) {
                 _events.send(SettingsEvent.SessionExpired)
             } catch (e: ApiException) {
@@ -107,8 +111,8 @@ class SettingsViewModel(
         _uiState.update { it.copy(syncing = true) }
         viewModelScope.launch {
             try {
-                val settings = dataSync.syncNow()
-                _uiState.update { it.copy(theme = settings.theme, online = true) }
+                dataSync.syncNow()
+                _uiState.update { it.copy(online = true) }
                 toast("Dados sincronizados.", ToastKind.Success)
             } catch (e: SessionExpiredException) {
                 _events.send(SettingsEvent.SessionExpired)

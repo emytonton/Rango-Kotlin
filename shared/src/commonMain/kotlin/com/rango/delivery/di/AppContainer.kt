@@ -60,5 +60,5 @@ class AppContainer(secureStorage: SecureStorage) {
     val profileRepository: ProfileRepository = DefaultProfileRepository(ProfileApi(httpClient), authorizedCaller)
     val connectionRepository: ConnectionRepository = DefaultConnectionRepository(ConnectionApi(httpClient))
     val themeRepository = ThemeRepository(secureStorage, profileRepository)
-    val dataSync = DataSync(profileRepository, favoriteRepository, cartRepository)
+    val dataSync = DataSync(profileRepository, favoriteRepository, cartRepository, themeRepository)
 }

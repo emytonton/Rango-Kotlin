@@ -11,6 +11,7 @@ import com.rango.delivery.data.auth.SessionExpiredException
 import com.rango.delivery.data.auth.SessionRepository
 import com.rango.delivery.data.payment.PaymentRepository
 import com.rango.delivery.data.profile.ProfileRepository
+import com.rango.delivery.data.theme.ThemeRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
@@ -65,6 +66,7 @@ class ProfileViewModel(
     private val addressRepository: AddressRepository,
     private val paymentRepository: PaymentRepository,
     private val sessionRepository: SessionRepository,
+    private val themeRepository: ThemeRepository,
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -76,6 +78,9 @@ class ProfileViewModel(
     private var loadJob: Job? = null
 
     init {
+        viewModelScope.launch {
+            themeRepository.theme.collect { theme -> _uiState.update { it.copy(theme = theme) } }
+        }
         load()
     }
 
@@ -113,6 +118,7 @@ class ProfileViewModel(
                     val addresses = async { addressRepository.list() }
                     val payments = async { paymentRepository.list() }
                     val me = user.await()
+                    themeRepository.onRemote(settings.await().theme)
                     _uiState.update {
                         it.copy(
                             loading = false,
@@ -121,7 +127,6 @@ class ProfileViewModel(
                             email = me.email,
                             phone = me.phone,
                             avatarUrl = me.avatarUrl?.let { url -> apiBaseUrl + url },
-                            theme = settings.await().theme,
                             unreadCount = unread.await(),
                             addressCount = addresses.await().size,
                             paymentCount = payments.await().size,
