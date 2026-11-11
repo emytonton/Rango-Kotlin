@@ -61,7 +61,8 @@ class AppContainer(
 
     private val authorizedCaller = AuthorizedCaller(sessionRepository)
 
-    val favoriteRepository: FavoriteRepository = DefaultFavoriteRepository(FavoriteApi(httpClient), authorizedCaller)
+    val favoriteRepository: FavoriteRepository =
+        DefaultFavoriteRepository(FavoriteApi(httpClient), authorizedCaller, localCache) { catalogRepository.cachedProduct(it) }
     val catalogRepository: CatalogRepository =
         DefaultCatalogRepository(CatalogApi(httpClient), authorizedCaller, favoriteRepository, localCache)
     val cartRepository: CartRepository = DefaultCartRepository(CartApi(httpClient), authorizedCaller)
