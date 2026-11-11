@@ -25,8 +25,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rango.delivery.core.connectivity.LocalOnline
+import com.rango.delivery.core.connectivity.OnReconnect
 import com.rango.delivery.core.designsystem.component.LocalToast
 import com.rango.delivery.core.designsystem.component.RangoBottomBar
+import com.rango.delivery.core.designsystem.component.RangoDashedNote
 import com.rango.delivery.core.designsystem.component.RangoEmptyState
 import com.rango.delivery.core.designsystem.component.RangoErrorState
 import com.rango.delivery.core.designsystem.component.RangoSkeleton
@@ -44,6 +47,7 @@ import com.rango.delivery.resources.orders_empty_action
 import com.rango.delivery.resources.orders_empty_live
 import com.rango.delivery.resources.orders_empty_message
 import com.rango.delivery.resources.orders_empty_past
+import com.rango.delivery.resources.orders_offline
 import com.rango.delivery.resources.orders_reorder
 import com.rango.delivery.resources.orders_retry
 import com.rango.delivery.resources.orders_tab_live
@@ -95,6 +99,12 @@ fun OrdersRoute(
     LifecycleResumeEffect(viewModel) {
         viewModel.refresh()
         onPauseOrDispose { }
+    }
+
+    OnReconnect { viewModel.refresh() }
+    val online = LocalOnline.current
+    LaunchedEffect(online) {
+        if (!online) viewModel.refresh()
     }
 
     OrdersScreen(
@@ -155,6 +165,15 @@ private fun OrdersContent(state: OrdersUiState, actions: OrdersActions, modifier
         contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 16.dp, bottom = 20.dp),
         modifier = modifier.fillMaxWidth(),
     ) {
+        if (tab.offline) {
+            item(key = "offline") {
+                RangoDashedNote(
+                    icon = RangoIcons.Save,
+                    text = stringResource(Res.string.orders_offline),
+                    iconTint = Rango.colors.success,
+                )
+            }
+        }
         when {
             tab.orders.isNotEmpty() -> items(tab.orders, key = { it.code }) { order ->
                 OrderCard(

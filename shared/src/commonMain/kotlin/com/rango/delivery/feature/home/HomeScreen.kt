@@ -37,12 +37,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rango.delivery.core.connectivity.LocalOnline
+import com.rango.delivery.core.connectivity.OnReconnect
 import com.rango.delivery.core.designsystem.component.RangoAvatar
 import com.rango.delivery.core.designsystem.component.LocalToast
 import com.rango.delivery.core.designsystem.component.ProductCardModel
 import com.rango.delivery.core.designsystem.component.RangoBadgeIconButton
 import com.rango.delivery.core.designsystem.component.RangoBottomBar
 import com.rango.delivery.core.designsystem.component.RangoCategoryChip
+import com.rango.delivery.core.designsystem.component.RangoDashedNote
 import com.rango.delivery.core.designsystem.component.RangoErrorState
 import com.rango.delivery.core.designsystem.component.RangoProductRow
 import com.rango.delivery.core.designsystem.component.RangoProductTile
@@ -100,6 +103,12 @@ fun HomeRoute(
     LifecycleResumeEffect(viewModel) {
         viewModel.refresh()
         onPauseOrDispose { }
+    }
+
+    OnReconnect { viewModel.refresh() }
+    val online = LocalOnline.current
+    LaunchedEffect(online) {
+        if (!online) viewModel.refresh()
     }
 
     LaunchedEffect(viewModel) {
@@ -240,6 +249,16 @@ private fun HomeContent(state: HomeUiState, actions: HomeActions) {
                 )
             }
             return@LazyColumn
+        }
+        state.offlineNote?.let { note ->
+            item {
+                RangoDashedNote(
+                    icon = RangoIcons.SyncProblem,
+                    text = note,
+                    iconTint = Rango.colors.text2,
+                    modifier = Modifier.padding(horizontal = 20.dp),
+                )
+            }
         }
         item {
             PromoBanner(
