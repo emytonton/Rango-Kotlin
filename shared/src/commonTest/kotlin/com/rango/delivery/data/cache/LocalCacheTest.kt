@@ -1,10 +1,13 @@
 package com.rango.delivery.data.cache
 
+import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.data.storage.InMemoryStorage
+import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertNull
 import kotlin.time.Instant
 
@@ -46,5 +49,25 @@ class LocalCacheTest {
 
         assertNull(cache.get("favorites", names))
         assertNull(storage.get("cache_favorites"))
+    }
+
+    @Test
+    fun fetchSavesResponseAndFallsBackToItWithoutConnection() = runTest {
+        val cache = LocalCache(InMemoryStorage(), clock = { now })
+
+        val online = cache.fetchOrCached("cart", names) { listOf("p1") }
+        val offline = cache.fetchOrCached("cart", names) { throw NetworkException(RuntimeException()) }
+
+        assertEquals(listOf("p1"), online)
+        assertEquals(listOf("p1"), offline)
+    }
+
+    @Test
+    fun fetchWithoutConnectionAndNothingSavedFails() = runTest {
+        val cache = LocalCache(InMemoryStorage(), clock = { now })
+
+        assertFailsWith<NetworkException> {
+            cache.fetchOrCached("cart", names) { throw NetworkException(RuntimeException()) }
+        }
     }
 }
