@@ -2,6 +2,7 @@ package com.rango.delivery.data.cart
 
 import com.rango.delivery.core.network.apiCall
 import com.rango.delivery.data.auth.AuthorizedCaller
+import com.rango.delivery.data.cache.LocalCache
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
@@ -71,18 +72,25 @@ interface CartRepository {
 class DefaultCartRepository(
     private val api: CartApi,
     private val caller: AuthorizedCaller,
+    private val cache: LocalCache,
 ) : CartRepository {
     override suspend fun addItem(productId: String, quantity: Int, addonIds: List<String>, notes: String): Int =
-        caller.call { api.addItem(it, AddCartItemRequest(productId, quantity, addonIds, notes)) }.summary.itemCount
+        saved(caller.call { api.addItem(it, AddCartItemRequest(productId, quantity, addonIds, notes)) }).summary.itemCount
 
-    override suspend fun cart(): CartDto = caller.call { api.cart(it) }
+    override suspend fun cart(): CartDto = cache.fetchOrCached(CART_KEY, CartDto.serializer()) { caller.call { api.cart(it) } }
 
     override suspend fun updateQuantity(itemId: Long, quantity: Int): CartDto =
-        caller.call { api.updateQuantity(it, itemId, quantity) }
+        saved(caller.call { api.updateQuantity(it, itemId, quantity) })
 
-    override suspend fun removeItem(itemId: Long): CartDto = caller.call { api.removeItem(it, itemId) }
+    override suspend fun removeItem(itemId: Long): CartDto = saved(caller.call { api.removeItem(it, itemId) })
 
-    override suspend fun clear(): CartDto = caller.call { api.clear(it) }
+    override suspend fun clear(): CartDto = saved(caller.call { api.clear(it) })
 
-    override suspend fun applyCoupon(code: String): CartDto = caller.call { api.applyCoupon(it, code) }
+    override suspend fun applyCoupon(code: String): CartDto = saved(caller.call { api.applyCoupon(it, code) })
+
+    private fun saved(cart: CartDto): CartDto = cart.also { cache.put(CART_KEY, CartDto.serializer(), it) }
+
+    private companion object {
+        const val CART_KEY = "cart"
+    }
 }

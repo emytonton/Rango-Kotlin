@@ -2,6 +2,7 @@ package com.rango.delivery.data.payment
 
 import com.rango.delivery.core.network.apiCall
 import com.rango.delivery.data.auth.AuthorizedCaller
+import com.rango.delivery.data.cache.LocalCache
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
@@ -11,6 +12,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 
 @Serializable
 data class PaymentMethodDto(
@@ -51,8 +53,14 @@ interface PaymentRepository {
 class DefaultPaymentRepository(
     private val api: PaymentApi,
     private val caller: AuthorizedCaller,
+    private val cache: LocalCache,
 ) : PaymentRepository {
-    override suspend fun list(): List<PaymentMethodDto> = caller.call { api.list(it) }
+    override suspend fun list(): List<PaymentMethodDto> =
+        cache.fetchOrCached(LIST_KEY, ListSerializer(PaymentMethodDto.serializer())) { caller.call { api.list(it) } }
 
     override suspend fun createCard(request: CreateCardRequest): PaymentMethodDto = caller.call { api.createCard(it, request) }
+
+    private companion object {
+        const val LIST_KEY = "payment_methods"
+    }
 }

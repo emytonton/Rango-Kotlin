@@ -2,6 +2,7 @@ package com.rango.delivery.data.profile
 
 import com.rango.delivery.core.network.apiCall
 import com.rango.delivery.data.auth.AuthorizedCaller
+import com.rango.delivery.data.cache.LocalCache
 import com.rango.delivery.data.auth.UserDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -19,6 +20,7 @@ import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.serializer
 
 @Serializable
 data class NotificationPrefsDto(val orders: Boolean, val promos: Boolean, val news: Boolean)
@@ -110,22 +112,36 @@ interface ProfileRepository {
 class DefaultProfileRepository(
     private val api: ProfileApi,
     private val caller: AuthorizedCaller,
+    private val cache: LocalCache,
 ) : ProfileRepository {
-    override suspend fun me(): UserDto = caller.call { api.me(it) }
+    override suspend fun me(): UserDto = cache.fetchOrCached(USER_KEY, UserDto.serializer()) { caller.call { api.me(it) } }
 
-    override suspend fun settings(): SettingsDto = caller.call { api.settings(it) }
+    override suspend fun settings(): SettingsDto =
+        cache.fetchOrCached(SETTINGS_KEY, SettingsDto.serializer()) { caller.call { api.settings(it) } }
 
     override suspend fun updateTheme(theme: String): SettingsDto =
-        caller.call { api.updateSettings(it, UpdateSettingsRequest(theme = theme)) }
+        savedSettings(caller.call { api.updateSettings(it, UpdateSettingsRequest(theme = theme)) })
 
     override suspend fun updateNotifications(prefs: NotificationPrefsDto): SettingsDto =
-        caller.call { api.updateSettings(it, UpdateSettingsRequest(notifications = prefs)) }
+        savedSettings(caller.call { api.updateSettings(it, UpdateSettingsRequest(notifications = prefs)) })
 
-    override suspend fun unreadNotifications(): Int = caller.call { api.unreadNotifications(it) }
+    override suspend fun unreadNotifications(): Int =
+        cache.fetchOrCached(UNREAD_KEY, Int.serializer()) { caller.call { api.unreadNotifications(it) } }
 
-    override suspend fun update(request: UpdateProfileRequest): UserDto = caller.call { api.update(it, request) }
+    override suspend fun update(request: UpdateProfileRequest): UserDto = savedUser(caller.call { api.update(it, request) })
 
-    override suspend fun uploadAvatar(jpeg: ByteArray): UserDto = caller.call { api.uploadAvatar(it, jpeg) }
+    override suspend fun uploadAvatar(jpeg: ByteArray): UserDto = savedUser(caller.call { api.uploadAvatar(it, jpeg) })
 
-    override suspend fun removeAvatar(): UserDto = caller.call { api.removeAvatar(it) }
+    override suspend fun removeAvatar(): UserDto = savedUser(caller.call { api.removeAvatar(it) })
+
+    private fun savedUser(user: UserDto): UserDto = user.also { cache.put(USER_KEY, UserDto.serializer(), it) }
+
+    private fun savedSettings(settings: SettingsDto): SettingsDto =
+        settings.also { cache.put(SETTINGS_KEY, SettingsDto.serializer(), it) }
+
+    private companion object {
+        const val USER_KEY = "profile"
+        const val SETTINGS_KEY = "settings"
+        const val UNREAD_KEY = "unread_notifications"
+    }
 }

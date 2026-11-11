@@ -65,15 +65,15 @@ class AppContainer(
         DefaultFavoriteRepository(FavoriteApi(httpClient), authorizedCaller, localCache) { catalogRepository.cachedProduct(it) }
     val catalogRepository: CatalogRepository =
         DefaultCatalogRepository(CatalogApi(httpClient), authorizedCaller, favoriteRepository, localCache)
-    val cartRepository: CartRepository = DefaultCartRepository(CartApi(httpClient), authorizedCaller)
-    val addressRepository: AddressRepository = DefaultAddressRepository(AddressApi(httpClient), authorizedCaller)
-    val searchRepository: SearchRepository = DefaultSearchRepository(SearchApi(httpClient), authorizedCaller)
-    val paymentRepository: PaymentRepository = DefaultPaymentRepository(PaymentApi(httpClient), authorizedCaller)
+    val cartRepository: CartRepository = DefaultCartRepository(CartApi(httpClient), authorizedCaller, localCache)
+    val addressRepository: AddressRepository = DefaultAddressRepository(AddressApi(httpClient), authorizedCaller, localCache)
+    val searchRepository: SearchRepository = DefaultSearchRepository(SearchApi(httpClient), authorizedCaller, localCache)
+    val paymentRepository: PaymentRepository = DefaultPaymentRepository(PaymentApi(httpClient), authorizedCaller, localCache)
     val paymentSelection = PaymentSelection()
     val orderRepository: OrderRepository = DefaultOrderRepository(OrderApi(httpClient), authorizedCaller, localCache)
     val notificationRepository: NotificationRepository =
-        DefaultNotificationRepository(NotificationApi(httpClient), authorizedCaller)
-    val profileRepository: ProfileRepository = DefaultProfileRepository(ProfileApi(httpClient), authorizedCaller)
+        DefaultNotificationRepository(NotificationApi(httpClient), authorizedCaller, localCache)
+    val profileRepository: ProfileRepository = DefaultProfileRepository(ProfileApi(httpClient), authorizedCaller, localCache)
     val connectionRepository: ConnectionRepository = DefaultConnectionRepository(ConnectionApi(httpClient))
     val themeRepository = ThemeRepository(secureStorage, profileRepository)
     val dataSync = DataSync(profileRepository, favoriteRepository, cartRepository, themeRepository)
