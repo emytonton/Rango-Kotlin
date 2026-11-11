@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.rango.delivery.core.connectivity.OnReconnect
 import com.rango.delivery.core.designsystem.component.LocalToast
 import com.rango.delivery.core.designsystem.component.RangoBottomBar
 import com.rango.delivery.core.designsystem.component.RangoEmptyState
@@ -85,6 +86,8 @@ fun FavoritesRoute(
         viewModel.refresh()
         onPauseOrDispose { }
     }
+
+    OnReconnect { viewModel.refresh() }
 
     FavoritesScreen(
         state = state,

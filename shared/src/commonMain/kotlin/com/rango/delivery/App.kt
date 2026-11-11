@@ -5,11 +5,15 @@ import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
@@ -29,20 +33,30 @@ import coil3.ImageLoader
 import coil3.compose.setSingletonImageLoaderFactory
 import coil3.network.ktor3.KtorNetworkFetcherFactory
 import coil3.request.crossfade
+import com.rango.delivery.core.connectivity.LocalOnline
+import com.rango.delivery.core.connectivity.OnReconnect
 import com.rango.delivery.core.designsystem.component.LocalToast
+import com.rango.delivery.core.designsystem.component.RangoOfflineBanner
 import com.rango.delivery.core.designsystem.component.RangoPushBanner
 import com.rango.delivery.core.designsystem.component.RangoToastHost
+import com.rango.delivery.core.designsystem.component.ToastKind
 import com.rango.delivery.core.designsystem.component.rememberToastState
+import com.rango.delivery.core.designsystem.theme.Rango
 import com.rango.delivery.core.designsystem.theme.RangoTheme
 import com.rango.delivery.core.designsystem.theme.ThemeMode
+import com.rango.delivery.data.favorite.FavoriteRepository
 import com.rango.delivery.data.push.PushMessage
 import com.rango.delivery.data.push.PushWatcher
 import com.rango.delivery.data.theme.ThemeKeys
 import com.rango.delivery.di.AppContainer
 import com.rango.delivery.navigation.RangoNavHost
 import com.rango.delivery.resources.Res
+import com.rango.delivery.resources.connection_restored
+import com.rango.delivery.resources.offline_banner_text
+import com.rango.delivery.resources.offline_banner_title
 import com.rango.delivery.resources.push_app_name
 import com.rango.delivery.resources.push_now
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
 
@@ -77,15 +91,57 @@ fun App(container: AppContainer) {
     }
 
     val theme by container.themeRepository.theme.collectAsState()
+    val online by container.connectivityMonitor.online.collectAsState()
     RangoTheme(mode = themeModeOf(theme)) {
         val toast = rememberToastState()
-        CompositionLocalProvider(LocalToast provides toast) {
+        CompositionLocalProvider(LocalToast provides toast, LocalOnline provides online) {
+            ConnectionEffects(container)
             Box(Modifier.fillMaxSize()) {
-                RangoNavHost(container)
+                Column(Modifier.fillMaxSize()) {
+                    if (!online) OfflineBanner()
+                    Box(
+                        modifier = Modifier
+                            .weight(1f)
+                            .then(if (online) Modifier else Modifier.consumeWindowInsets(WindowInsets.statusBars)),
+                    ) {
+                        RangoNavHost(container)
+                    }
+                }
                 RangoToastHost(toast)
                 PushBannerHost(pushWatcher)
             }
         }
+    }
+}
+
+@Composable
+private fun ConnectionEffects(container: AppContainer) {
+    val toast = LocalToast.current
+    val restoredMessage = stringResource(Res.string.connection_restored)
+    OnReconnect {
+        toast.show(restoredMessage, ToastKind.Success)
+    }
+    val online = LocalOnline.current
+    LaunchedEffect(online) {
+        if (online) container.favoriteRepository.syncQuietly()
+    }
+}
+
+private suspend fun FavoriteRepository.syncQuietly() {
+    try {
+        syncPending()
+    } catch (e: Exception) {
+        if (e is CancellationException) throw e
+    }
+}
+
+@Composable
+private fun OfflineBanner() {
+    Column(Modifier.fillMaxWidth().background(Rango.colors.surface).windowInsetsPadding(WindowInsets.statusBars)) {
+        RangoOfflineBanner(
+            title = stringResource(Res.string.offline_banner_title),
+            text = stringResource(Res.string.offline_banner_text),
+        )
     }
 }
 

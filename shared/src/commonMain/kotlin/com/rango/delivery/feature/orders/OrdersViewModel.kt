@@ -45,6 +45,7 @@ data class OrdersTabState(
     val loaded: Boolean = false,
     val errorMessage: String? = null,
     val orders: List<OrderListItem> = emptyList(),
+    val offline: Boolean = false,
 ) {
     val empty: Boolean get() = loaded && errorMessage == null && orders.isEmpty()
 }
@@ -128,15 +129,24 @@ class OrdersViewModel(
             try {
                 val now = clock()
                 val orders = orderRepository.list(tab.group).map { it.toItem(now) }
-                updateTab(tab) { it.copy(loading = false, loaded = true, orders = orders) }
+                updateTab(tab) { it.copy(loading = false, loaded = true, orders = orders, offline = false) }
             } catch (e: SessionExpiredException) {
                 _events.send(OrdersEvent.SessionExpired)
             } catch (e: ApiException) {
                 failTab(tab, e.message)
             } catch (e: NetworkException) {
-                failTab(tab, "Não foi possível carregar os pedidos.")
+                if (!showCached(tab)) failTab(tab, "Não foi possível carregar os pedidos.")
             }
         }
+    }
+
+    private fun showCached(tab: OrdersTab): Boolean {
+        val cached = orderRepository.cachedList(tab.group) ?: return false
+        val now = clock()
+        updateTab(tab) {
+            it.copy(loading = false, loaded = true, errorMessage = null, orders = cached.map { o -> o.toItem(now) }, offline = true)
+        }
+        return true
     }
 
     private fun failTab(tab: OrdersTab, message: String) {

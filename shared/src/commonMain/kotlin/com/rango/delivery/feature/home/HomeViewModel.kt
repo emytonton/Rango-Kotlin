@@ -25,6 +25,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.time.Clock
+import kotlin.time.Instant
 
 data class HomeCategory(val slug: String, val name: String)
 
@@ -44,6 +46,7 @@ data class HomeUiState(
     val sections: List<HomeSection> = emptyList(),
     val categoryProducts: List<ProductCardModel> = emptyList(),
     val categoryLoading: Boolean = false,
+    val offlineNote: String? = null,
 )
 
 sealed interface HomeEvent {
@@ -54,6 +57,7 @@ sealed interface HomeEvent {
 class HomeViewModel(
     private val catalogRepository: CatalogRepository,
     private val cartRepository: CartRepository,
+    private val clock: () -> Instant = { Clock.System.now() },
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
@@ -73,13 +77,20 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val home = catalogRepository.home()
-                _uiState.update { it.withHome(home).copy(loading = false) }
+                _uiState.update { it.withHome(home).copy(loading = false, offlineNote = null) }
             } catch (e: SessionExpiredException) {
                 _events.send(HomeEvent.SessionExpired)
             } catch (e: ApiException) {
                 _uiState.update { it.copy(loading = false, errorMessage = e.message) }
             } catch (e: NetworkException) {
-                _uiState.update { it.copy(loading = false, errorMessage = "Não foi possível carregar o catálogo.") }
+                val cached = catalogRepository.cachedHome()
+                _uiState.update {
+                    if (cached == null) {
+                        it.copy(loading = false, errorMessage = "Não foi possível carregar o catálogo.")
+                    } else {
+                        it.withHome(cached.value).copy(loading = false, offlineNote = offlineNote(cached.savedAt))
+                    }
+                }
             }
         }
     }
@@ -89,9 +100,14 @@ class HomeViewModel(
         viewModelScope.launch {
             try {
                 val home = catalogRepository.home()
-                _uiState.update { it.withHome(home).copy(errorMessage = null) }
+                _uiState.update { it.withHome(home).copy(errorMessage = null, offlineNote = null) }
             } catch (e: SessionExpiredException) {
                 _events.send(HomeEvent.SessionExpired)
+            } catch (e: NetworkException) {
+                val savedAt = catalogRepository.cachedHome()?.savedAt
+                if (savedAt != null && _uiState.value.errorMessage == null) {
+                    _uiState.update { it.copy(offlineNote = offlineNote(savedAt)) }
+                }
             } catch (e: Exception) {
                 if (e is CancellationException) throw e
             }
@@ -170,6 +186,18 @@ class HomeViewModel(
 
     private fun toast(message: String, kind: ToastKind) {
         viewModelScope.launch { _events.send(HomeEvent.ShowToast(message, kind)) }
+    }
+
+    private fun offlineNote(savedAt: Instant): String {
+        val elapsed = clock() - savedAt
+        val age = when {
+            elapsed.inWholeMinutes < 1 -> "agora"
+            elapsed.inWholeHours < 1 -> "há ${elapsed.inWholeMinutes} min"
+            elapsed.inWholeDays < 1 -> "há ${elapsed.inWholeHours} h"
+            elapsed.inWholeDays == 1L -> "há 1 dia"
+            else -> "há ${elapsed.inWholeDays} dias"
+        }
+        return "Não foi possível atualizar o catálogo.\nÚltima sincronização $age."
     }
 }
 

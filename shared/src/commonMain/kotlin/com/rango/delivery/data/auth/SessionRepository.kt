@@ -27,6 +27,7 @@ interface SessionRepository {
 class DefaultSessionRepository(
     private val api: AuthApi,
     private val storage: SecureStorage,
+    private val onClear: () -> Unit = {},
 ) : SessionRepository {
 
     private val _accessToken = MutableStateFlow<String?>(null)
@@ -78,6 +79,7 @@ class DefaultSessionRepository(
         storage.remove(KEY_REFRESH)
         storage.remove(KEY_USER_NAME)
         _accessToken.value = null
+        onClear()
     }
 
     override suspend fun logout() {

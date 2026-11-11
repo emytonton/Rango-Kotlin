@@ -3,6 +3,7 @@ package com.rango.delivery.feature.home
 import com.rango.delivery.core.designsystem.component.ToastKind
 import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.data.auth.SessionExpiredException
+import com.rango.delivery.data.cache.Cached
 import com.rango.delivery.data.cart.CartDto
 import com.rango.delivery.data.cart.CartRepository
 import com.rango.delivery.data.catalog.AddressDto
@@ -26,7 +27,9 @@ import kotlin.test.BeforeTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import kotlin.time.Instant
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class HomeViewModelTest {
@@ -60,6 +63,31 @@ class HomeViewModelTest {
         val viewModel = HomeViewModel(FakeCatalog(failure = NetworkException(RuntimeException())), FakeCart())
 
         assertEquals("Não foi possível carregar o catálogo.", viewModel.uiState.value.errorMessage)
+    }
+
+    @Test
+    fun withoutConnectionShowsSavedCatalogWithLastSync() = runTest {
+        val catalog = FakeCatalog(failure = NetworkException(RuntimeException()))
+        catalog.cached = Cached(catalog.homeDto(), Instant.parse("2026-11-10T21:52:00Z"))
+        val viewModel = HomeViewModel(catalog, FakeCart(), clock = { Instant.parse("2026-11-10T22:00:00Z") })
+
+        val state = viewModel.uiState.value
+        assertNull(state.errorMessage)
+        assertEquals("Marina", state.firstName)
+        assertEquals(1, state.sections.size)
+        assertEquals("Não foi possível atualizar o catálogo.\nÚltima sincronização há 8 min.", state.offlineNote)
+    }
+
+    @Test
+    fun reconnectingClearsOfflineNote() = runTest {
+        val catalog = FakeCatalog(failure = NetworkException(RuntimeException()))
+        catalog.cached = Cached(catalog.homeDto(), Instant.parse("2026-11-10T21:52:00Z"))
+        val viewModel = HomeViewModel(catalog, FakeCart())
+
+        catalog.failure = null
+        viewModel.refresh()
+
+        assertNull(viewModel.uiState.value.offlineNote)
     }
 
     @Test
@@ -101,20 +129,25 @@ class HomeViewModelTest {
         assertFalse(viewModel.uiState.value.categoryLoading)
     }
 
-    private class FakeCatalog(private val failure: Exception? = null) : CatalogRepository {
+    private class FakeCatalog(var failure: Exception? = null) : CatalogRepository {
         var lastFavorite: Pair<String, Boolean>? = null
+        var cached: Cached<HomeDto>? = null
 
         override suspend fun home(): HomeDto {
             failure?.let { throw it }
-            return HomeDto(
-                user = HomeUserDto(name = "Marina Alves", firstName = "Marina"),
-                selectedAddress = AddressDto(1, "Casa", "Rua das Palmeiras, 128 · apto 42", "Pinheiros · São Paulo"),
-                cartItemCount = 2,
-                unreadNotifications = 1,
-                categories = listOf(CategoryDto(1, "Hambúrguer", "hamburguer")),
-                sections = listOf(HomeSectionDto("offers", "Ofertas para você", listOf(product))),
-            )
+            return homeDto()
         }
+
+        override fun cachedHome() = cached
+
+        fun homeDto() = HomeDto(
+            user = HomeUserDto(name = "Marina Alves", firstName = "Marina"),
+            selectedAddress = AddressDto(1, "Casa", "Rua das Palmeiras, 128 · apto 42", "Pinheiros · São Paulo"),
+            cartItemCount = 2,
+            unreadNotifications = 1,
+            categories = listOf(CategoryDto(1, "Hambúrguer", "hamburguer")),
+            sections = listOf(HomeSectionDto("offers", "Ofertas para você", listOf(product))),
+        )
 
         override suspend fun product(productId: String): ProductDetailDto = error("não usado")
         override suspend fun productsByCategory(categorySlug: String) = listOf(product)

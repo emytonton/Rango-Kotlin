@@ -165,6 +165,7 @@
     <string name="orders_empty_message">Quando você fizer um pedido, ele aparece aqui.</string>
     <string name="orders_empty_action">Fazer um pedido</string>
     <string name="orders_retry">Tentar novamente</string>
+    <string name="orders_offline">Histórico carregado do armazenamento local.</string>
     <string name="order_detail_title">Detalhes do pedido</string>
     <string name="order_detail_products">Produtos</string>
     <string name="order_detail_address">Endereço de entrega</string>
@@ -261,4 +262,7 @@
     <string name="route_cart">Carrinho</string>
     <string name="route_address">Endereço</string>
     <string name="route_product">Produto</string>
+    <string name="offline_banner_title">Você está offline</string>
+    <string name="offline_banner_text">Exibindo dados salvos no dispositivo.</string>
+    <string name="connection_restored">Conexão restaurada.</string>
 </resources>
