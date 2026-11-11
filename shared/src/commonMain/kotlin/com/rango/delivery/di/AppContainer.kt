@@ -10,6 +10,7 @@ import com.rango.delivery.data.auth.AuthorizedCaller
 import com.rango.delivery.data.auth.DefaultAuthRepository
 import com.rango.delivery.data.auth.DefaultSessionRepository
 import com.rango.delivery.data.auth.SessionRepository
+import com.rango.delivery.data.cache.LocalCache
 import com.rango.delivery.data.cart.CartApi
 import com.rango.delivery.data.cart.CartRepository
 import com.rango.delivery.data.cart.DefaultCartRepository
@@ -53,20 +54,22 @@ class AppContainer(
     private val httpClient = createHttpClient()
     private val authApi = AuthApi(httpClient)
 
-    val sessionRepository: SessionRepository = DefaultSessionRepository(authApi, secureStorage)
+    private val localCache = LocalCache(secureStorage)
+
+    val sessionRepository: SessionRepository = DefaultSessionRepository(authApi, secureStorage, onClear = localCache::clear)
     val authRepository: AuthRepository = DefaultAuthRepository(authApi, sessionRepository)
 
     private val authorizedCaller = AuthorizedCaller(sessionRepository)
 
     val favoriteRepository: FavoriteRepository = DefaultFavoriteRepository(FavoriteApi(httpClient), authorizedCaller)
     val catalogRepository: CatalogRepository =
-        DefaultCatalogRepository(CatalogApi(httpClient), authorizedCaller, favoriteRepository)
+        DefaultCatalogRepository(CatalogApi(httpClient), authorizedCaller, favoriteRepository, localCache)
     val cartRepository: CartRepository = DefaultCartRepository(CartApi(httpClient), authorizedCaller)
     val addressRepository: AddressRepository = DefaultAddressRepository(AddressApi(httpClient), authorizedCaller)
     val searchRepository: SearchRepository = DefaultSearchRepository(SearchApi(httpClient), authorizedCaller)
     val paymentRepository: PaymentRepository = DefaultPaymentRepository(PaymentApi(httpClient), authorizedCaller)
     val paymentSelection = PaymentSelection()
-    val orderRepository: OrderRepository = DefaultOrderRepository(OrderApi(httpClient), authorizedCaller)
+    val orderRepository: OrderRepository = DefaultOrderRepository(OrderApi(httpClient), authorizedCaller, localCache)
     val notificationRepository: NotificationRepository =
         DefaultNotificationRepository(NotificationApi(httpClient), authorizedCaller)
     val profileRepository: ProfileRepository = DefaultProfileRepository(ProfileApi(httpClient), authorizedCaller)

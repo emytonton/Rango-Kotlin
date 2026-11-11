@@ -1,7 +1,9 @@
 package com.rango.delivery.data.order
 
+import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.core.network.apiCall
 import com.rango.delivery.data.auth.AuthorizedCaller
+import com.rango.delivery.data.cache.LocalCache
 import com.rango.delivery.data.cart.CartDto
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -13,6 +15,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 
 @Serializable
 data class CreateOrderRequest(
@@ -147,18 +150,33 @@ interface OrderRepository {
     suspend fun create(request: CreateOrderRequest): CreatedOrderDto
     suspend fun detail(code: String): OrderDetailDto
     suspend fun list(group: OrderGroup): List<OrderSummaryDto>
+    fun cachedList(group: OrderGroup): List<OrderSummaryDto>? = null
     suspend fun reorder(code: String): ReorderResultDto
 }
 
 class DefaultOrderRepository(
     private val api: OrderApi,
     private val caller: AuthorizedCaller,
+    private val cache: LocalCache,
 ) : OrderRepository {
+    private val summaries = ListSerializer(OrderSummaryDto.serializer())
+
     override suspend fun create(request: CreateOrderRequest): CreatedOrderDto = caller.call { api.create(it, request) }
 
-    override suspend fun detail(code: String): OrderDetailDto = caller.call { api.detail(it, code) }
+    override suspend fun detail(code: String): OrderDetailDto = try {
+        caller.call { api.detail(it, code) }.also { cache.put(detailKey(code), OrderDetailDto.serializer(), it) }
+    } catch (e: NetworkException) {
+        cache.get(detailKey(code), OrderDetailDto.serializer())?.value ?: throw e
+    }
 
-    override suspend fun list(group: OrderGroup): List<OrderSummaryDto> = caller.call { api.list(it, group) }.data
+    override suspend fun list(group: OrderGroup): List<OrderSummaryDto> =
+        caller.call { api.list(it, group) }.data.also { cache.put(listKey(group), summaries, it) }
+
+    override fun cachedList(group: OrderGroup): List<OrderSummaryDto>? = cache.get(listKey(group), summaries)?.value
 
     override suspend fun reorder(code: String): ReorderResultDto = caller.call { api.reorder(it, code) }
+
+    private fun listKey(group: OrderGroup) = "orders_${group.query}"
+
+    private fun detailKey(code: String) = "order_$code"
 }
