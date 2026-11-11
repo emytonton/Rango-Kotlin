@@ -3,6 +3,7 @@ package com.rango.delivery.feature.orders
 import com.rango.delivery.core.designsystem.component.StatusTone
 import com.rango.delivery.core.designsystem.component.ToastKind
 import com.rango.delivery.core.network.ApiException
+import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.data.cart.CartDto
 import com.rango.delivery.data.cart.CartItemDto
 import com.rango.delivery.data.cart.CartProductDto
@@ -25,6 +26,7 @@ import kotlinx.datetime.TimeZone
 import kotlin.test.AfterTest
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 import kotlin.time.Instant
@@ -95,6 +97,41 @@ class OrdersViewModelTest {
     }
 
     @Test
+    fun withoutConnectionShowsSavedHistory() = runTest {
+        val orders = FakeOrders(failure = NetworkException(RuntimeException()))
+        orders.cached = listOf(summary("RG-10391", "done", "Entregue", "2026-08-12T20:15:00.000Z", 1, 52.9, "p2"))
+        val viewModel = viewModel(orders)
+
+        val tab = viewModel.uiState.value.current
+        assertTrue(tab.offline)
+        assertNull(tab.errorMessage)
+        assertEquals(listOf("RG-10391"), tab.orders.map { it.code })
+    }
+
+    @Test
+    fun withoutConnectionAndNothingSavedShowsError() = runTest {
+        val viewModel = viewModel(FakeOrders(failure = NetworkException(RuntimeException())))
+
+        val tab = viewModel.uiState.value.current
+        assertFalse(tab.offline)
+        assertEquals("Não foi possível carregar os pedidos.", tab.errorMessage)
+    }
+
+    @Test
+    fun reconnectingHidesOfflineNote() = runTest {
+        val orders = FakeOrders(failure = NetworkException(RuntimeException()))
+        orders.cached = emptyList()
+        val viewModel = viewModel(orders)
+        assertTrue(viewModel.uiState.value.current.offline)
+
+        orders.failure = null
+        viewModel.refresh()
+
+        assertFalse(viewModel.uiState.value.current.offline)
+        assertEquals(1, viewModel.uiState.value.current.orders.size)
+    }
+
+    @Test
     fun reorderOpensCartWithMessage() = runTest {
         val orders = FakeOrders()
         val viewModel = viewModel(orders)
@@ -134,6 +171,7 @@ class OrdersViewModelTest {
     ) : OrderRepository {
         val requested = mutableListOf<OrderGroup>()
         var reordered: String? = null
+        var cached: List<OrderSummaryDto>? = null
 
         override suspend fun create(request: CreateOrderRequest) = error("não usado")
 
@@ -144,6 +182,8 @@ class OrdersViewModelTest {
             failure?.let { throw it }
             return if (group == OrderGroup.Live) live else past
         }
+
+        override fun cachedList(group: OrderGroup) = cached
 
         override suspend fun reorder(code: String): ReorderResultDto {
             reordered = code
