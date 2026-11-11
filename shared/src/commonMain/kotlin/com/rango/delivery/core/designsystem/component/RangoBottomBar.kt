@@ -20,6 +20,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,6 +51,13 @@ fun RangoBottomBar(
     badges: Map<RangoTab, Int> = LocalTabBadges.current,
 ) {
     val colors = Rango.colors
+    val toast = LocalBottomBarToast.current
+    if (toast != null) {
+        DisposableEffect(toast) {
+            toast.bottomBars++
+            onDispose { toast.bottomBars-- }
+        }
+    }
     Column(modifier = modifier.fillMaxWidth().background(colors.surface).windowInsetsPadding(WindowInsets.navigationBars)) {
         HorizontalDivider(thickness = 1.dp, color = colors.border)
         Row(
