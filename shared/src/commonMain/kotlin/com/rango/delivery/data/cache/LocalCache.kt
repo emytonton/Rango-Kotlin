@@ -1,5 +1,6 @@
 package com.rango.delivery.data.cache
 
+import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.core.network.RangoJson
 import com.rango.delivery.data.storage.SecureStorage
 import kotlinx.serialization.KSerializer
@@ -33,6 +34,12 @@ class LocalCache(
             remove(key)
             null
         }
+    }
+
+    suspend fun <T> fetchOrCached(key: String, serializer: KSerializer<T>, fetch: suspend () -> T): T = try {
+        fetch().also { put(key, serializer, it) }
+    } catch (e: NetworkException) {
+        get(key, serializer)?.value ?: throw e
     }
 
     fun remove(key: String) {
