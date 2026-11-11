@@ -36,6 +36,7 @@ import coil3.request.crossfade
 import com.rango.delivery.core.connectivity.LocalOnline
 import com.rango.delivery.core.connectivity.OnReconnect
 import com.rango.delivery.core.designsystem.component.LocalToast
+import com.rango.delivery.core.designsystem.component.ProvideToast
 import com.rango.delivery.core.designsystem.component.RangoOfflineBanner
 import com.rango.delivery.core.designsystem.component.RangoPushBanner
 import com.rango.delivery.core.designsystem.component.RangoToastHost
@@ -94,21 +95,23 @@ fun App(container: AppContainer) {
     val online by container.connectivityMonitor.online.collectAsState()
     RangoTheme(mode = themeModeOf(theme)) {
         val toast = rememberToastState()
-        CompositionLocalProvider(LocalToast provides toast, LocalOnline provides online) {
-            ConnectionEffects(container)
-            Box(Modifier.fillMaxSize()) {
-                Column(Modifier.fillMaxSize()) {
-                    if (!online) OfflineBanner()
-                    Box(
-                        modifier = Modifier
-                            .weight(1f)
-                            .then(if (online) Modifier else Modifier.consumeWindowInsets(WindowInsets.statusBars)),
-                    ) {
-                        RangoNavHost(container)
+        ProvideToast(toast) {
+            CompositionLocalProvider(LocalOnline provides online) {
+                ConnectionEffects(container)
+                Box(Modifier.fillMaxSize()) {
+                    Column(Modifier.fillMaxSize()) {
+                        if (!online) OfflineBanner()
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .then(if (online) Modifier else Modifier.consumeWindowInsets(WindowInsets.statusBars)),
+                        ) {
+                            RangoNavHost(container)
+                        }
                     }
+                    RangoToastHost(toast)
+                    PushBannerHost(pushWatcher)
                 }
-                RangoToastHost(toast)
-                PushBannerHost(pushWatcher)
             }
         }
     }
