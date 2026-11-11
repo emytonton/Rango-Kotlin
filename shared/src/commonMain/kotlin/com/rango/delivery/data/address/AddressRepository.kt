@@ -2,6 +2,7 @@ package com.rango.delivery.data.address
 
 import com.rango.delivery.core.network.apiCall
 import com.rango.delivery.data.auth.AuthorizedCaller
+import com.rango.delivery.data.cache.LocalCache
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.bearerAuth
@@ -11,6 +12,7 @@ import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.builtins.ListSerializer
 
 @Serializable
 data class SavedAddressDto(
@@ -69,10 +71,16 @@ interface AddressRepository {
 class DefaultAddressRepository(
     private val api: AddressApi,
     private val caller: AuthorizedCaller,
+    private val cache: LocalCache,
 ) : AddressRepository {
-    override suspend fun list(): List<SavedAddressDto> = caller.call { api.list(it) }
+    override suspend fun list(): List<SavedAddressDto> =
+        cache.fetchOrCached(LIST_KEY, ListSerializer(SavedAddressDto.serializer())) { caller.call { api.list(it) } }
 
     override suspend fun create(request: CreateAddressRequest): SavedAddressDto = caller.call { api.create(it, request) }
 
     override suspend fun select(addressId: Long): SavedAddressDto = caller.call { api.select(it, addressId) }
+
+    private companion object {
+        const val LIST_KEY = "addresses"
+    }
 }
