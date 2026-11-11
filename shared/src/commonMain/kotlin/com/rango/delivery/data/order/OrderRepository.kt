@@ -1,8 +1,10 @@
 package com.rango.delivery.data.order
 
+import com.rango.delivery.core.network.ApiException
 import com.rango.delivery.core.network.NetworkException
 import com.rango.delivery.core.network.apiCall
 import com.rango.delivery.data.auth.AuthorizedCaller
+import com.rango.delivery.data.auth.SessionExpiredException
 import com.rango.delivery.data.cache.LocalCache
 import com.rango.delivery.data.cart.CartDto
 import io.ktor.client.HttpClient
@@ -14,6 +16,10 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.builtins.ListSerializer
 
@@ -146,12 +152,16 @@ class OrderApi(private val client: HttpClient) {
     }
 }
 
+private val NoLiveOrders: StateFlow<Int> = MutableStateFlow(0).asStateFlow()
+
 interface OrderRepository {
+    val liveCount: StateFlow<Int> get() = NoLiveOrders
     suspend fun create(request: CreateOrderRequest): CreatedOrderDto
     suspend fun detail(code: String): OrderDetailDto
     suspend fun list(group: OrderGroup): List<OrderSummaryDto>
     fun cachedList(group: OrderGroup): List<OrderSummaryDto>? = null
     suspend fun reorder(code: String): ReorderResultDto
+    suspend fun refreshLiveCount() {}
 }
 
 class DefaultOrderRepository(
@@ -161,7 +171,11 @@ class DefaultOrderRepository(
 ) : OrderRepository {
     private val summaries = ListSerializer(OrderSummaryDto.serializer())
 
-    override suspend fun create(request: CreateOrderRequest): CreatedOrderDto = caller.call { api.create(it, request) }
+    private val _liveCount = MutableStateFlow(0)
+    override val liveCount: StateFlow<Int> = _liveCount.asStateFlow()
+
+    override suspend fun create(request: CreateOrderRequest): CreatedOrderDto =
+        caller.call { api.create(it, request) }.also { if (it.status == "live") _liveCount.update { count -> count + 1 } }
 
     override suspend fun detail(code: String): OrderDetailDto = try {
         caller.call { api.detail(it, code) }.also { cache.put(detailKey(code), OrderDetailDto.serializer(), it) }
@@ -170,11 +184,23 @@ class DefaultOrderRepository(
     }
 
     override suspend fun list(group: OrderGroup): List<OrderSummaryDto> =
-        caller.call { api.list(it, group) }.data.also { cache.put(listKey(group), summaries, it) }
+        caller.call { api.list(it, group) }.data.also {
+            cache.put(listKey(group), summaries, it)
+            if (group == OrderGroup.Live) _liveCount.value = it.size
+        }
 
     override fun cachedList(group: OrderGroup): List<OrderSummaryDto>? = cache.get(listKey(group), summaries)?.value
 
     override suspend fun reorder(code: String): ReorderResultDto = caller.call { api.reorder(it, code) }
+
+    override suspend fun refreshLiveCount() {
+        try {
+            list(OrderGroup.Live)
+        } catch (e: ApiException) {
+        } catch (e: NetworkException) {
+        } catch (e: SessionExpiredException) {
+        }
+    }
 
     private fun listKey(group: OrderGroup) = "orders_${group.query}"
 

@@ -73,6 +73,7 @@ import com.rango.delivery.feature.signup.SignupViewModel
 fun RangoNavHost(container: AppContainer) {
     val navController = rememberNavController()
     val favoriteIds by container.favoriteRepository.favoriteIds.collectAsStateWithLifecycle()
+    val liveOrders by container.orderRepository.liveCount.collectAsStateWithLifecycle()
     val openNotifications by container.pushWatcher.openRequested.collectAsStateWithLifecycle()
     val currentEntry by navController.currentBackStackEntryAsState()
 
@@ -85,7 +86,16 @@ fun RangoNavHost(container: AppContainer) {
         if (!destination.hasRoute<NotificationsRoute>()) navController.navigate(NotificationsRoute)
     }
 
-    CompositionLocalProvider(LocalTabBadges provides mapOf(RangoTab.Favorites to favoriteIds.size)) {
+    val onRootTab = currentEntry?.destination?.let { destination ->
+        destination.hasRoute<HomeRoute>() || destination.hasRoute<SearchRoute>() || destination.hasRoute<OrdersRoute>() ||
+            destination.hasRoute<FavoritesRoute>() || destination.hasRoute<ProfileRoute>()
+    } == true
+    LaunchedEffect(onRootTab, currentEntry) {
+        if (onRootTab) container.orderRepository.refreshLiveCount()
+    }
+
+    val badges = mapOf(RangoTab.Orders to liveOrders, RangoTab.Favorites to favoriteIds.size)
+    CompositionLocalProvider(LocalTabBadges provides badges) {
         RangoNavGraph(container, navController)
     }
 }

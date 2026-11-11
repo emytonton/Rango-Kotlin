@@ -24,8 +24,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,6 +55,8 @@ class ToastState internal constructor(private val scope: CoroutineScope) {
     var current by mutableStateOf<ToastMessage?>(null)
         private set
 
+    internal var bottomBars by mutableIntStateOf(0)
+
     private var dismissJob: Job? = null
 
     fun show(text: String, kind: ToastKind = ToastKind.Success) {
@@ -71,6 +75,13 @@ class ToastState internal constructor(private val scope: CoroutineScope) {
 
 val LocalToast = staticCompositionLocalOf<ToastState> { error("ToastState não fornecido") }
 
+internal val LocalBottomBarToast = staticCompositionLocalOf<ToastState?> { null }
+
+@Composable
+fun ProvideToast(state: ToastState, content: @Composable () -> Unit) {
+    CompositionLocalProvider(LocalToast provides state, LocalBottomBarToast provides state, content = content)
+}
+
 @Composable
 fun rememberToastState(): ToastState {
     val scope = rememberCoroutineScope()
@@ -88,7 +99,7 @@ fun BoxScope.RangoToastHost(state: ToastState) {
         modifier = Modifier
             .align(Alignment.BottomCenter)
             .windowInsetsPadding(WindowInsets.safeDrawing)
-            .padding(start = 16.dp, end = 16.dp, bottom = 30.dp),
+            .padding(start = 16.dp, end = 16.dp, bottom = if (state.bottomBars > 0) 104.dp else 30.dp),
     ) {
         last?.let { RangoToast(it) }
     }
