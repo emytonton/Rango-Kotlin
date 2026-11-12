@@ -78,7 +78,9 @@ Dez execuções de `adb shell am start -W`, com `am force-stop` antes de cada um
 
 `tools/metrics/memoria-cpu.sh [pacote/atividade]`
 
-Dez execuções. Em cada uma o script mata o processo, limpa os dados do app (`pm clear`), abre o app e espera o roteiro ser feito à mão. Ao pressionar Enter, espera 5 s e coleta `dumpsys meminfo` (PSS total, em KB) e `top -n 1` (%CPU do processo). Registra as medianas.
+Dez execuções. Em cada uma o script mata o processo, limpa os dados do app (`pm clear`), abre o app e espera o roteiro ser feito à mão. Ao pressionar Enter, lê o tempo de CPU que o processo gastou desde que abriu (`utime` + `stime` de `/proc/<pid>/stat`, convertidos para milissegundos com o `CLK_TCK` do aparelho). Depois espera 5 s e coleta `dumpsys meminfo` (PSS total, em KB) e `top -n 1` (%CPU do processo parado). Registra as medianas.
+
+O tempo de CPU do roteiro é a medida principal de CPU: mostra quanto trabalho o app fez para abrir, entrar, carregar a Home, abrir o produto e o carrinho. A %CPU parada fica como apoio e tende a zero, porque a interface não desenha nada quando não há interação.
 
 Roteiro fixo (igual nos dois frameworks):
 
@@ -147,7 +149,7 @@ Dimensões: facilidade de uso, documentação, depuração, curva de aprendizado
    3. Como foi depurar erros?
    4. Houve integração com recurso nativo e como foi?
    5. O que a IA acelerou ou atrapalhou?
-3. No fim de cada versão (milestone): o assistente monta um rascunho de avaliação por dimensão a partir das notas com tag e do diário, citando as entradas usadas. A dona edita, dá nota de 1 a 5 por dimensão com justificativa e aprova. Fica em `docs/avaliacao-qualitativa.md`.
+3. No fim de cada versão (milestone): o assistente monta um rascunho de avaliação por dimensão a partir das notas com tag e do diário, citando as entradas usadas. A dona edita e aprova, sem nota numérica. Fica em `docs/avaliacao-qualitativa.md`.
 
 Apoio numérico no rascunho:
 
