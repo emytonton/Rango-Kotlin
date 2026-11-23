@@ -1,0 +1,8 @@
+data,etapa,bloco,framework,avd,ram_livre_host_mb,ram_livre_emulador_mb
+2026-11-23 16:30:15,inicializacao,1,kmp,Rango_Pixel_8,2285,787
+2026-11-23 16:41:52,inicializacao,2,kmp,Rango_Pixel_8,2230,765
+2026-11-23 16:45:45,inicializacao,3,kmp,Rango_Pixel_8,2084,789
+2026-11-23 16:53:23,memoria,1,kmp,Rango_Pixel_8,1859,720
+2026-11-23 17:03:48,memoria,1,kmp,Rango_Pixel_8,920,754
+2026-11-23 17:23:20,memoria,2,kmp,Rango_Pixel_8,2659,787
+2026-11-23 17:29:47,memoria,3,kmp,Rango_Pixel_8,3064,773

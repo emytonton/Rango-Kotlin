@@ -1,0 +1,8 @@
+FRAMEWORK="kmp"
+PACOTE="com.rango.delivery"
+ATIVIDADE=".MainActivity"
+DIR_GRADLE="."
+TAREFA_BUILD=":androidApp:assembleDebug"
+TAREFA_RELEASE=":androidApp:assembleRelease"
+APK_RELEASE="androidApp/build/outputs/apk/release/androidApp-release.apk"
+ARQUIVO_ALTERADO="shared/src/commonMain/kotlin/com/rango/delivery/feature/home/HomeScreen.kt"
