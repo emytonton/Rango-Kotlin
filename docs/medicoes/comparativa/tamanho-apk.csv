@@ -1,0 +1,7 @@
+data,framework,commit,parte,bytes_comprimidos,bytes_descomprimidos
+2026-11-23 16:27:33,kmp,ea3881d,apk_total,13045748,
+2026-11-23 16:27:33,kmp,ea3881d,lib_x86_64,10760,10760
+2026-11-23 16:27:33,kmp,ea3881d,lib_armeabi-v7a,7252,7252
+2026-11-23 16:27:34,kmp,ea3881d,lib_x86,9284,9284
+2026-11-23 16:27:34,kmp,ea3881d,lib_arm64-v8a,10096,10096
+2026-11-23 16:27:34,kmp,ea3881d,sem_lib,12942510,35372742

@@ -157,3 +157,36 @@ Apoio numérico no rascunho:
 | APIs nativas | contagem de `expect` e `actual` e telas com integração nativa (métrica 3) |
 | Impacto da IA | AI-Extent (métricas 1 e 2), prompts, confiança e retrabalho das issues |
 | Facilidade de uso, documentação, curva de aprendizado | só diário e notas |
+
+## 13. Medição comparativa KMP x React Native
+
+Scripts em `tools/metrics/comparativa/`, idênticos nos dois repositórios (só o `config.sh` muda). Resultados em `docs/medicoes/comparativa/`. Esta medição substitui, na comparação entre os frameworks, as seções 4 a 7, que foram feitas em condições diferentes em cada app (build debug ou release, roteiro manual ou automático, uma execução por cenário).
+
+Condições comuns:
+
+- APK release nos dois, assinado com a chave de debug e sem minificação.
+- Um só emulador (`Rango_Pixel_8`), iniciado a frio (`-no-snapshot-load`) antes de cada bloco, com um app instalado por vez (desinstala, instala, `cmd package compile -f -m speed-profile`).
+- Blocos alternados: o bloco ímpar começa pelo KMP e o par pelo React Native.
+- Backend local com o seed. Antes de cada execução do roteiro o carrinho da conta demo é esvaziado pela API (`DELETE /cart`), e fica vazio no fim.
+- RAM livre do PC e do emulador no início de cada bloco em `condicoes.csv`.
+
+Execução, com `RANGO_KMP` e `RANGO_RN` apontando para as pastas dos dois repositórios:
+
+```
+tools/metrics/comparativa/executar.sh apk
+tools/metrics/comparativa/executar.sh inicializacao   # 3 blocos x 10 por app
+tools/metrics/comparativa/executar.sh memoria         # 3 blocos x 5 por app
+tools/metrics/comparativa/executar.sh build           # 10 repetições por cenário
+py -3 tools/metrics/comparativa/analise.py <repo_kmp> <repo_rn> docs/medicoes/comparativa/analise.csv
+```
+
+A etapa `build` roda por último, porque o `clean` apaga o APK release.
+
+| Métrica | Script | Como mede | Arquivo |
+|---|---|---|---|
+| Tamanho do APK | `apk.sh` | Bytes do APK release e, com `unzip -v`, a parte de cada ABI em `lib/` e o resto | `tamanho-apk.csv` |
+| Inicialização a frio | `inicializacao.sh` | `pm clear` uma vez por bloco, depois `am force-stop`, 3 s e `am start -W`, lendo `TotalTime` | `inicializacao-frio.csv` |
+| Memória e CPU | `memoria-cpu.sh` | `pm clear`, abre o app, `roteiro.sh` automático (Boas-vindas, Login, Home, Burger duplo cheddar, Adicionar, sacola, Carrinho), CPU do processo em `/proc/<pid>/stat` (utime + stime), 5 s, PSS total do `dumpsys meminfo` e %CPU parado do `top` | `memoria-cpu.csv` |
+| Tempo de build | `build.sh` | `assembleDebug` em três cenários: limpo (`--stop`, `clean`, `--no-build-cache`), sem mudança e com um comentário acrescentado na tela Home (restaurada no fim) | `tempo-build.csv` |
+
+Análise (`analise.py`, sem dependências): n, mediana, quartis e IQR por app, teste U de Mann-Whitney bilateral (exato sem empates e com n até 30, senão aproximação normal com correção de empates e de continuidade) e delta de Cliff (desprezível abaixo de 0,147, pequeno até 0,33, médio até 0,474, grande acima). Delta positivo indica valores maiores no KMP.
