@@ -6,7 +6,7 @@ DIR_SCRIPTS="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 RAIZ="$(cd "$DIR_SCRIPTS/../../.." && pwd)"
 source "$DIR_SCRIPTS/config.sh"
 
-DIR_SAIDA="$RAIZ/docs/medicoes/comparativa"
+DIR_SAIDA="$RAIZ/docs/medicoes/comparativa${RODADA:+/$RODADA}"
 mkdir -p "$DIR_SAIDA"
 
 BACKEND="${RANGO_BACKEND:-http://localhost:3333}"

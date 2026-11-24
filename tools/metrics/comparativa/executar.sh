@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Medição comparativa KMP x React Native, nas mesmas condições e em blocos alternados.
 # Usa um só emulador, iniciado a frio antes de cada bloco, com um app instalado por vez.
-# Uso: executar.sh <etapa>   etapa: inicializacao | memoria | build | apk
+# Uso: executar.sh <etapa>   etapa: inicializacao | memoria | tela | build | apk
 # Variáveis: RANGO_KMP e RANGO_RN (pastas dos repositórios), RANGO_AVD (emulador),
 #            BLOCOS e POR_BLOCO (inicialização e memória), REPETICOES (build).
 set -euo pipefail
@@ -18,10 +18,11 @@ repo_de() { [ "$1" = kmp ] && echo "$KMP" || echo "$RN"; }
 apk_de() { (source "$(repo_de "$1")/tools/metrics/comparativa/config.sh"; echo "$(repo_de "$1")/$APK_RELEASE"); }
 
 registrar_condicao() {
-  local arquivo="$1/docs/medicoes/comparativa/condicoes.csv"
+  local arquivo="$1/docs/medicoes/comparativa${RODADA:+/$RODADA}/condicoes.csv"
   local livre_host livre_emul
   livre_host=$(powershell -NoProfile -Command "[int]((Get-CimInstance Win32_OperatingSystem).FreePhysicalMemory/1024)" | tr -d '\r')
   livre_emul=$(adb shell cat /proc/meminfo | tr -d '\r' | awk '/MemAvailable/{print int($2/1024)}')
+  mkdir -p "$(dirname "$arquivo")"
   [ -f "$arquivo" ] || echo "data,etapa,bloco,framework,avd,ram_livre_host_mb,ram_livre_emulador_mb" > "$arquivo"
   echo "$(date '+%Y-%m-%d %H:%M:%S'),$etapa,$2,$3,$AVD,$livre_host,$livre_emul" >> "$arquivo"
 }
@@ -51,9 +52,10 @@ ordem() { [ $(( $1 % 2 )) -eq 1 ] && echo "kmp react-native" || echo "react-nati
 fw_curto() { [ "$1" = react-native ] && echo rn || echo kmp; }
 
 case "$etapa" in
-  inicializacao|memoria)
+  inicializacao|memoria|tela)
     blocos="${BLOCOS:-3}"
     if [ "$etapa" = inicializacao ]; then por_bloco="${POR_BLOCO:-10}"; script=inicializacao.sh
+    elif [ "$etapa" = tela ]; then por_bloco="${POR_BLOCO:-10}"; script=tempo-tela.sh
     else por_bloco="${POR_BLOCO:-5}"; script=memoria-cpu.sh; fi
     for b in $(seq 1 "$blocos"); do
       for fw in $(ordem "$b"); do

@@ -1,6 +1,6 @@
 """Análise da medição comparativa KMP x React Native.
 
-Lê os CSVs de docs/medicoes/comparativa dos dois repositórios e, para cada métrica, calcula
+Lê os CSVs de docs/medicoes/comparativa (ou da subpasta da variável RODADA) dos dois repositórios e, para cada métrica, calcula
 n, mediana, quartis, intervalo interquartil, teste U de Mann-Whitney bilateral e delta de Cliff.
 O p-valor é exato (distribuição de U por contagem) quando não há empates e n <= 30 em cada grupo;
 nos demais casos usa a aproximação normal com correção de empates e de continuidade.
@@ -8,13 +8,14 @@ Sem dependências externas. Uso: py -3 analise.py <repo_kmp> <repo_rn> [saida.cs
 """
 import csv
 import math
+import os
 import statistics
 import sys
 from pathlib import Path
 
 
 def ler(repo, arquivo):
-    caminho = Path(repo) / "docs" / "medicoes" / "comparativa" / arquivo
+    caminho = Path(repo) / "docs" / "medicoes" / "comparativa" / os.environ.get("RODADA", "") / arquivo
     if not caminho.exists():
         return []
     with open(caminho, encoding="utf-8") as f:
@@ -119,6 +120,10 @@ def series(kmp, rn):
     for repo in (kmp, rn):
         for l in ler(repo, "inicializacao-frio.csv"):
             add("inicializacao_frio_total_time", "ms", l["framework"], l["total_time_ms"])
+        for l in ler(repo, "tempo-ate-tela.csv"):
+            add("tela_primeiro_quadro", "ms", l["framework"], l["total_time_ms"])
+            add("tela_completa", "ms", l["framework"], l["tela_completa_ms"])
+            add("tela_quadros", "quadros", l["framework"], l["quadros"])
         for l in ler(repo, "memoria-cpu.csv"):
             if l["roteiro"] != "ok":
                 continue
