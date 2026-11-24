@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Tamanho do APK release (assinado com a chave de debug, sem minificação): total e bibliotecas nativas por ABI.
+# Tamanho do APK release: total em bytes e, com unzip -v, os dados comprimidos de cada ABI em lib/ (lib_<abi>) e dos demais arquivos (sem_lib).
+# As partes não incluem cabeçalhos e diretório central do zip nem o bloco de assinatura, então não somam o total.
 # Uso: apk.sh  (depois de gerar o release)
 source "$(dirname "$0")/comum.sh"
 
