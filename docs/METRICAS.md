@@ -186,7 +186,7 @@ A etapa `build` roda por último, porque o `clean` apaga o APK release.
 
 | Métrica | Script | Como mede | Arquivo |
 |---|---|---|---|
-| Tamanho do APK | `apk.sh` | Bytes do APK release e, com `unzip -v`, a parte de cada ABI em `lib/` e o resto | `tamanho-apk.csv` |
+| Tamanho do APK | `apk.sh` | Bytes do APK release e, com `unzip -v`, os dados comprimidos de cada ABI em `lib/` (`lib_<abi>`) e dos demais arquivos (`sem_lib`). As partes não incluem os cabeçalhos e o diretório central do zip nem o bloco de assinatura, então não somam o total | `tamanho-apk.csv` |
 | Inicialização a frio | `inicializacao.sh` | `pm clear` uma vez por bloco, depois `am force-stop`, 3 s e `am start -W`, lendo `TotalTime` | `inicializacao-frio.csv` |
 | Memória e CPU | `memoria-cpu.sh` | `pm clear`, abre o app, `roteiro.sh` automático (Boas-vindas, Login, Home, Burger duplo cheddar, Adicionar, sacola, Carrinho), CPU do processo em `/proc/<pid>/stat` (utime + stime), 5 s, PSS total do `dumpsys meminfo` e %CPU parado do `top` | `memoria-cpu.csv` |
 | Tempo de build | `build.sh` | `assembleDebug` em três cenários: limpo (`--stop`, `clean`, `--no-build-cache`), sem mudança e com um comentário acrescentado na tela Home (restaurada no fim) | `tempo-build.csv` |
