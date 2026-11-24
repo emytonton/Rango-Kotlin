@@ -166,7 +166,7 @@ Scripts em `tools/metrics/comparativa/`, idênticos nos dois repositórios (só 
 
 Condições comuns:
 
-- APK release nos dois, assinado com a chave de debug e sem minificação.
+- APK release nos dois, assinado com a chave de debug, com a mesma minificação nos dois (ver Rodadas).
 - Um só emulador (`Rango_Pixel_8`), iniciado a frio (`-no-snapshot-load`) antes de cada bloco, com um app instalado por vez (desinstala, instala, `cmd package compile -f -m speed-profile`).
 - Blocos alternados: o bloco ímpar começa pelo KMP e o par pelo React Native.
 - Backend local com o seed. Antes de cada execução do roteiro o carrinho da conta demo é esvaziado pela API (`DELETE /cart`), e fica vazio no fim.
@@ -192,3 +192,29 @@ A etapa `build` roda por último, porque o `clean` apaga o APK release.
 | Tempo de build | `build.sh` | `assembleDebug` em três cenários: limpo (`--stop`, `clean`, `--no-build-cache`), sem mudança e com um comentário acrescentado na tela Home (restaurada no fim) | `tempo-build.csv` |
 
 Análise (`analise.py`, sem dependências): n, mediana, quartis e IQR por app, teste U de Mann-Whitney bilateral (exato sem empates e com n até 30, senão aproximação normal com correção de empates e de continuidade) e delta de Cliff (desprezível abaixo de 0,147, pequeno até 0,33, médio até 0,474, grande acima). Delta positivo indica valores maiores no KMP.
+
+### Rodadas
+
+| Pasta em `docs/medicoes/comparativa/` | Data | Configuração | Como rodou |
+|---|---|---|---|
+| raiz | 23/11/2026, tarde | release sem minificação | etapas chamadas uma a uma, com o PC em uso (RAM livre de 0,9 a 3,1 GB) |
+| `r8/` | 23/11/2026, noite | release com R8 (`isMinifyEnabled = true` no KMP e `enableProguardInReleaseBuilds = true` no React Native) | `medir-tudo.sh`, com o PC recém-reiniciado e sem outros programas (RAM livre de 4,9 a 6,1 GB) |
+| `r8-tela/` | 24/11/2026, manhã | release com R8 | `medir-tela.sh`, com o PC recém-reiniciado e sem outros programas |
+
+A rodada `r8` é a principal para a comparação. A da raiz fica como registro do efeito da minificação e do uso do PC. Nas rodadas `r8` e `r8-tela`, a coluna `commit` dos CSVs mostra o último commit da `main` daquele momento (`269e8af` no KMP e `fa989f7` no React Native), porque a mudança do R8 só foi commitada depois da medição.
+
+A variável `RODADA` escolhe a subpasta de saída de todos os scripts e da análise. Cada rodada é feita com um comando, que recusa uma pasta que já tenha CSVs:
+
+```
+bash tools/metrics/comparativa/medir-tudo.sh [rodada]   # padrão r8: backend, APKs, apk, inicializacao, memoria, build e análise
+bash tools/metrics/comparativa/medir-tela.sh [rodada]   # padrão r8-tela: APKs, tela e análise
+```
+
+### Tempo até a tela completa (`tempo-tela.sh`, etapa `tela`)
+
+O `TotalTime` do `am start -W` para no primeiro quadro desenhado. No React Native esse quadro sai antes do conteúdo, que chega depois do JavaScript carregar. Para medir os dois apps pelo mesmo critério, esta etapa registra o tempo até a tela de Boas-vindas ficar completa:
+
+- 3 blocos alternados de 10 execuções por app, com `pm clear` no começo do bloco, como na inicialização a frio.
+- Em cada execução: `am force-stop`, 3 s, `am start -W` (`TotalTime`), 8 s parado e leitura dos quadros desenhados pelo processo (`dumpsys gfxinfo <pacote> framestats`, coluna `FrameCompleted`).
+- Tela completa = `TotalTime` + intervalo entre o fim do primeiro e o fim do último quadro da abertura. Inclui a imagem de capa e as animações de entrada (o React Native aplica por padrão um fade de 300 ms nas imagens).
+- Resultado em `tempo-ate-tela.csv`: `total_time_ms`, `tela_completa_ms` e `quadros`.

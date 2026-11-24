@@ -1,0 +1,8 @@
+metrica,unidade,n_kmp,mediana_kmp,q1_kmp,q3_kmp,iqr_kmp,n_rn,mediana_rn,q1_rn,q3_rn,iqr_rn,u_mann_whitney,p_valor,metodo_p,delta_cliff,magnitude
+inicializacao_frio_total_time,ms,30,554,524.5,597,72.5,30,405,388.8,442.2,53.5,759,5.083e-06,normal,0.6867,grande
+memoria_pss,KB,15,7.658e+04,7.472e+04,7.898e+04,4261,15,1.52e+05,1.508e+05,1.525e+05,1692,0,1.289e-08,exato,-1,grande
+cpu_roteiro,ms,15,5190,5165,5500,335,15,6720,6655,6815,160,0,3.358e-06,normal,-1,grande
+duracao_roteiro,ms,15,3.09e+04,3.087e+04,3.113e+04,259.5,15,3.332e+04,3.316e+04,3.374e+04,577,0,1.289e-08,exato,-1,grande
+build_debug_limpo,s,10,58.37,57.84,58.95,1.105,10,326,324,329.5,5.543,0,1.083e-05,exato,-1,grande
+build_debug_sem_mudanca,s,10,4.17,4.095,4.262,0.1675,10,7.7,7.622,7.855,0.2325,0,1.083e-05,exato,-1,grande
+build_debug_um_arquivo,s,10,22.99,22.74,23.12,0.3775,10,25.81,25.71,26.03,0.315,0,0.0001817,normal,-1,grande

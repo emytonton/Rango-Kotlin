@@ -1,0 +1,4 @@
+metrica,unidade,n_kmp,mediana_kmp,q1_kmp,q3_kmp,iqr_kmp,n_rn,mediana_rn,q1_rn,q3_rn,iqr_rn,u_mann_whitney,p_valor,metodo_p,delta_cliff,magnitude
+tela_primeiro_quadro,ms,30,461.5,424.2,531.2,107,30,404,375.5,430.8,55.25,676,0.0008556,normal,0.5022,grande
+tela_completa,ms,30,770.5,739.5,785.8,46.25,30,2422,2401,2468,66.75,0,3.014e-11,normal,-1,grande
+tela_quadros,quadros,30,3,3,3,0,30,25,25,26,1,0,5.298e-13,normal,-1,grande
